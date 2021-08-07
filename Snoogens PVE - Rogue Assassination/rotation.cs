@@ -1286,7 +1286,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 137619 && CanCastMarkedforDeath("target"))
+                    if (SpellID1 == 137619 && CanCastMarkedforDeath("target") && MeleeRange)
                     {
                         if (Debug)
                         {
@@ -1429,7 +1429,7 @@ namespace AimsharpWow.Modules
                     //Assassination
                     ////Player
 
-                    if (SpellID1 == 51723 && CanCastFanofKnives("player"))
+                    if (SpellID1 == 51723 && CanCastFanofKnives("player") && MeleeRange)
                     {
                         if (Debug)
                         {
@@ -1439,7 +1439,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 121411 && CanCastCrimsonTempest("player"))
+                    if (SpellID1 == 121411 && CanCastCrimsonTempest("player") && MeleeRange)
                     {
                         if (Debug)
                         {
@@ -1522,7 +1522,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 79140 && CanCastVendetta("target"))
+                    if (SpellID1 == 79140 && CanCastVendetta("target") && MeleeRange)
                     {
                         if (Debug)
                         {
