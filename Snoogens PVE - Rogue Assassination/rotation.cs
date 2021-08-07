@@ -1678,7 +1678,7 @@ namespace AimsharpWow.Modules
 
             #region Out of Combat Spells
             //Auto Fleshcraft
-            if (SpellID1 == 324631 && CanCastFleshcraft("player") && !Moving)
+            if (SpellID1 == 324631 && CanCastFleshcraft("player") && !Moving && !Aimsharp.HasBuff("Stealth", "player", true))
             {
                 if (Debug)
                 {
