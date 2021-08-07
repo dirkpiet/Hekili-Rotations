@@ -232,7 +232,7 @@ namespace AimsharpWow.Modules
 
         private List<string> m_SpellBook = new List<string> {
             //Covenants
-            "Flayed Shot",
+            "Flayed Shot", "Death Chakram", "Wild Spirits", "Resonating Arrow",
 
             //Interrupt
             "Counter Shot",
@@ -245,11 +245,11 @@ namespace AimsharpWow.Modules
             "Freezing Trap", "Tar Trap", "Aspect of the Turtle", "Intimidation", "Bloodshed",
 
 
-            "Summon Steward",
+            "Summon Steward", "Fleshcraft",
 
         };
 
-        private List<string> m_RaceList = new List<string> { "dwarf" };
+        private List<string> m_RaceList = new List<string> { "human", "dwarf", "nightelf", "gnome", "draenei", "pandaren", "orc", "scourge", "tauren", "troll", "bloodelf", "goblin", "worgen", "voidelf", "lightforgeddraenei", "highmountaintauren", "nightborne", "zandalaritroll", "magharorc", "kultiran", "darkirondwarf", "vulpera", "mechagnome" };
 
         private List<int> Torghast_InnerFlame = new List<int> { 258935, 258938, 329422, 329423, };
 
@@ -334,6 +334,30 @@ namespace AimsharpWow.Modules
         private bool CanCastFlayedShot(string unit)
         {
             if (Aimsharp.CanCast("Flayed Shot", unit, true, true) || (Aimsharp.SpellCooldown("Flayed Shot") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) <= 40 && Aimsharp.CovenantID() == 2 && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastDeathChakram(string unit)
+        {
+            if (Aimsharp.CanCast("Death Chakram", unit, true, true) || (Aimsharp.SpellCooldown("Death Chakram") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) <= 40 && Aimsharp.CovenantID() == 4 && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastWildSpirits(string unit)
+        {
+            if (Aimsharp.CanCast("Wild Spirits", unit, true, true) || (Aimsharp.SpellCooldown("Wild Spirits") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) <= 40 && Aimsharp.CovenantID() == 3 && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastResonatingArrow(string unit)
+        {
+            if (Aimsharp.CanCast("Resonating Arrow", unit, true, true) || (Aimsharp.SpellCooldown("Resonating Arrow") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) <= 40 && Aimsharp.CovenantID() == 3 && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
                 return true;
 
             return false;
@@ -462,6 +486,13 @@ namespace AimsharpWow.Modules
         private bool CanCastKillCommand(string unit)
         {
             if (Aimsharp.CanCast("Kill Command", unit, true, true) || (Aimsharp.SpellCooldown("Kill Command") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) <= 50 && Aimsharp.Power("player") >= 30 && Aimsharp.Health("pet") > 1 && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+        private bool CanCastFleshcraft(string unit)
+        {
+            if (Aimsharp.CanCast("Fleshcraft", unit, false, true) || (Aimsharp.SpellCooldown("Fleshcraft") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.CovenantID() == 4 && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
                 return true;
 
             return false;
@@ -611,10 +642,92 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("/xxxxx Intimidation - Casts Intimidation @ Target next GCD", Color.Yellow);
             Aimsharp.PrintMessage("-----", Color.Black);
 
+            #region Racial Spells
+            if (GetDropDown("Race:") == "draenei")
+            {
+                Spellbook.Add("Gift of the Naaru"); //28880
+            }
+
             if (GetDropDown("Race:") == "dwarf")
             {
                 Spellbook.Add("Stoneform"); //20594
             }
+
+            if (GetDropDown("Race:") == "gnome")
+            {
+                Spellbook.Add("Escape Artist"); //20589
+            }
+
+            if (GetDropDown("Race:") == "human")
+            {
+                Spellbook.Add("Will to Survive"); //59752
+            }
+
+            if (GetDropDown("Race:") == "lightforgeddraenei")
+            {
+                Spellbook.Add("Light's Judgment"); //255647
+            }
+
+            if (GetDropDown("Race:") == "darkirondwarf")
+            {
+                Spellbook.Add("Fireblood"); //265221
+            }
+
+            if (GetDropDown("Race:") == "goblin")
+            {
+                Spellbook.Add("Rocket Barrage"); //69041
+            }
+
+            if (GetDropDown("Race:") == "tauren")
+            {
+                Spellbook.Add("War Stomp"); //20549
+            }
+
+            if (GetDropDown("Race:") == "troll")
+            {
+                Spellbook.Add("Berserking"); //26297
+            }
+
+            if (GetDropDown("Race:") == "scourge")
+            {
+                Spellbook.Add("Will of the Forsaken"); //7744
+            }
+
+            if (GetDropDown("Race:") == "nightborne")
+            {
+                Spellbook.Add("Arcane Pulse"); //260364
+            }
+
+            if (GetDropDown("Race:") == "highmountaintauren")
+            {
+                Spellbook.Add("Bull Rush"); //255654
+            }
+
+            if (GetDropDown("Race:") == "magharorc")
+            {
+                Spellbook.Add("Ancestral Call"); //274738
+            }
+
+            if (GetDropDown("Race:") == "vulpera")
+            {
+                Spellbook.Add("Bag of Tricks"); //312411
+            }
+
+            if (GetDropDown("Race:") == "orc")
+            {
+                Spellbook.Add("Blood Fury"); //20572, 33702, 33697
+            }
+
+            if (GetDropDown("Race:") == "bloodelf")
+            {
+                Spellbook.Add("Arcane Torrent"); //28730, 25046, 50613, 69179, 80483, 129597
+            }
+
+            if (GetDropDown("Race:") == "nightelf")
+            {
+                Spellbook.Add("Shadowmeld"); //58984
+            }
+            #endregion
 
             InitializeSettings();
 
@@ -646,6 +759,7 @@ namespace AimsharpWow.Modules
 
             bool Enemy = Aimsharp.TargetIsEnemy();
             int EnemiesInMelee = Aimsharp.EnemiesInMelee();
+            bool Moving = Aimsharp.PlayerIsMoving();
 
             bool TargetInCombat = Aimsharp.InCombat("target") || SpecialUnitList.Contains(Aimsharp.UnitID("target")) || !InstanceIDList.Contains(Aimsharp.GetMapID());
             #endregion
@@ -909,13 +1023,174 @@ namespace AimsharpWow.Modules
                     #endregion
 
                     #region Racials
-                    if (SpellID1 == 20594 && Aimsharp.CanCast("Stoneform", "player", false, true))
+                    //Racials
+                    if (SpellID1 == 28880 && Aimsharp.CanCast("Gift of the Naaru", "player", true, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Gift of the Naaru - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Gift of the Naaru");
+                        return true;
+                    }
+
+                    if (SpellID1 == 20594 && Aimsharp.CanCast("Stoneform", "player", true, true))
                     {
                         if (Debug)
                         {
                             Aimsharp.PrintMessage("Casting Stoneform - " + SpellID1, Color.Purple);
                         }
                         Aimsharp.Cast("Stoneform");
+                        return true;
+                    }
+
+                    if (SpellID1 == 20589 && Aimsharp.CanCast("Escape Artist", "player", true, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Escape Artist - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Escape Artist");
+                        return true;
+                    }
+
+                    if (SpellID1 == 59752 && Aimsharp.CanCast("Will to Survive", "player", true, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Will to Survive - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Will to Survive");
+                        return true;
+                    }
+
+                    if (SpellID1 == 255647 && Aimsharp.CanCast("Light's Judgment", "player", true, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Light's Judgment - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Light's Judgment");
+                        return true;
+                    }
+
+                    if (SpellID1 == 265221 && Aimsharp.CanCast("Fireblood", "player", true, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Fireblood - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Fireblood");
+                        return true;
+                    }
+
+                    if (SpellID1 == 69041 && Aimsharp.CanCast("Rocket Barrage", "player", true, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Rocket Barrage - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Rocket Barrage");
+                        return true;
+                    }
+
+                    if (SpellID1 == 20549 && Aimsharp.CanCast("War Stomp", "player", true, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting War Stomp - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("War Stomp");
+                        return true;
+                    }
+
+                    if (SpellID1 == 7744 && Aimsharp.CanCast("Will of the Forsaken", "player", true, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Will of the Forsaken - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Will of the Forsaken");
+                        return true;
+                    }
+
+                    if (SpellID1 == 260364 && Aimsharp.CanCast("Arcane Pulse", "player", true, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Arcane Pulse - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Arcane Pulse");
+                        return true;
+                    }
+
+                    if (SpellID1 == 255654 && Aimsharp.CanCast("Bull Rush", "player", true, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Bull Rush - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Bull Rush");
+                        return true;
+                    }
+
+                    if (SpellID1 == 312411 && Aimsharp.CanCast("Bag of Tricks", "player", true, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Bag of Tricks - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Bag of Tricks");
+                        return true;
+                    }
+
+                    if ((SpellID1 == 20572 || SpellID1 == 33702 || SpellID1 == 33697) && Aimsharp.CanCast("Blood Fury", "player", true, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Blood Fury - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Blood Fury");
+                        return true;
+                    }
+
+                    if (SpellID1 == 26297 && Aimsharp.CanCast("Berserking", "player", false, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Berserking - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Berserking");
+                        return true;
+                    }
+
+                    if (SpellID1 == 274738 && Aimsharp.CanCast("Ancestral Call", "player", false, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Ancestral Call - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Ancestral Call");
+                        return true;
+                    }
+
+                    if ((SpellID1 == 28730 || SpellID1 == 25046 || SpellID1 == 50613 || SpellID1 == 69179 || SpellID1 == 80483 || SpellID1 == 129597) && Aimsharp.CanCast("Arcane Torrent", "player", true, false))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Arcane Torrent - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Arcane Torrent");
+                        return true;
+                    }
+
+                    if (SpellID1 == 58984 && Aimsharp.CanCast("Shadowmeld", "player", false, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Shadowmeld - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Shadowmeld");
                         return true;
                     }
                     #endregion
@@ -929,6 +1204,46 @@ namespace AimsharpWow.Modules
                             Aimsharp.PrintMessage("Casting Flayed Shot - " + SpellID1, Color.Purple);
                         }
                         Aimsharp.Cast("Flayed Shot");
+                        return true;
+                    }
+
+                    if (SpellID1 == 308491 && CanCastResonatingArrow("player"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Resonating Arrow - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Resonating Arrow");
+                        return true;
+                    }
+
+                    if (SpellID1 == 328231 && CanCastWildSpirits("player"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Wild Spirits - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Wild Spirits");
+                        return true;
+                    }
+
+                    if (SpellID1 == 325028 && CanCastDeathChakram("target"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Death Chakram - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Death Chakram");
+                        return true;
+                    }
+
+                    if (SpellID1 == 324631 && CanCastFleshcraft("player") && !Moving)
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Fleshcraft - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Fleshcraft");
                         return true;
                     }
                     #endregion
@@ -1061,6 +1376,7 @@ namespace AimsharpWow.Modules
             bool Debug = GetCheckBox("Debug:") == true;
 
             bool TargetInCombat = Aimsharp.InCombat("target") || SpecialUnitList.Contains(Aimsharp.UnitID("target")) || !InstanceIDList.Contains(Aimsharp.GetMapID());
+            bool Moving = Aimsharp.PlayerIsMoving();
             #endregion
 
             #region SpellQueueWindow
@@ -1160,6 +1476,18 @@ namespace AimsharpWow.Modules
                 }
                 Aimsharp.PrintMessage("Queued Intimidation");
                 Aimsharp.Cast("Intimidation");
+                return true;
+            }
+            #endregion
+
+            #region Out of Combat Spells
+            if (SpellID1 == 324631 && CanCastFleshcraft("player") && !Moving)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Fleshcraft - " + SpellID1, Color.Purple);
+                }
+                Aimsharp.Cast("Fleshcraft");
                 return true;
             }
             #endregion
