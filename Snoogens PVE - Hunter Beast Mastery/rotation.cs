@@ -15,7 +15,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "FreezingTrap", "TarTrap", "Turtle", "Intimidation", "NoInterrupts" };
+        private List<string> m_IngameCommandsList = new List<string> { "FreezingTrap", "TarTrap", "Turtle", "Intimidation", "NoInterrupts", "WildSpirits", "ResonatingArrow", };
         private List<string> m_DebuffsList = new List<string> {  };
         private List<string> m_BuffsList = new List<string> { "Mend Pet", "Flayer's Mark", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
@@ -540,6 +540,8 @@ namespace AimsharpWow.Modules
             Macros.Add("FreezingTrapOff", "/" + FiveLetters + " FreezingTrap");
             Macros.Add("TarTrapOff", "/" + FiveLetters + " TarTrap");
             Macros.Add("IntimidationOff", "/" + FiveLetters + " Intimidation");
+            Macros.Add("WildSpiritsOff", "/" + FiveLetters + " WildSpirits");
+            Macros.Add("ResonatingArrowOff", "/" + FiveLetters + " ResonatingArrow");
 
             Macros.Add("SpiritMendPlayer", "/cast [@player] Spirit Mend");
             Macros.Add("SpiritMendPet", "/cast [@pet] Spirit Mend");
@@ -593,6 +595,8 @@ namespace AimsharpWow.Modules
 
             CustomFunctions.Add("HekiliWait", "if HekiliDisplayPrimary.Recommendations[1].wait ~= nil and HekiliDisplayPrimary.Recommendations[1].wait * 1000 > 0 then return math.floor(HekiliDisplayPrimary.Recommendations[1].wait * 1000) end return 0");
 
+            CustomFunctions.Add("PhialCount", "local count = GetItemCount(177278) if count ~= nil then return count end return 0");
+
         }
         #endregion
 
@@ -640,6 +644,8 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("/xxxxx FreezingTrap - Casts Freezing Trap @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx TarTrap - Casts Tar Trap @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Intimidation - Casts Intimidation @ Target next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx WildSpirits - Casts Wild Spirits @ next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx ResonatingArrow - Casts Resonating Arrow @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("-----", Color.Black);
 
             #region Racial Spells
@@ -961,6 +967,48 @@ namespace AimsharpWow.Modules
                     Aimsharp.PrintMessage("Casting Intimidation through queue toggle", Color.Purple);
                 }
                 Aimsharp.Cast("Intimidation");
+                return true;
+            }
+
+            //Queue Wild Spirits
+            if (Aimsharp.IsCustomCodeOn("WildSpirits") && Aimsharp.SpellCooldown("Wild Spirits") - Aimsharp.GCD() > 2000)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Wild Spirits Queue", Color.Purple);
+                }
+                Aimsharp.Cast("WildSpiritsOff");
+                return true;
+            }
+
+            if (Aimsharp.IsCustomCodeOn("WildSpirits") && CanCastWildSpirits("player"))
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Wild Spirits through queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("Wild Spirits");
+                return true;
+            }
+
+            //Queue Resonating Arrow
+            if (Aimsharp.IsCustomCodeOn("ResonatingArrow") && Aimsharp.SpellCooldown("Resonating Arrow") - Aimsharp.GCD() > 2000)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Resonating Arrow Queue", Color.Purple);
+                }
+                Aimsharp.Cast("ResonatingArrowOff");
+                return true;
+            }
+
+            if (Aimsharp.IsCustomCodeOn("ResonatingArrow") && CanCastResonatingArrow("player"))
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Resonating Arrow through queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("Resonating Arrow");
                 return true;
             }
             #endregion
@@ -1374,7 +1422,7 @@ namespace AimsharpWow.Modules
             int SpellID1 = Aimsharp.CustomFunction("HekiliID1");
 
             bool Debug = GetCheckBox("Debug:") == true;
-
+            int PhialCount = Aimsharp.CustomFunction("PhialCount");
             bool TargetInCombat = Aimsharp.InCombat("target") || SpecialUnitList.Contains(Aimsharp.UnitID("target")) || !InstanceIDList.Contains(Aimsharp.GetMapID());
             bool Moving = Aimsharp.PlayerIsMoving();
             #endregion
@@ -1478,6 +1526,48 @@ namespace AimsharpWow.Modules
                 Aimsharp.Cast("Intimidation");
                 return true;
             }
+
+            //Queue Wild Spirits
+            if (Aimsharp.IsCustomCodeOn("WildSpirits") && Aimsharp.SpellCooldown("Wild Spirits") - Aimsharp.GCD() > 2000)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Wild Spirits Queue", Color.Purple);
+                }
+                Aimsharp.Cast("WildSpiritsOff");
+                return true;
+            }
+
+            if (Aimsharp.IsCustomCodeOn("WildSpirits") && CanCastWildSpirits("player"))
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Wild Spirits through queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("Wild Spirits");
+                return true;
+            }
+
+            //Queue Resonating Arrow
+            if (Aimsharp.IsCustomCodeOn("ResonatingArrow") && Aimsharp.SpellCooldown("Resonating Arrow") - Aimsharp.GCD() > 2000)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Resonating Arrow Queue", Color.Purple);
+                }
+                Aimsharp.Cast("ResonatingArrowOff");
+                return true;
+            }
+
+            if (Aimsharp.IsCustomCodeOn("ResonatingArrow") && CanCastResonatingArrow("player"))
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Resonating Arrow through queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("Resonating Arrow");
+                return true;
+            }
             #endregion
 
             #region Out of Combat Spells
@@ -1488,6 +1578,17 @@ namespace AimsharpWow.Modules
                     Aimsharp.PrintMessage("Casting Fleshcraft - " + SpellID1, Color.Purple);
                 }
                 Aimsharp.Cast("Fleshcraft");
+                return true;
+            }
+
+            //Auto Call Steward
+            if (PhialCount <= 0 && Aimsharp.CanCast("Summon Steward", "player") && Aimsharp.GetMapID() != 2286 && Aimsharp.GetMapID() != 1666 && Aimsharp.GetMapID() != 1667 && Aimsharp.GetMapID() != 1668 && Aimsharp.CastingID("player") == 0)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Summon Steward due to Phial Count being: " + PhialCount, Color.Purple);
+                }
+                Aimsharp.Cast("Summon Steward");
                 return true;
             }
             #endregion
