@@ -474,6 +474,7 @@ namespace AimsharpWow.Modules
             Macros.Add("DistractP", "/cast [@player] Distract");
             Macros.Add("BlindOff", "/" + FiveLetters + " Blind");
             Macros.Add("SapOff", "/" + FiveLetters + " Sap");
+            Macros.Add("KidneyShotOff", "/" + FiveLetters + " KidneyShot");
 
             Macros.Add("GarroteMO", "/cast [@mouseover] Garrote");
             Macros.Add("RuptureMO", "/cast [@mouseover] Rupture");
@@ -1000,6 +1001,48 @@ namespace AimsharpWow.Modules
                 #region Kidney Shot
                 if (KidneyShot)
                 {
+                    if (SpellID1 == 1329 && CanCastMutilate("target"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Mutilate - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Mutilate");
+                        return true;
+                    }
+
+                    if (SpellID1 == 703 && CanCastGarrote("target"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Garrote - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Garrote");
+                        return true;
+                    }
+
+                    else
+                    {
+                        if (CanCastGarrote("target") && (Aimsharp.PlayerSecondaryPower() == 4 && !TalentDeeperStratagem() || TalentDeeperStratagem() && Aimsharp.PlayerSecondaryPower() == 5))
+                        {
+                            Aimsharp.Cast("Garrote");
+                            if (Debug)
+                            {
+                                Aimsharp.PrintMessage("Casting Garrote for Kidney Shot - Combo Points: " + Aimsharp.PlayerSecondaryPower(), Color.Purple);
+                            }
+                            return true;
+                        }
+
+                        if (CanCastMutilate("target") && (Aimsharp.PlayerSecondaryPower() <= 3 && !TalentDeeperStratagem() || TalentDeeperStratagem() && Aimsharp.PlayerSecondaryPower() <= 4))
+                        {
+                            Aimsharp.Cast("Mutilate");
+                            if (Debug)
+                            {
+                                Aimsharp.PrintMessage("Casting Mutilate for Kidney Shot - Combo Points: " + Aimsharp.PlayerSecondaryPower(), Color.Purple);
+                            }
+                            return true;
+                        }
+                    }
 
                 }
                 #endregion
