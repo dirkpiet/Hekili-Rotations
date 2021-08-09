@@ -8,3 +8,5 @@
 100% SimC Accurate Rotation 
 ### [Warrior: Arms](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Warrior%20Arms)  
 100% SimC Accurate Rotation 
+### [Warrior: Fury](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Warrior%20Fury)  
+100% SimC Accurate Rotation 
