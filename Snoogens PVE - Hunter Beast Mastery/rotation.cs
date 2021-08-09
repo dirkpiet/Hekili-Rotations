@@ -547,6 +547,7 @@ namespace AimsharpWow.Modules
             Macros.Add("SpiritMendPet", "/cast [@pet] Spirit Mend");
             Macros.Add("KillShotSQW", "/cqs\\n/cast Kill Shot");
             Macros.Add("BarbedShotSQW", "/cqs\\n/cast Barbed Shot");
+            Macros.Add("TranqMO", "/cast [@mouseover] Tranquilizing Shot");
 
         }
 
@@ -597,6 +598,9 @@ namespace AimsharpWow.Modules
 
             CustomFunctions.Add("PhialCount", "local count = GetItemCount(177278) if count ~= nil then return count end return 0");
 
+            CustomFunctions.Add("TranqBuffCheck", "local markcheck = 0; if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Tranquilizing Shot','mouseover') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType  = UnitAura('mouseover', y, \"RAID\") if debuffType == '' or debuffType == 'Magic' then markcheck = markcheck + 2 end end return markcheck end return 0");
+
+
         }
         #endregion
 
@@ -613,6 +617,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Kick channels after milliseconds", 50, 1500, 500));
             Settings.Add(new Setting("General"));
             Settings.Add(new Setting("Auto Start Combat:", true));
+            Settings.Add(new Setting("Tranquilizing Shot Mouseover:", true));
             Settings.Add(new Setting("Auto Aspect of the Turtle @ HP%", 0, 100, 20));
             Settings.Add(new Setting("Auto Exhilaration @ HP%", 0, 100, 40));
             Settings.Add(new Setting("Auto Spirit Heal Player @ HP%", 0, 100, 60));
@@ -766,6 +771,8 @@ namespace AimsharpWow.Modules
             bool Enemy = Aimsharp.TargetIsEnemy();
             int EnemiesInMelee = Aimsharp.EnemiesInMelee();
             bool Moving = Aimsharp.PlayerIsMoving();
+            bool MOTranq = GetCheckBox("Tranquilizing Shot Mouseover:") == true;
+            int TranqBuffMO = Aimsharp.CustomFunction("TranqBuffCheck");
 
             bool TargetInCombat = Aimsharp.InCombat("target") || SpecialUnitList.Contains(Aimsharp.UnitID("target")) || !InstanceIDList.Contains(Aimsharp.GetMapID());
             #endregion
@@ -1026,6 +1033,20 @@ namespace AimsharpWow.Modules
 
             if (Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat && Wait <= 200)
             {
+                //Soothe Mouseover
+                if (CanCastTranquilizingShot("mouseover"))
+                {
+                    if (MOTranq && TranqBuffMO == 3)
+                    {
+                        Aimsharp.Cast("TranqMO");
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Tranquilizing Shot (Mouseover)", Color.Purple);
+                        }
+                        return true;
+                    }
+                }
+
                 if (Aimsharp.Range("target") <= 42)
                 {
                     #region Trinkets
