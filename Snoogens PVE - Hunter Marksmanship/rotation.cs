@@ -445,8 +445,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Auto Aspect of the Turtle @ HP%", 0, 100, 20));
             Settings.Add(new Setting("Auto Exhilaration @ HP%", 0, 100, 40));
             Settings.Add(new Setting("Auto Mend Pet @ HP%", 0, 100, 60));
-
-            Settings.Add(new Setting(" "));
+            Settings.Add(new Setting("Misc"));
             Settings.Add(new Setting("Debug:", false));
 
         }
@@ -454,7 +453,10 @@ namespace AimsharpWow.Modules
         public override void Initialize()
         {
 
-            Aimsharp.DebugMode();
+            if (GetCheckBox("Debug:") == true)
+            {
+                Aimsharp.DebugMode();
+            }
 
 
             Aimsharp.Latency = GetSlider("Ingame World Latency:");

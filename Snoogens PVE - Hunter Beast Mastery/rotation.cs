@@ -624,8 +624,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Auto Spirit Heal Player @ HP%", 0, 100, 60));
             Settings.Add(new Setting("Auto Spirit Heal Pet @ HP%", 0, 100, 30));
             Settings.Add(new Setting("Auto Mend Pet @ HP%", 0, 100, 60));
-
-            Settings.Add(new Setting(" "));
+            Settings.Add(new Setting("Misc"));
             Settings.Add(new Setting("Debug:", false));
 
         }
@@ -633,7 +632,10 @@ namespace AimsharpWow.Modules
         public override void Initialize()
         {
 
-            Aimsharp.DebugMode();
+            if (GetCheckBox("Debug:") == true)
+            {
+                Aimsharp.DebugMode();
+            }
 
 
             Aimsharp.Latency = GetSlider("Ingame World Latency:");

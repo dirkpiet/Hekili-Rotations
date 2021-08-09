@@ -561,7 +561,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Assassination"));
             Settings.Add(new Setting("Spread Garrote with Mouseover:", false));
             Settings.Add(new Setting("Spread Rupture with Mouseover:", false));
-            Settings.Add(new Setting(" "));
+            Settings.Add(new Setting("Misc"));
             Settings.Add(new Setting("Debug:", false));
 
         }

@@ -282,7 +282,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Auto Barkskin @ HP%", 0, 100, 40));
             Settings.Add(new Setting("Auto Survival Instincts @ HP%", 0, 100, 35));
             Settings.Add(new Setting("Auto Regrowth @ HP%", 0, 100, 50));
-            Settings.Add(new Setting(" "));
+            Settings.Add(new Setting("Misc"));
             Settings.Add(new Setting("Debug:", false));
 
         }
