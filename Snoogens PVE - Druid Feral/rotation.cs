@@ -13,7 +13,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "MightyBash", "MassEntanglement", "NoDecurse", "Maim", "NoInterrupts" };
+        private List<string> m_IngameCommandsList = new List<string> { "MightyBash", "MassEntanglement", "NoDecurse", "Maim", "NoInterrupts", "NoCycle", };
         private List<string> m_DebuffsList = new List<string> { "Rake", };
         private List<string> m_BuffsList = new List<string> { "Predatory Swiftness", "Prowl", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
@@ -250,6 +250,8 @@ namespace AimsharpWow.Modules
 
             CustomFunctions.Add("HekiliWait", "if HekiliDisplayPrimary.Recommendations[1].wait ~= nil and HekiliDisplayPrimary.Recommendations[1].wait * 1000 > 0 then return math.floor(HekiliDisplayPrimary.Recommendations[1].wait * 1000) end return 0");
 
+            CustomFunctions.Add("HekiliCycle", "if HekiliDisplayPrimary.Recommendations[1].indicator ~= nil and HekiliDisplayPrimary.Recommendations[1].indicator == 'cycle' then return 1 end return 0");
+
             CustomFunctions.Add("TargetIsMouseover", "if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitExists('target') and UnitIsDead('target') ~= true and UnitIsUnit('mouseover', 'target') then return 1 end; return 0");
 
             CustomFunctions.Add("IsTargeting", "if SpellIsTargeting()\r\n then return 1\r\n end\r\n return 0");
@@ -305,6 +307,7 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("- General -", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoInterrupts - Disables Interrupts", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoDecurse - Disables Decurse", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx NoCycle - Disables Target Cycle", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx MightyBash - Casts Mighty Bash @ Target on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx MassEntanglement - Casts Mass Entanglement @ Target on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Maim - Casts Maim @ Target on the next GCD", Color.Yellow);
@@ -629,7 +632,17 @@ namespace AimsharpWow.Modules
 
             #region Auto Target
             //Auto Target
-            if ((!Enemy || Enemy && !TargetAlive()) && EnemiesInMelee > 0)
+            //Hekili Cycle
+            if (Aimsharp.CustomFunction("HekiliCycle") == 1 && EnemiesInMelee > 1)
+            {
+                System.Threading.Thread.Sleep(50);
+                Aimsharp.Cast("TargetEnemy");
+                System.Threading.Thread.Sleep(50);
+                return true;
+            }
+
+            //Auto Target
+            if ((!Enemy || Enemy && !TargetAlive() || Enemy && !TargetInCombat) && EnemiesInMelee > 0)
             {
                 System.Threading.Thread.Sleep(50);
                 Aimsharp.Cast("TargetEnemy");
