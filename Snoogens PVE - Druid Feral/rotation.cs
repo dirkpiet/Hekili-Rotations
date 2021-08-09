@@ -709,7 +709,7 @@ namespace AimsharpWow.Modules
                 //Soothe Mouseover
                 if (Aimsharp.CanCast("Soothe", "mouseover", true, true))
                 {
-                    if (MOSoothe && EnrageBuffMO == 1)
+                    if (MOSoothe && EnrageBuffMO == 3)
                     {
                         Aimsharp.Cast("SootheMO");
                         if (Debug)
