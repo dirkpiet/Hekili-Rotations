@@ -13,7 +13,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "MightyBash", "MassEntanglement", "NoDecurse", "NoInterrupts" };
+        private List<string> m_IngameCommandsList = new List<string> { "MightyBash", "MassEntanglement", "NoDecurse", "Maim", "NoInterrupts" };
         private List<string> m_DebuffsList = new List<string> { "Rake", };
         private List<string> m_BuffsList = new List<string> { "Predatory Swiftness", "Prowl", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
@@ -30,7 +30,7 @@ namespace AimsharpWow.Modules
             "Rake", "Shred", "Savage Roar", "Ferocious Bite", "Rip", "Tiger's Fury", "Berserk",
             "Survival Instincts", "Maim", "Renewal", "Mass Entanglement", "Swipe", "Thrash", "Incarnation: King of the Jungle", "Brutal Slash",
             "Feral Frenzy", "Heart of the Wild", "Remove Corruption", "Summon Steward", "Mighty Bash", "Wild Charge", "Tiger Dash", "Prowl",
-            "Cat Form", "Primal Wrath", "Moonkin Form", "Sunfire", "Barkskin", "Regrowth", "Starsurge", "Moonfire", "Fleshcraft",
+            "Cat Form", "Primal Wrath", "Moonkin Form", "Sunfire", "Barkskin", "Regrowth", "Starsurge", "Moonfire", "Fleshcraft", "Soothe",
 
         };
 
@@ -180,11 +180,12 @@ namespace AimsharpWow.Modules
 
             //Mouseover Macros
             Macros.Add("RakeMO", "/cast [@mouseover] Rake");
+            Macros.Add("SootheMO", "/cast [@mouseover] Soothe");
 
             //Queues
             Macros.Add("MightyBashOff", "/" + FiveLetters + " MightyBash");
             Macros.Add("MassEntanglementOff", "/" + FiveLetters + " MassEntanglement");
-
+            Macros.Add("MaimOff", "/" + FiveLetters + " Maim");
 
 
         }
@@ -233,6 +234,8 @@ namespace AimsharpWow.Modules
 
             CustomFunctions.Add("RakeDebuffCheck", "local markcheck = 0; if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Rake','mouseover') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,_,_,_,source  = UnitDebuff('mouseover', y) if name == 'Rake' then markcheck = markcheck + 2 end end return markcheck end return 0");
 
+            CustomFunctions.Add("EnrageBuffCheck", "local markcheck = 0; if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Soothe','mouseover') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType  = UnitAura('mouseover', y) if debuffType == '' then markcheck = markcheck + 2 end end return markcheck end return 0");
+
             CustomFunctions.Add("CooldownsToggleCheck", "local loading, finished = IsAddOnLoaded(\"Hekili\") if loading == true and finished == true then local cooldowns = Hekili:GetToggleState(\"cooldowns\") if cooldowns == true then return 1 else if cooldowns == false then return 2 end end end return 0");
             
             CustomFunctions.Add("UnitIsDead", "if UnitIsDead(\"target\") ~= nil and UnitIsDead(\"target\") == true then return 1 end; if UnitIsDead(\"target\") ~= nil and UnitIsDead(\"target\") == false then return 2 end; return 0");
@@ -271,6 +274,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Auto Start Combat:", true));
             Settings.Add(new Setting("Prowl Out of Combat:", true));
             Settings.Add(new Setting("Spread Rake with Mouseover:", true));
+            Settings.Add(new Setting("Soothe Mouseover:", true));
             Settings.Add(new Setting("Auto Renewal @ HP%", 0, 100, 20));
             Settings.Add(new Setting("Auto Barkskin @ HP%", 0, 100, 40));
             Settings.Add(new Setting("Auto Survival Instincts @ HP%", 0, 100, 35));
@@ -302,6 +306,7 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("/xxxxx NoDecurse - Disables Decurse", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx MightyBash - Casts Mighty Bash @ Target on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx MassEntanglement - Casts Mass Entanglement @ Target on the next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx Maim - Casts Maim @ Target on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("-----", Color.Black);
 
             #region Racial Spells
@@ -409,6 +414,7 @@ namespace AimsharpWow.Modules
 
             int DiseasePoisonCheck = Aimsharp.CustomFunction("DiseasePoisonCheck");
             int MarkDebuffMO = Aimsharp.CustomFunction("RakeDebuffCheck");
+            int EnrageBuffMO = Aimsharp.CustomFunction("EnrageBuffCheck");
             int CooldownsToggle = Aimsharp.CustomFunction("CooldownsToggleCheck");
 
             bool NoDecurse = Aimsharp.IsCustomCodeOn("NoDecurse");
@@ -418,6 +424,7 @@ namespace AimsharpWow.Modules
 
             bool Debug = GetCheckBox("Debug:") == true;
             bool MOMark = GetCheckBox("Spread Rake with Mouseover:") == true;
+            bool MOSoothe = GetCheckBox("Soothe Mouseover:") == true;
             bool UseTrinketsCD = GetCheckBox("Use Trinkets on CD, dont wait for Hekili:") == true;
 
             bool IsInterruptable = Aimsharp.IsInterruptable("target");
@@ -630,7 +637,6 @@ namespace AimsharpWow.Modules
             }
             #endregion
 
-
             if (Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat)
             {
                 #region Queues
@@ -639,7 +645,7 @@ namespace AimsharpWow.Modules
                 {
                     if (Debug)
                     {
-                        Aimsharp.PrintMessage("Turning Off Mighty Bash queue toggle - OOC", Color.Purple);
+                        Aimsharp.PrintMessage("Turning Off Mighty Bash queue toggle", Color.Purple);
                     }
                     Aimsharp.Cast("MightyBashOff");
                     return true;
@@ -649,9 +655,8 @@ namespace AimsharpWow.Modules
                 {
                     if (Debug)
                     {
-                        Aimsharp.PrintMessage("Casting Mighty Bash through queue toggle - OOC", Color.Purple);
+                        Aimsharp.PrintMessage("Casting Mighty Bash through queue toggle", Color.Purple);
                     }
-                    Aimsharp.PrintMessage("Queued Mighty Bash");
                     Aimsharp.Cast("Mighty Bash");
                     return true;
                 }
@@ -661,7 +666,7 @@ namespace AimsharpWow.Modules
                 {
                     if (Debug)
                     {
-                        Aimsharp.PrintMessage("Turning Off Mass Entanglement queue toggle - OOC", Color.Purple);
+                        Aimsharp.PrintMessage("Turning Off Mass Entanglement queue toggle", Color.Purple);
                     }
                     Aimsharp.Cast("MassEntanglementOff");
                     return true;
@@ -671,15 +676,50 @@ namespace AimsharpWow.Modules
                 {
                     if (Debug)
                     {
-                        Aimsharp.PrintMessage("Casting Mass Entanglement through queue toggle - OOC", Color.Purple);
+                        Aimsharp.PrintMessage("Casting Mass Entanglement through queue toggle", Color.Purple);
                     }
-                    Aimsharp.PrintMessage("Queued Mass Entanglement");
                     Aimsharp.Cast("Mass Entanglement");
+                    return true;
+                }
+
+                bool Maim = Aimsharp.IsCustomCodeOn("Maim");
+                //Queue Mighty Bash
+                if (Maim && Aimsharp.SpellCooldown("Maim") - Aimsharp.GCD() > 2000)
+                {
+                    if (Debug)
+                    {
+                        Aimsharp.PrintMessage("Turning Off Maim queue toggle", Color.Purple);
+                    }
+                    Aimsharp.Cast("MaimOff");
+                    return true;
+                }
+
+                if (Maim && Aimsharp.CanCast("Maim", "target", true, true))
+                {
+                    if (Debug)
+                    {
+                        Aimsharp.PrintMessage("Casting Maim through queue toggle", Color.Purple);
+                    }
+                    Aimsharp.Cast("Maim");
                     return true;
                 }
                 #endregion
 
                 #region Mouseover Spells
+                //Soothe Mouseover
+                if (Aimsharp.CanCast("Soothe", "mouseover", true, true))
+                {
+                    if (MOSoothe && EnrageBuffMO == 3)
+                    {
+                        Aimsharp.Cast("SootheMO");
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Soothe (Mouseover)", Color.Purple);
+                        }
+                        return true;
+                    }
+                }
+
                 //Rake Mouseover Spread
                 if (Aimsharp.CanCast("Rake", "mouseover", true, false) && Aimsharp.HasDebuff("Rake", "target", true) && Aimsharp.CustomFunction("TargetIsMouseover") == 0)
                 {
@@ -1305,7 +1345,6 @@ namespace AimsharpWow.Modules
                 {
                     Aimsharp.PrintMessage("Casting Mighty Bash through queue toggle - OOC", Color.Purple);
                 }
-                Aimsharp.PrintMessage("Queued Mighty Bash");
                 Aimsharp.Cast("Mighty Bash");
                 return true;
             }
@@ -1327,8 +1366,29 @@ namespace AimsharpWow.Modules
                 {
                     Aimsharp.PrintMessage("Casting Mass Entanglement through queue toggle - OOC", Color.Purple);
                 }
-                Aimsharp.PrintMessage("Queued Mass Entanglement");
                 Aimsharp.Cast("Mass Entanglement");
+                return true;
+            }
+
+            bool Maim = Aimsharp.IsCustomCodeOn("Maim");
+            //Queue Mighty Bash
+            if (Maim && Aimsharp.SpellCooldown("Maim") - Aimsharp.GCD() > 2000)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Maim queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("MaimOff");
+                return true;
+            }
+
+            if (Maim && Aimsharp.CanCast("Maim", "target", true, true))
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Maim through queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("Maim");
                 return true;
             }
             #endregion
