@@ -234,7 +234,7 @@ namespace AimsharpWow.Modules
 
             CustomFunctions.Add("RakeDebuffCheck", "local markcheck = 0; if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Rake','mouseover') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,_,_,_,source  = UnitDebuff('mouseover', y) if name == 'Rake' then markcheck = markcheck + 2 end end return markcheck end return 0");
 
-            CustomFunctions.Add("EnrageBuffCheck", "local markcheck = 0; if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Soothe','mouseover') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType  = UnitAura('mouseover', y) if debuffType == '' then markcheck = markcheck + 2 end end return markcheck end return 0");
+            CustomFunctions.Add("EnrageBuffCheck", "local markcheck = 0; if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Soothe','mouseover') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType  = UnitAura('mouseover', y, \"RAID\") if debuffType == '' then markcheck = markcheck + 2 end end return markcheck end return 0");
 
             CustomFunctions.Add("CooldownsToggleCheck", "local loading, finished = IsAddOnLoaded(\"Hekili\") if loading == true and finished == true then local cooldowns = Hekili:GetToggleState(\"cooldowns\") if cooldowns == true then return 1 else if cooldowns == false then return 2 end end end return 0");
             
@@ -275,6 +275,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Prowl Out of Combat:", true));
             Settings.Add(new Setting("Spread Rake with Mouseover:", true));
             Settings.Add(new Setting("Soothe Mouseover:", true));
+            Settings.Add(new Setting("Maim Queue - Dont wait for Max CP", false));
             Settings.Add(new Setting("Auto Renewal @ HP%", 0, 100, 20));
             Settings.Add(new Setting("Auto Barkskin @ HP%", 0, 100, 40));
             Settings.Add(new Setting("Auto Survival Instincts @ HP%", 0, 100, 35));
@@ -694,7 +695,7 @@ namespace AimsharpWow.Modules
                     return true;
                 }
 
-                if (Maim && Aimsharp.CanCast("Maim", "target", true, true))
+                if (Maim && Aimsharp.CanCast("Maim", "target", true, true) && (Aimsharp.PlayerSecondaryPower() >= 5 || GetCheckBox("Maim Queue - Dont wait for Max CP")))
                 {
                     if (Debug)
                     {
