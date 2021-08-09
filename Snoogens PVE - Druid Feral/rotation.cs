@@ -275,7 +275,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("General"));
             Settings.Add(new Setting("Auto Start Combat:", true));
             Settings.Add(new Setting("Prowl Out of Combat:", true));
-            Settings.Add(new Setting("Spread Rake with Mouseover:", true));
+            Settings.Add(new Setting("Spread Rake with Mouseover:", false));
             Settings.Add(new Setting("Soothe Mouseover:", true));
             Settings.Add(new Setting("Maim Queue - Dont wait for Max CP", false));
             Settings.Add(new Setting("Auto Renewal @ HP%", 0, 100, 20));
