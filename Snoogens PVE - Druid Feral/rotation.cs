@@ -30,7 +30,7 @@ namespace AimsharpWow.Modules
             "Rake", "Shred", "Savage Roar", "Ferocious Bite", "Rip", "Tiger's Fury", "Berserk",
             "Survival Instincts", "Maim", "Renewal", "Mass Entanglement", "Swipe", "Thrash", "Incarnation: King of the Jungle", "Brutal Slash",
             "Feral Frenzy", "Heart of the Wild", "Remove Corruption", "Summon Steward", "Mighty Bash", "Wild Charge", "Tiger Dash", "Prowl",
-            "Cat Form", "Primal Wrath", "Moonkin Form", "Sunfire", "Barkskin", "Regrowth", "Starsurge", "Moonfire",
+            "Cat Form", "Primal Wrath", "Moonkin Form", "Sunfire", "Barkskin", "Regrowth", "Starsurge", "Moonfire", "Fleshcraft",
 
         };
 
@@ -405,6 +405,7 @@ namespace AimsharpWow.Modules
             #region Declarations
             int SpellID1 = Aimsharp.CustomFunction("HekiliID1");
             int Wait = Aimsharp.CustomFunction("HekiliWait");
+            bool Moving = Aimsharp.PlayerIsMoving();
 
             int DiseasePoisonCheck = Aimsharp.CustomFunction("DiseasePoisonCheck");
             int MarkDebuffMO = Aimsharp.CustomFunction("RakeDebuffCheck");
@@ -952,6 +953,16 @@ namespace AimsharpWow.Modules
                         Aimsharp.Cast("Empower Bond");
                         return true;
                     }
+
+                    if (SpellID1 == 324631 && Aimsharp.CanCast("Fleshcraft", "player", false, true) && !Moving)
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Fleshcraft - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Fleshcraft");
+                        return true;
+                    }
                     #endregion
 
                     #region General Spells - No GCD
@@ -1244,7 +1255,7 @@ namespace AimsharpWow.Modules
         {
             #region Declarations
             int SpellID1 = Aimsharp.CustomFunction("HekiliID1");
-
+            bool Moving = Aimsharp.PlayerIsMoving();
             int PhialCount = Aimsharp.CustomFunction("PhialCount");
             bool MightyBash = Aimsharp.IsCustomCodeOn("MightyBash");
             bool MassEntanglement = Aimsharp.IsCustomCodeOn("MassEntanglement");
@@ -1323,6 +1334,17 @@ namespace AimsharpWow.Modules
             #endregion
 
             #region Out of Combat Spells
+            //Auto Fleshcraft
+            if (SpellID1 == 324631 && Aimsharp.CanCast("Fleshcraft", "player", false, true) && !Moving && !Aimsharp.HasBuff("Prowl", "player", true))
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Fleshcraft - " + SpellID1, Color.Purple);
+                }
+                Aimsharp.Cast("Fleshcraft");
+                return true;
+            }
+
             //Prowl Out of Combat
             if (SpellID1 == 5215 && Aimsharp.CanCast("Prowl", "player", false, true) && ProwlOOC)
             {
