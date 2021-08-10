@@ -760,7 +760,7 @@ namespace AimsharpWow.Modules
                 }
                 #endregion
 
-                if (Aimsharp.Range("target") <= 8 && Wait <= 200)
+                if (Aimsharp.Range("target") <= 8 && Wait <= 200 && !Maim)
                 {
                     #region Trinkets
                     if (CooldownsToggle == 1 && UseTrinketsCD && Aimsharp.CanUseTrinket(0))
