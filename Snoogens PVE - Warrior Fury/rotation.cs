@@ -260,7 +260,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Auto Enraged Regeneration @ HP%", 0, 100, 10));
             Settings.Add(new Setting("Spear of Bastion Cast:", m_CastingList, "Player"));
             Settings.Add(new Setting("Door of Shadows Cast:", m_CastingList, "Manual"));
-            Settings.Add(new Setting(" "));
+            Settings.Add(new Setting("Misc"));
             Settings.Add(new Setting("Debug:", false));
 
         }

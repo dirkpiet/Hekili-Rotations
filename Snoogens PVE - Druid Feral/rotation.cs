@@ -275,14 +275,14 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("General"));
             Settings.Add(new Setting("Auto Start Combat:", true));
             Settings.Add(new Setting("Prowl Out of Combat:", true));
-            Settings.Add(new Setting("Spread Rake with Mouseover:", true));
+            Settings.Add(new Setting("Spread Rake with Mouseover:", false));
             Settings.Add(new Setting("Soothe Mouseover:", true));
             Settings.Add(new Setting("Maim Queue - Dont wait for Max CP", false));
             Settings.Add(new Setting("Auto Renewal @ HP%", 0, 100, 20));
             Settings.Add(new Setting("Auto Barkskin @ HP%", 0, 100, 40));
             Settings.Add(new Setting("Auto Survival Instincts @ HP%", 0, 100, 35));
             Settings.Add(new Setting("Auto Regrowth @ HP%", 0, 100, 50));
-            Settings.Add(new Setting(" "));
+            Settings.Add(new Setting("Misc"));
             Settings.Add(new Setting("Debug:", false));
 
         }
@@ -585,7 +585,7 @@ namespace AimsharpWow.Modules
             #endregion
 
             #region Remove Corruption
-            if (!NoDecurse && DiseasePoisonCheck > 0)
+            if (!NoDecurse && DiseasePoisonCheck > 0 && Aimsharp.GroupSize() <= 5 && Aimsharp.LastCast() != "Remove Corruption")
             {
                 PartyDict.Clear();
                 PartyDict.Add("player", Aimsharp.Health("player"));
@@ -749,7 +749,18 @@ namespace AimsharpWow.Modules
                 }
                 #endregion
 
-                if (Aimsharp.Range("target") <= 8 && Wait <= 200)
+                #region Maim Max CP
+                if (Maim && !GetCheckBox("Maim Queue - Dont wait for Max CP"))
+                {
+                    if (Aimsharp.CanCast("Shred", "target", true, true) && Aimsharp.PlayerSecondaryPower() < 5)
+                    {
+                        Aimsharp.Cast("Shred");
+                        return true;
+                    }
+                }
+                #endregion
+
+                if (Aimsharp.Range("target") <= 8 && Wait <= 200 && !Maim)
                 {
                     #region Trinkets
                     if (CooldownsToggle == 1 && UseTrinketsCD && Aimsharp.CanUseTrinket(0))

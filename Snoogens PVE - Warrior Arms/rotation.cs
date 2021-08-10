@@ -269,7 +269,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Spear of Bastion Cast:", m_CastingList, "Player"));
             Settings.Add(new Setting("Ravager Cast:", m_CastingList, "Player"));
             Settings.Add(new Setting("Door of Shadows Cast:", m_CastingList, "Manual"));
-            Settings.Add(new Setting(" "));
+            Settings.Add(new Setting("Misc"));
             Settings.Add(new Setting("Debug:", false));
 
         }

@@ -561,7 +561,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Assassination"));
             Settings.Add(new Setting("Spread Garrote with Mouseover:", false));
             Settings.Add(new Setting("Spread Rupture with Mouseover:", false));
-            Settings.Add(new Setting(" "));
+            Settings.Add(new Setting("Misc"));
             Settings.Add(new Setting("Debug:", false));
 
         }
@@ -1013,7 +1013,7 @@ namespace AimsharpWow.Modules
                 #endregion
 
                 #region Kidney Shot
-                if (KidneyShot)
+                if (KidneyShot && !GetCheckBox("Kidney Shot Queue - Dont wait for Max CP"))
                 {
                     if (SpellID1 == 1329 && CanCastMutilate("target"))
                     {
