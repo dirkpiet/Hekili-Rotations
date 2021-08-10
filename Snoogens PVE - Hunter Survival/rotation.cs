@@ -7,7 +7,7 @@ using AimsharpWow.API;
 
 namespace AimsharpWow.Modules
 {
-    public class SnoogensPVEHunterBeastMastery : Rotation
+    public class SnoogensPVEHunterSurvival : Rotation
     {
         #region Variables
         string FiveLetters;
@@ -15,220 +15,11 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "FreezingTrap", "TarTrap", "Turtle", "Intimidation", "NoInterrupts", "WildSpirits", "ResonatingArrow", "BindingShot", "Flare",};
+        private List<string> m_IngameCommandsList = new List<string> { "FreezingTrap", "TarTrap", "Turtle", "Intimidation", "NoInterrupts", "WildSpirits", "ResonatingArrow", "BindingShot", "Flare", };
         private List<string> m_DebuffsList = new List<string> {  };
-        private List<string> m_BuffsList = new List<string> { "Mend Pet", "Flayer's Mark", };
+        private List<string> m_BuffsList = new List<string> { "Mend Pet", "Flayer's Mark", "Aspect of the Eagle", "Viper's Venom", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
         private List<string> m_ItemsList = new List<string> { "Healthstone" };
-
-        private List<string> PVECC = new List<string>
-        {
-        "Crushing Strike",
-        "Fearsome Howl",
-        "River's Grasp",
-        "River's Grasp",
-        "Crushing Slam",
-        "Torture",
-        "Gauntlet Smash",
-        "Bloodcurdling Howl",
-        "Spite",
-        "Chain Burst",
-        "Shattered Destiny",
-        "Stonecrash",
-        "Sundering Smash",
-        "Earthen Grasp",
-        "Terrifying Shriek",
-        "Ten of Towers",
-        "Ten of Towers",
-        "Chains of Eternity",
-        "The Jailer's Gaze",
-        "Overpower",
-        "Unshakeable Dread",
-        "Annihilating Smash",
-        "Pulled Down",
-        "Wings of Rage",
-        "Wings of Rage",
-        "Reverberating Refrain",
-        "Reverberating Refrain",
-        "Spite",
-        "Spite",
-        "Spite",
-        "Hellscream",
-        "Spiked Ball",
-        "Spiked",
-        "Spiked",
-        "Suppression Field",
-        "Disintegration",
-        "Oblivion's Echo",
-        "Oblivion's Echo",
-        "Return of the Damned",
-        "Blasphemy",
-        "Merciless",
-        "Crippling Defeat",
-        "Terror Orb",
-        "Arcane Stasiswave",
-        "Subdue",
-        "Doubt",
-        "Crushing Doubt",
-        "Insidious Anxieties",
-        "Headbutt",
-        "Horrified",
-        "Return to Stone",
-        "Stasis Trap",
-        "Possession",
-        "Warped Cognition",
-        "Waltz of Blood",
-        "Tactical Advance",
-        "Scarlet Letter",
-        "Destructive Impact",
-        "Shattering Chain",
-        "Falling Rubble",
-        "Heedless Charge",
-        "Ravenous Feast",
-        "Ravenous Feast",
-        "Crystalline Burst",
-        "Petrified",
-        "Blood Price",
-        "March of the Penitent",
-        "March of the Penitent",
-        "Debilitating Injury",
-        "Recharge Anima",
-        "Belligerent Boast",
-        "Gavel of Judgement",
-        "Containment Cell",
-        "Impound Contraband",
-        "Titanic Crash",
-        "Shock Mines",
-        "Runic Feedback",
-        "Infinite Breath",
-        "Deadly Seas",
-        "Stasis Beam",
-        "Ground Stomp",
-        "Shocklight Barrier",
-        "Flock!",
-        "Containment Cell",
-        "Shocked",
-        "Dancing",
-        "Frenzied Charge",
-        "Lightshard Retreat",
-        "Boulder Throw",
-        "Hyperlight Containment Cell",
-        "Hyper Zap-o-matic Ultimate Mark III",
-        "Haunted Urn",
-        "W-00F",
-        "Pacifying Mists",
-        "Eruption",
-        "Slipped",
-        "Slipped",
-        "Shimmerdust Sleep",
-        "Absorbing Haze",
-        "Wailing Grief",
-        "Shadowfury",
-        "Hex",
-        "Sinlight Visions",
-        "Sinlight Visions",
-        "Turned to Stone",
-        "Shredded Ankles",
-        "Turn to Stone",
-        "Soul Shackle",
-        "Soul Shackle",
-        "Droman's Wrath",
-        "Bewildering Pollen",
-        "Bewildering Pollen",
-        "Repulsive Visage",
-        "Freezing Burst",
-        "Patty Cake",
-        "Parasitic Pacification",
-        "Parasitic Incapacitation",
-        "Parasitic Domination",
-        "Overgrowth",
-        "Radiant Breath",
-        "Envelopment of Mist",
-        "Fetid Gas",
-        "Dark Grasp",
-        "Dark Grasp",
-        "Forgotten Forgehammer",
-        "Meat Hook",
-        "Meat Hook",
-        "Drain Fluids",
-        "Rasping Scream",
-        "Shadow Ambush",
-        "Web Wrap",
-        "Web Wrap",
-        "Volatile Substance",
-        "Rend Souls",
-        "Blinding Flash",
-        "Drained",
-        "Pounce",
-        "Terrifying Screech",
-        "Spear of Destiny",
-        "Opportunity Strikes",
-        "Blood and Glory",
-        "Blood and Glory",
-        "Soulless",
-        "Possession",
-        "Curse of Desolation",
-        "Vile Gas",
-        "Vile Eruption",
-        "Vile Eruption",
-        "Death Grasp",
-        "On the Hook",
-        "Draw Soul",
-        "Ground Smash",
-        "Demoralizing Shout",
-        "Soul Emanation",
-        "Twisted Hellchoker",
-        "Darkening Canopy",
-        "Ogundimu's Fist",
-        "Darkhelm of Nuren",
-        "Pridebreaker's Anvil",
-        "Volatile Augury",
-        "Force Pull",
-        "Ancient Drake Breath",
-        "Imprison",
-        "Big Clapper",
-        "The Hunt",
-        "Creeping Freeze",
-        "Polymorph: Mawrat",
-        "Polymorph",
-        "Polymorph",
-        "Polymorph",
-        "Pandemonium",
-        "Incomprehensible Glory",
-        "Mad Wizard's Confusion",
-        "Distracting Charges",
-        "Briefcase Bash",
-        "Fearsome Shriek",
-        "Terrifying Screech",
-        "Earthen Crush",
-        "Suppress",
-        "Ground Crush",
-        "Shockwave",
-        "Meat Hook",
-        "Hulking Charge",
-        "Fearsome Howl",
-        "Fearsome Howl",
-        "Fearsome Howl",
-        "Fearsome Howl",
-        "Visage of Lethality",
-        "Writhing Shadow-Tendrils",
-        "Frigid Wildseed",
-        "Distracting Charges",
-        "Crushing Shadows",
-        "Terrifying Roar",
-        "Terror",
-        "Shadowed Iris",
-        "Call of Thunder",
-        "Coalesce Anima",
-        "Coalesce Anima",
-        "Leaping Maul",
-        "Hematoma",
-        "Soulburst Charm",
-        "Slumberweb",
-        "Thanatophobia",
-        "Refractive Burst",
-        "Sweet Dreams",
-        };
 
         private List<string> m_SpellBook = new List<string> {
             //Covenants
@@ -238,12 +29,15 @@ namespace AimsharpWow.Modules
             "Counter Shot",
 
             //General
-            "Barbed Shot", "Aspect of the Wild", "Kill Command", "A Murder of Crows", "Dire Beast", "Multi-Shot",
-            "Kill Shot", "Cobra Shot", "Bite", "Cobra Spit", "Arcane Shot", "Auto Shot", "Bestial Wrath",
-            "Hunter's Mark", "Tranquilizing Shot", "Exhilaration", "Spirit Pulse", "Spirit Mend", "Mend Pet",
-            "Wailing Arrow", "Binding Shot", "Flare",
+            "A Murder of Crows", "Multi-Shot", "Harpoon", "Aspect of the Eagle",
+            "Kill Shot", "Bite", "Arcane Shot", "Serpent Sting", "Kill Command",
+            "Hunter's Mark", "Tranquilizing Shot", "Exhilaration", "Mend Pet",
+            "Wailing Arrow", "Carve", "Muzzle", "Chakrams", "Raptor Strike",
+            "Coordinated Assault", "Wildfire Bomb", "Butchery", "Steel Trap",
+            "Mongoose Bite", "Flanking Strike", "Flare",
+            "Shrapnel Bomb", "Volatile Bomb", "Pheromone Bomb",
 
-            "Freezing Trap", "Tar Trap", "Aspect of the Turtle", "Intimidation", "Bloodshed",
+            "Freezing Trap", "Tar Trap", "Aspect of the Turtle", "Intimidation", "Binding Shot",
 
 
             "Summon Steward", "Fleshcraft",
@@ -364,14 +158,6 @@ namespace AimsharpWow.Modules
             return false;
         }
 
-        private bool CanCastMultiShot(string unit)
-        {
-            if (Aimsharp.CanCast("Multi-Shot", unit, true, true) || (Aimsharp.SpellCooldown("Multi-Shot") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) <= 40 && Aimsharp.Power("player") >= 40 && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
-                return true;
-
-            return false;
-        }
-
         private bool CanCastFreezingTrap(string unit)
         {
             if (Aimsharp.CanCast("Freezing Trap", unit, false, true) || (Aimsharp.SpellCooldown("Freezing Trap") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
@@ -383,6 +169,14 @@ namespace AimsharpWow.Modules
         private bool CanCastTarTrap(string unit)
         {
             if (Aimsharp.CanCast("Tar Trap", unit, false, true) || (Aimsharp.SpellCooldown("Tar Trap") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastSteelTrap(string unit)
+        {
+            if (Aimsharp.CanCast("Steel Trap", unit, false, true) || (Aimsharp.SpellCooldown("Steel Trap") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Talent(4,2) && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
                 return true;
 
             return false;
@@ -412,22 +206,6 @@ namespace AimsharpWow.Modules
             return false;
         }
 
-        private bool CanCastCounterShot(string unit)
-        {
-            if (Aimsharp.CanCast("Counter Shot", unit, true, true) || (Aimsharp.SpellCooldown("Counter Shot") <= 0 && Aimsharp.Range(unit) <= 40 && TargetAlive()))
-                return true;
-
-            return false;
-        }
-
-        private bool CanCastExhilaration(string unit)
-        {
-            if (Aimsharp.CanCast("Exhilaration", unit, false, true) || (Aimsharp.SpellCooldown("Exhilaration") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
-                return true;
-
-            return false;
-        }
-
         private bool CanCastTranquilizingShot(string unit)
         {
             if (Aimsharp.CanCast("Tranquilizing Shot", unit, true, true) || (Aimsharp.SpellCooldown("Tranquilizing Shot") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) <= 40 && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
@@ -435,42 +213,25 @@ namespace AimsharpWow.Modules
 
             return false;
         }
-
-        private bool CanCastAspectoftheWild(string unit)
+        private bool CanCastFleshcraft(string unit)
         {
-            if (Aimsharp.CanCast("Aspect of the Wild", unit, false, true) || (Aimsharp.SpellCooldown("Aspect of the Wild") <= 0 && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+            if (Aimsharp.CanCast("Fleshcraft", unit, false, true) || (Aimsharp.SpellCooldown("Fleshcraft") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.CovenantID() == 4 && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
                 return true;
 
             return false;
         }
 
-        private bool CanCastBarbedShot(string unit)
+        private bool CanCastSerpentSting(string unit)
         {
-            if (Aimsharp.CanCast("Barbed Shot", "target", true, true) || ((Aimsharp.SpellCooldown("Barbed Shot") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) || Aimsharp.SpellCharges("Barbed Shot") >= 1 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0)) && Aimsharp.Range(unit) <= 40 && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+            if (Aimsharp.CanCast("Serpent Sting", unit, true, true) || (Aimsharp.SpellCooldown("Serpent Sting") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) <= 40 && (Aimsharp.Power("player") >= 20 || Aimsharp.HasBuff("Viper's Venom", "player", true)) && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
                 return true;
 
             return false;
         }
 
-        private bool CanCastBestialWrath(string unit)
+        private bool CanCastAMurderofCrows(string unit)
         {
-            if (Aimsharp.CanCast("Bestial Wrath", unit, false, true) || (Aimsharp.SpellCooldown("Bestial Wrath") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Health("pet") > 1 && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
-                return true;
-
-            return false;
-        }
-
-        private bool CanCastBloodshed(string unit)
-        {
-            if (Aimsharp.CanCast("Bloodshed", unit, true, true) || (Aimsharp.SpellCooldown("Bloodshed") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Health("pet") > 1 && Aimsharp.Range(unit) <= 50 && Aimsharp.Talent(7, 3) && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
-                return true;
-
-            return false;
-        }
-
-        private bool CanCastCobraShot(string unit)
-        {
-            if (Aimsharp.CanCast("Cobra Shot", unit, true, true) || (Aimsharp.SpellCooldown("Cobra Shot") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) <= 40 && Aimsharp.Power("player") >= 35 && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+            if (Aimsharp.CanCast("A Murder of Crows", unit, true, true) || (Aimsharp.SpellCooldown("A Murder of Crows") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) <= 40 && Aimsharp.Power("player") >= 30 && Aimsharp.Talent(4, 3) && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
                 return true;
 
             return false;
@@ -486,15 +247,127 @@ namespace AimsharpWow.Modules
 
         private bool CanCastKillCommand(string unit)
         {
-            if (Aimsharp.CanCast("Kill Command", unit, true, true) || (Aimsharp.SpellCooldown("Kill Command") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) <= 50 && Aimsharp.Power("player") >= 30 && Aimsharp.Health("pet") > 1 && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+            if (Aimsharp.CanCast("Kill Command", unit, true, true) || ((Aimsharp.SpellCooldown("Kill Command") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) || Aimsharp.Talent(1,3) && Aimsharp.SpellCharges("Kill Command") >= 1 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0)) && Aimsharp.Range(unit) <= 50 && Aimsharp.Health("pet") > 1 && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
                 return true;
 
             return false;
         }
 
-        private bool CanCastFleshcraft(string unit)
+        private bool CanCastAspectoftheEagle(string unit)
         {
-            if (Aimsharp.CanCast("Fleshcraft", unit, false, true) || (Aimsharp.SpellCooldown("Fleshcraft") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.CovenantID() == 4 && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+            if (Aimsharp.CanCast("Aspect of the Eagle", unit, false, true) || (Aimsharp.SpellCooldown("Aspect of the Eagle") <= 0 && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastRaptorStrike(string unit)
+        {
+            if (Aimsharp.CanCast("Raptor Strike", unit, true, true) && !Aimsharp.Talent(6,2) || (Aimsharp.SpellCooldown("Raptor Strike") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && (Aimsharp.Range(unit) <= 5 || Aimsharp.HasBuff("Aspect of the Eagle", "player", true) && Aimsharp.Range(unit) <= 40) && Aimsharp.Power("player") >= 30 && !Aimsharp.Talent(6, 2) && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastExhilaration(string unit)
+        {
+            if (Aimsharp.CanCast("Exhilaration", unit, false, true) || (Aimsharp.SpellCooldown("Exhilaration") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastMuzzle(string unit)
+        {
+            if (Aimsharp.CanCast("Muzzle", unit, true, true) || (Aimsharp.SpellCooldown("Muzzle") <= 0 && Aimsharp.Range(unit) <= 5 && TargetAlive()))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastCarve(string unit)
+        {
+            if (Aimsharp.CanCast("Carve", unit, false, true) && Aimsharp.Range("target") <= 5 && !Aimsharp.Talent(2,3) || (Aimsharp.SpellCooldown("Carve") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range("target") <= 5 && Aimsharp.Power("player") >= 35 && !Aimsharp.Talent(2, 3) && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastCoordinatedAssault(string unit)
+        {
+            if (Aimsharp.CanCast("Coordinated Assault", unit, false, true) || (Aimsharp.SpellCooldown("Coordinated Assault") <= 0 && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastHarpoon(string unit)
+        {
+            if (Aimsharp.CanCast("Harpoon", unit, true, true) || (Aimsharp.SpellCooldown("Harpoon") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) >= 8 && Aimsharp.Range(unit) <= 30 && Aimsharp.Power("player") >= 30 && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastWildfireBomb(string unit)
+        {
+            if (Aimsharp.CanCast("Wildfire Bomb", unit, true, true) || ((Aimsharp.SpellCooldown("Wildfire Bomb") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) || Aimsharp.Talent(2, 1) && Aimsharp.SpellCharges("Wildfire Bomb") >= 1 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0)) && Aimsharp.Range(unit) <= 40 && !Aimsharp.Talent(7,2) && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastShrapnelBomb(string unit)
+        {
+            if (Aimsharp.CanCast("Shrapnel Bomb", unit, true, true) || ((Aimsharp.SpellCooldown("Shrapnel Bomb") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) || Aimsharp.Talent(2, 1) && Aimsharp.SpellCharges("Shrapnel Bomb") >= 1 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0)) && Aimsharp.Range(unit) <= 40 && Aimsharp.Talent(7, 2) && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastVolatileBomb(string unit)
+        {
+            if (Aimsharp.CanCast("Volatile Bomb", unit, true, true) || ((Aimsharp.SpellCooldown("Volatile Bomb") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) || Aimsharp.Talent(2, 1) && Aimsharp.SpellCharges("Volatile Bomb") >= 1 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0)) && Aimsharp.Range(unit) <= 40 && Aimsharp.Talent(7, 2) && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastPheromoneBomb(string unit)
+        {
+            if (Aimsharp.CanCast("Pheromone Bomb", unit, true, true) || ((Aimsharp.SpellCooldown("Pheromone Bomb") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) || Aimsharp.Talent(2,1) && Aimsharp.SpellCharges("Pheromone Bomb") >= 1 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0)) && Aimsharp.Range(unit) <= 40 && Aimsharp.Talent(7, 2) && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastButchery(string unit)
+        {
+            if (Aimsharp.CanCast("Butchery", unit, false, true) && Aimsharp.Range("target") <= 5 && Aimsharp.Talent(2, 3) || ((Aimsharp.SpellCooldown("Butchery") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) || Aimsharp.SpellCharges("Butchery") >= 1 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0)) && Aimsharp.Range("target") <= 5 && Aimsharp.Power("player") >= 30 && Aimsharp.Talent(2, 3) && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastMongooseBite(string unit)
+        {
+            if (Aimsharp.CanCast("Mongoose Bite", unit, true, true) && Aimsharp.Talent(6, 2) || (Aimsharp.SpellCooldown("Mongoose Bite") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && (Aimsharp.Range(unit) <= 5 || Aimsharp.HasBuff("Aspect of the Eagle", "player", true) && Aimsharp.Range(unit) <= 40) && Aimsharp.Power("player") >= 30 && !Aimsharp.Talent(6, 2) && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastFlankingStrike(string unit)
+        {
+            if (Aimsharp.CanCast("Flanking Strike", unit, true, true) || (Aimsharp.SpellCooldown("Flanking Strike") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) <= 15 && Aimsharp.Talent(6, 3) && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastChakrams(string unit)
+        {
+            if (Aimsharp.CanCast("Chakrams", unit, true, true) || (Aimsharp.SpellCooldown("Chakrams") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) <= 40 && Aimsharp.Power("player") >= 15 && Aimsharp.Talent(7, 3) && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
                 return true;
 
             return false;
@@ -510,16 +383,7 @@ namespace AimsharpWow.Modules
         #endregion
 
         #region Debuffs
-        private int UnitCC(string unit)
-        {
-            foreach (string Debuff in PVECC)
-            {
-                if (Aimsharp.HasDebuff(Debuff, unit, false))
-                    return Aimsharp.DebuffRemaining(Debuff, unit, false);
-            }
 
-            return 0;
-        }
         #endregion
 
         #region Buffs
@@ -552,16 +416,14 @@ namespace AimsharpWow.Modules
             Macros.Add("IntimidationOff", "/" + FiveLetters + " Intimidation");
             Macros.Add("WildSpiritsOff", "/" + FiveLetters + " WildSpirits");
             Macros.Add("ResonatingArrowOff", "/" + FiveLetters + " ResonatingArrow");
+            Macros.Add("BindingShotOff", "/" + FiveLetters + " BindingShot");
             Macros.Add("FlareOff", "/" + FiveLetters + " Flare");
 
-            Macros.Add("SpiritMendPlayer", "/cast [@player] Spirit Mend");
-            Macros.Add("SpiritMendPet", "/cast [@pet] Spirit Mend");
             Macros.Add("KillShotSQW", "/cqs\\n/cast Kill Shot");
-            Macros.Add("BarbedShotSQW", "/cqs\\n/cast Barbed Shot");
             Macros.Add("TranqMO", "/cast [@mouseover] Tranquilizing Shot");
+            Macros.Add("SteelTrapC", "/cast [@cursor] Steel Trap");
             Macros.Add("FlareC", "/cast [@cursor] Flare");
             Macros.Add("TarTrapC", "/cast [@cursor] Tar Trap");
-
         }
 
         private void InitializeSpells()
@@ -576,9 +438,6 @@ namespace AimsharpWow.Modules
                 Buffs.Add(Buff);
 
             foreach (string Debuff in m_DebuffsList)
-                Debuffs.Add(Debuff);
-
-            foreach (string Debuff in PVECC)
                 Debuffs.Add(Debuff);
 
             foreach (string Item in m_ItemsList)
@@ -602,11 +461,6 @@ namespace AimsharpWow.Modules
 
             CustomFunctions.Add("IsRMBDown", "local MBD = 0 local isDown = IsMouseButtonDown(\"RightButton\") if isDown == true then MBD = 1 end return MBD");
 
-            CustomFunctions.Add("SpiritBeastDispel", "local y=0; " +
-                "for i=1,25 do local name,_,_,type=UnitDebuff(\"pet\",i); " +
-                    "if type ~= nil and (type == \"Disease\" or type == \"Poison\" or type == \"Magic\") then y = 1; end end " +
-                "return y");
-
             CustomFunctions.Add("HekiliWait", "if HekiliDisplayPrimary.Recommendations[1].wait ~= nil and HekiliDisplayPrimary.Recommendations[1].wait * 1000 > 0 then return math.floor(HekiliDisplayPrimary.Recommendations[1].wait * 1000) end return 0");
 
             CustomFunctions.Add("PhialCount", "local count = GetItemCount(177278) if count ~= nil then return count end return 0");
@@ -614,6 +468,8 @@ namespace AimsharpWow.Modules
             CustomFunctions.Add("TranqBuffCheck", "local markcheck = 0; if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Tranquilizing Shot','mouseover') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType  = UnitAura('mouseover', y, \"RAID\") if debuffType == '' or debuffType == 'Magic' then markcheck = markcheck + 2 end end return markcheck end return 0");
 
             CustomFunctions.Add("VolleyMouseover", "if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Steady Shot','mouseover') == 1 then return 1 end; return 0");
+
+
         }
         #endregion
 
@@ -633,8 +489,6 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Tranquilizing Shot Mouseover:", true));
             Settings.Add(new Setting("Auto Aspect of the Turtle @ HP%", 0, 100, 20));
             Settings.Add(new Setting("Auto Exhilaration @ HP%", 0, 100, 40));
-            Settings.Add(new Setting("Auto Spirit Heal Player @ HP%", 0, 100, 60));
-            Settings.Add(new Setting("Auto Spirit Heal Pet @ HP%", 0, 100, 30));
             Settings.Add(new Setting("Auto Mend Pet @ HP%", 0, 100, 60));
             Settings.Add(new Setting("Misc"));
             Settings.Add(new Setting("Debug:", false));
@@ -654,7 +508,7 @@ namespace AimsharpWow.Modules
             Aimsharp.QuickDelay = 150;
             Aimsharp.SlowDelay = 350;
 
-            Aimsharp.PrintMessage("Snoogens PVE - Hunter Beast Mastery", Color.Yellow);
+            Aimsharp.PrintMessage("Snoogens PVE - Hunter Survival", Color.Yellow);
             Aimsharp.PrintMessage("This rotation requires the Hekili Addon", Color.Red);
             Aimsharp.PrintMessage("Hekili > Toggles > Unbind everything", Color.Brown);
             Aimsharp.PrintMessage("Hekili > Toggles > Bind \"Cooldowns\" & \"Display Mode\"", Color.Brown);
@@ -848,7 +702,7 @@ namespace AimsharpWow.Modules
             #region Interrupts
             if (!NoInterrupts && (Aimsharp.UnitID("target") != 168105 || Torghast_InnerFlame.Contains(Aimsharp.CastingID("target"))) && (Aimsharp.UnitID("target") != 157571 || Torghast_InnerFlame.Contains(Aimsharp.CastingID("target"))))
             {
-                if (CanCastCounterShot("target"))
+                if (CanCastMuzzle("target"))
                 {
                     if (IsInterruptable && !IsChanneling && CastingRemaining < KickValue)
                     {
@@ -856,12 +710,12 @@ namespace AimsharpWow.Modules
                         {
                             Aimsharp.PrintMessage("Target Casting ID: " + Aimsharp.CastingID("target") + ", Interrupting", Color.Purple);
                         }
-                        Aimsharp.Cast("Counter Shot", true);
+                        Aimsharp.Cast("Muzzle", true);
                         return true;
                     }
                 }
 
-                if (CanCastCounterShot("target"))
+                if (CanCastMuzzle("target"))
                 {
                     if (IsInterruptable && IsChanneling && CastingElapsed > KickChannelsAfter)
                     {
@@ -869,7 +723,7 @@ namespace AimsharpWow.Modules
                         {
                             Aimsharp.PrintMessage("Target Channeling ID: " + Aimsharp.CastingID("target") + ", Interrupting", Color.Purple);
                         }
-                        Aimsharp.Cast("Counter Shot", true);
+                        Aimsharp.Cast("Muzzle", true);
                         return true;
                     }
                 }
@@ -923,27 +777,6 @@ namespace AimsharpWow.Modules
             if (Aimsharp.PlayerHasPet() && !Aimsharp.LineOfSighted() && Aimsharp.Health("pet") > 1 && Aimsharp.Health("pet") <= GetSlider("Auto Mend Pet @ HP%") && CanCastMendPet("pet") && !Aimsharp.HasBuff("Mend Pet", "pet", true) && Aimsharp.LastCast() != "Mend Pet")
             {
                 Aimsharp.Cast("Mend Pet");
-                return true;
-            }
-
-            //Auto Spirit Mend - Player
-            if (Aimsharp.Health("player") <= GetSlider("Auto Spirit Heal Player @ HP%") && Aimsharp.CanCast("Spirit Mend", "player", true, false) && UnitCC("pet") == 0)
-            {
-                Aimsharp.Cast("SpiritMendPlayer");
-                return true;
-            }
-
-            //Auto Spirit Mend - Pet
-            if (Aimsharp.Health("pet") <= GetSlider("Auto Spirit Heal Pet @ HP%") && Aimsharp.CanCast("Spirit Mend", "pet", true, false) && UnitCC("pet") == 0)
-            {
-                Aimsharp.Cast("SpiritMendPet");
-                return true;
-            }
-
-            //Auto Spirit Pulse
-            if (Aimsharp.CustomFunction("SpiritBeastDispel") == 1 && Aimsharp.CanCast("Spirit Pulse", "pet", false, false) && UnitCC("pet") == 0)
-            {
-                Aimsharp.Cast("Spirit Pulse");
                 return true;
             }
             #endregion
@@ -1108,7 +941,7 @@ namespace AimsharpWow.Modules
             }
             #endregion
 
-            if (Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat && Wait <= 200)
+            if (Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat)
             {
                 //Tranquilizing Shot Mouseover
                 if (CanCastTranquilizingShot("mouseover"))
@@ -1124,7 +957,7 @@ namespace AimsharpWow.Modules
                     }
                 }
 
-                if (Aimsharp.Range("target") <= 42)
+                if (Wait <= 200)
                 {
                     #region Trinkets
                     if (CooldownsToggle == 1 && UseTrinketsCD && Aimsharp.CanUseTrinket(0))
@@ -1397,13 +1230,23 @@ namespace AimsharpWow.Modules
                     #region General Spells - No GCD
                     ///Class Spells
                     //Target - No GCD
-                    if (SpellID1 == 106839 && CanCastCounterShot("target"))
+                    if (SpellID1 == 187707 && CanCastMuzzle("target"))
                     {
                         if (Debug)
                         {
-                            Aimsharp.PrintMessage("Casting Counter Shot - " + SpellID1, Color.Purple);
+                            Aimsharp.PrintMessage("Casting Muzzle - " + SpellID1, Color.Purple);
                         }
-                        Aimsharp.Cast("Counter Shot", true);
+                        Aimsharp.Cast("Muzzle", true);
+                        return true;
+                    }
+                    //Player - No GCD
+                    if (SpellID1 == 266779 && CanCastCoordinatedAssault("player"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Coordinated Assault - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Coordinated Assault", true);
                         return true;
                     }
                     #endregion
@@ -1420,23 +1263,13 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 53351 && CanCastKillShot("target"))
+                    if ((SpellID1 == 53351 || SpellID1 == 320976) && CanCastKillShot("target"))
                     {
                         if (Debug)
                         {
                             Aimsharp.PrintMessage("Casting Kill Shot w/ SQW Cancel - " + SpellID1, Color.Purple);
                         }
                         Aimsharp.Cast("KillShotSQW");
-                        return true;
-                    }
-
-                    if (SpellID1 == 2643 && CanCastMultiShot("target"))
-                    {
-                        if (Debug)
-                        {
-                            Aimsharp.PrintMessage("Casting Multi-Shot - " + SpellID1, Color.Purple);
-                        }
-                        Aimsharp.Cast("Multi-Shot");
                         return true;
                     }
                     #endregion
@@ -1482,37 +1315,57 @@ namespace AimsharpWow.Modules
                     #endregion
 
                     #region Beast Mastery Spells - Target GCD
-                    if (SpellID1 == 321530 && CanCastBloodshed("target"))
+                    if ((SpellID1 == 271788 || SpellID1 == 259491) && CanCastSerpentSting("target"))
                     {
                         if (Debug)
                         {
-                            Aimsharp.PrintMessage("Casting Bloodshed - " + SpellID1, Color.Purple);
+                            Aimsharp.PrintMessage("Casting Serpent Sting - " + SpellID1, Color.Purple);
                         }
-                        Aimsharp.Cast("Bloodshed");
+                        Aimsharp.Cast("Serpent Sting");
                         return true;
                     }
 
-                    if (SpellID1 == 193455 && CanCastCobraShot("target"))
+                    if (SpellID1 == 131894 && CanCastAMurderofCrows("target"))
                     {
                         if (Debug)
                         {
-                            Aimsharp.PrintMessage("Casting Cobra Shot - " + SpellID1, Color.Purple);
+                            Aimsharp.PrintMessage("Casting A Murder of Crows - " + SpellID1, Color.Purple);
                         }
-                        Aimsharp.Cast("Cobra Shot");
+                        Aimsharp.Cast("A Murder of Crows");
                         return true;
                     }
 
-                    if (SpellID1 == 217200 && CanCastBarbedShot("target"))
+                    if (SpellID1 == 190925 && CanCastHarpoon("target"))
                     {
                         if (Debug)
                         {
-                            Aimsharp.PrintMessage("Casting Barbed Shot - " + SpellID1, Color.Purple);
+                            Aimsharp.PrintMessage("Casting Harpoon - " + SpellID1, Color.Purple);
                         }
-                        Aimsharp.Cast("BarbedShotSQW");
+                        Aimsharp.Cast("Harpoon");
                         return true;
                     }
 
-                    if (SpellID1 == 34026 && CanCastKillCommand("target"))
+                    if (SpellID1 == 186270 && CanCastRaptorStrike("target"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Raptor Strike - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Raptor Strike");
+                        return true;
+                    }
+
+                    if (SpellID1 == 259387 && CanCastMongooseBite("target"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Mongoose Bite - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Mongoose Bite");
+                        return true;
+                    }
+
+                    if (SpellID1 == 259489 && CanCastKillCommand("target"))
                     {
                         if (Debug)
                         {
@@ -1521,26 +1374,115 @@ namespace AimsharpWow.Modules
                         Aimsharp.Cast("Kill Command");
                         return true;
                     }
-                    #endregion
 
-                    #region Beast Mastery Spells - Player GCD
-                    if (SpellID1 == 19574 && CanCastBestialWrath("player"))
+                    if (SpellID1 == 259391 && CanCastChakrams("target"))
                     {
                         if (Debug)
                         {
-                            Aimsharp.PrintMessage("Casting Bestial Wrath- " + SpellID1, Color.Purple);
+                            Aimsharp.PrintMessage("Casting Chakrams - " + SpellID1, Color.Purple);
                         }
-                        Aimsharp.Cast("Bestial Wrath");
+                        Aimsharp.Cast("Chakrams");
                         return true;
                     }
 
-                    if (SpellID1 == 193530 && CanCastAspectoftheWild("player"))
+                    if (SpellID1 == 259491 && CanCastSerpentSting("target"))
                     {
                         if (Debug)
                         {
-                            Aimsharp.PrintMessage("Casting Aspect of the Wild - " + SpellID1, Color.Purple);
+                            Aimsharp.PrintMessage("Casting Serpent Sting - " + SpellID1, Color.Purple);
                         }
-                        Aimsharp.Cast("Aspect of the Wild");
+                        Aimsharp.Cast("Serpent Sting");
+                        return true;
+                    }
+
+                    if (SpellID1 == 259495 && CanCastWildfireBomb("target"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Wildfire Bomb - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Wildfire Bomb");
+                        return true;
+                    }
+
+                    if (SpellID1 == 270335 && CanCastShrapnelBomb("target"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Shrapnel Bomb - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Shrapnel Bomb");
+                        return true;
+                    }
+
+                    if (SpellID1 == 270323 && CanCastPheromoneBomb("target"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Pheromone Bomb - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Pheromone Bomb");
+                        return true;
+                    }
+
+                    if (SpellID1 == 271045 && CanCastVolatileBomb("target"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Volatile Bomb - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Volatile Bomb");
+                        return true;
+                    }
+
+                    if (SpellID1 == 269751 && CanCastFlankingStrike("target"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Flanking Strike - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Flanking Strike");
+                        return true;
+                    }
+                    #endregion
+
+                    #region Survival Spells - Player GCD
+                    if (SpellID1 == 187708 && CanCastCarve("player"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Carve - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Carve");
+                        return true;
+                    }
+
+                    if (SpellID1 == 212436 && CanCastButchery("player"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Butchery - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Butchery");
+                        return true;
+                    }
+
+                    if (SpellID1 == 162488 && CanCastSteelTrap("player") && Aimsharp.CustomFunction("VolleyMouseover") == 1)
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Steel Trap @ Cursor due to Mouseover - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("SteelTrapC");
+                        return true;
+                    }
+                    else if (SpellID1 == 162488 && CanCastSteelTrap("player"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Steel Trap - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Steel Trap");
                         return true;
                     }
                     #endregion
@@ -1675,7 +1617,6 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
-
             //Queue Wild Spirits
             if (Aimsharp.IsCustomCodeOn("WildSpirits") && Aimsharp.SpellCooldown("Wild Spirits") - Aimsharp.GCD() > 2000)
             {
@@ -1786,7 +1727,7 @@ namespace AimsharpWow.Modules
 
             #region Auto Combat
             //Auto Combat
-            if (GetCheckBox("Auto Start Combat:") == true && Aimsharp.TargetIsEnemy() && TargetAlive() && Aimsharp.Range("target") <= 42 && TargetInCombat)
+            if (GetCheckBox("Auto Start Combat:") == true && Aimsharp.TargetIsEnemy() && TargetAlive() && Aimsharp.Range("target") <= 43 && TargetInCombat)
             {
                 if (Debug)
                 {
