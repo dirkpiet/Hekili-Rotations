@@ -15,7 +15,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "FreezingTrap", "TarTrap", "Turtle", "Intimidation", "NoInterrupts", "WildSpirits", "ResonatingArrow", "BindingShot", };
+        private List<string> m_IngameCommandsList = new List<string> { "FreezingTrap", "TarTrap", "Turtle", "Intimidation", "NoInterrupts", "WildSpirits", "ResonatingArrow", "BindingShot", "Flare", };
         private List<string> m_DebuffsList = new List<string> {  };
         private List<string> m_BuffsList = new List<string> { "Mend Pet", "Flayer's Mark", "Double Tap", "Lock and Load", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
@@ -381,6 +381,7 @@ namespace AimsharpWow.Modules
             Macros.Add("WildSpiritsOff", "/" + FiveLetters + " WildSpirits");
             Macros.Add("ResonatingArrowOff", "/" + FiveLetters + " ResonatingArrow");
             Macros.Add("BindingShotOff", "/" + FiveLetters + " BindingShot");
+            Macros.Add("FlareOff", "/" + FiveLetters + " Flare");
 
             Macros.Add("KillShotSQW", "/cqs\\n/cast Kill Shot");
             Macros.Add("TranqMO", "/cast [@mouseover] Tranquilizing Shot");
@@ -477,11 +478,14 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("Hekili > Toggles > Unbind everything", Color.Brown);
             Aimsharp.PrintMessage("Hekili > Toggles > Bind \"Cooldowns\" & \"Display Mode\"", Color.Brown);
             Aimsharp.PrintMessage("-----", Color.Black);
+            Aimsharp.PrintMessage("Pet Summon is Manual", Color.Green);
+            Aimsharp.PrintMessage("-----", Color.Black);
             Aimsharp.PrintMessage("- General -", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoInterrupts - Disables Interrupts", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoCycle - Disables Target Cycle", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx FreezingTrap - Casts Freezing Trap @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx TarTrap - Casts Tar Trap @ next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx Flare - Casts Flare @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx BindingShot - Casts Binding Shot @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx WildSpirits - Casts Wild Spirits @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx ResonatingArrow - Casts Resonating Arrow @ next GCD", Color.Yellow);
@@ -781,6 +785,27 @@ namespace AimsharpWow.Modules
                     Aimsharp.PrintMessage("Casting Tar Trap through queue toggle", Color.Purple);
                 }
                 Aimsharp.Cast("Tar Trap");
+                return true;
+            }
+
+            //Queue Flare
+            if (Aimsharp.IsCustomCodeOn("Flare") && Aimsharp.SpellCooldown("Flare") - Aimsharp.GCD() > 2000)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Flare Queue", Color.Purple);
+                }
+                Aimsharp.Cast("FlareOff");
+                return true;
+            }
+
+            if (Aimsharp.IsCustomCodeOn("Flare") && CanCastFlare("player"))
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Flare through queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("Flare");
                 return true;
             }
 
@@ -1482,6 +1507,27 @@ namespace AimsharpWow.Modules
                 }
                 Aimsharp.PrintMessage("Queued Tar Trap");
                 Aimsharp.Cast("Tar Trap");
+                return true;
+            }
+
+            //Queue Flare
+            if (Aimsharp.IsCustomCodeOn("Flare") && Aimsharp.SpellCooldown("Flare") - Aimsharp.GCD() > 2000)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Flare Queue", Color.Purple);
+                }
+                Aimsharp.Cast("FlareOff");
+                return true;
+            }
+
+            if (Aimsharp.IsCustomCodeOn("Flare") && CanCastFlare("player"))
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Flare through queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("Flare");
                 return true;
             }
 
