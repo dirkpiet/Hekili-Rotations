@@ -1226,6 +1226,16 @@ namespace AimsharpWow.Modules
                         Aimsharp.Cast("Multi-Shot");
                         return true;
                     }
+
+                    if (SpellID1 == 355589 && Aimsharp.CanCast("Wailing Arrow", "target", true, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Wailing Arrow - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Wailing Arrow");
+                        return true;
+                    }
                     #endregion
 
                     #region General Spells - Player GCD
@@ -1268,7 +1278,7 @@ namespace AimsharpWow.Modules
                     }
                     #endregion
 
-                    #region Beast Mastery Spells - Target GCD
+                    #region Marksmanship Spells - Target GCD
                     if (SpellID1 == 212431 && CanCastExplosiveShot("target"))
                     {
                         if (Debug)
@@ -1350,7 +1360,7 @@ namespace AimsharpWow.Modules
                     }
                     #endregion
 
-                    #region Beast Mastery Spells - Player GCD
+                    #region Marksmanship Spells - Player GCD
                     if (SpellID1 == 260402 && CanCastDoubleTap("player"))
                     {
                         if (Debug)

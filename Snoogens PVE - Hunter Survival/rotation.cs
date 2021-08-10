@@ -1272,6 +1272,16 @@ namespace AimsharpWow.Modules
                         Aimsharp.Cast("KillShotSQW");
                         return true;
                     }
+
+                    if (SpellID1 == 355589 && Aimsharp.CanCast("Wailing Arrow", "target", true, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Wailing Arrow - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Wailing Arrow");
+                        return true;
+                    }
                     #endregion
 
                     #region General Spells - Player GCD
@@ -1314,7 +1324,7 @@ namespace AimsharpWow.Modules
                     }
                     #endregion
 
-                    #region Beast Mastery Spells - Target GCD
+                    #region Survival Spells - Target GCD
                     if ((SpellID1 == 271788 || SpellID1 == 259491) && CanCastSerpentSting("target"))
                     {
                         if (Debug)
