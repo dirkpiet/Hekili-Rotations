@@ -1038,6 +1038,27 @@ namespace AimsharpWow.Modules
                 Aimsharp.Cast("Binding Shot");
                 return true;
             }
+
+            //Queue Intimidation
+            if (Aimsharp.IsCustomCodeOn("Intimidation") && Aimsharp.SpellCooldown("Intimidation") - Aimsharp.GCD() > 2000)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Intimidation Queue", Color.Purple);
+                }
+                Aimsharp.Cast("IntimidationOff");
+                return true;
+            }
+
+            if (Aimsharp.IsCustomCodeOn("Intimidation") && CanCastIntimidation("target") && Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Intimidation through queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("Intimidation");
+                return true;
+            }
             #endregion
 
             #region Auto Target
@@ -1622,6 +1643,27 @@ namespace AimsharpWow.Modules
                     Aimsharp.PrintMessage("Casting Binding Shot through queue toggle", Color.Purple);
                 }
                 Aimsharp.Cast("Binding Shot");
+                return true;
+            }
+
+            //Queue Intimidation
+            if (Aimsharp.IsCustomCodeOn("Intimidation") && Aimsharp.SpellCooldown("Intimidation") - Aimsharp.GCD() > 2000)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Intimidation Queue", Color.Purple);
+                }
+                Aimsharp.Cast("IntimidationOff");
+                return true;
+            }
+
+            if (Aimsharp.IsCustomCodeOn("Intimidation") && CanCastIntimidation("target") && Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Intimidation through queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("Intimidation");
                 return true;
             }
             #endregion
