@@ -241,7 +241,7 @@ namespace AimsharpWow.Modules
             "Barbed Shot", "Aspect of the Wild", "Kill Command", "A Murder of Crows", "Dire Beast", "Multi-Shot",
             "Kill Shot", "Cobra Shot", "Bite", "Cobra Spit", "Arcane Shot", "Auto Shot", "Bestial Wrath",
             "Hunter's Mark", "Tranquilizing Shot", "Exhilaration", "Spirit Pulse", "Spirit Mend", "Mend Pet",
-            "Wailing Arrow", "Binding Shot",
+            "Wailing Arrow", "Binding Shot", "Flare",
 
             "Freezing Trap", "Tar Trap", "Aspect of the Turtle", "Intimidation", "Bloodshed",
 
@@ -491,9 +491,18 @@ namespace AimsharpWow.Modules
 
             return false;
         }
+
         private bool CanCastFleshcraft(string unit)
         {
             if (Aimsharp.CanCast("Fleshcraft", unit, false, true) || (Aimsharp.SpellCooldown("Fleshcraft") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.CovenantID() == 4 && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastFlare(string unit)
+        {
+            if (Aimsharp.CanCast("Flare", unit, false, true) || (Aimsharp.SpellCooldown("Flare") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
                 return true;
 
             return false;
@@ -549,6 +558,8 @@ namespace AimsharpWow.Modules
             Macros.Add("KillShotSQW", "/cqs\\n/cast Kill Shot");
             Macros.Add("BarbedShotSQW", "/cqs\\n/cast Barbed Shot");
             Macros.Add("TranqMO", "/cast [@mouseover] Tranquilizing Shot");
+            Macros.Add("FlareC", "/cast [@cursor] Flare");
+            Macros.Add("TarTrapC", "/cast [@cursor] Tar Trap");
 
         }
 
@@ -601,7 +612,7 @@ namespace AimsharpWow.Modules
 
             CustomFunctions.Add("TranqBuffCheck", "local markcheck = 0; if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Tranquilizing Shot','mouseover') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType  = UnitAura('mouseover', y, \"RAID\") if debuffType == '' or debuffType == 'Magic' then markcheck = markcheck + 2 end end return markcheck end return 0");
 
-
+            CustomFunctions.Add("VolleyMouseover", "if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Steady Shot','mouseover') == 1 then return 1 end; return 0");
         }
         #endregion
 
@@ -1406,7 +1417,43 @@ namespace AimsharpWow.Modules
                     #endregion
 
                     #region General Spells - Player GCD
+                    if (SpellID1 == 1543 && CanCastFlare("player") && Aimsharp.CustomFunction("VolleyMouseover") == 1)
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Flare @ Cursor due to Mouseover - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("FlareC");
+                        return true;
+                    }
+                    else if (SpellID1 == 1543 && CanCastFlare("player"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Flare - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Flare");
+                        return true;
+                    }
 
+                    if (SpellID1 == 187698 && CanCastTarTrap("player") && Aimsharp.CustomFunction("VolleyMouseover") == 1)
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Tar Trap @ Cursor due to Mouseover - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("TarTrapC");
+                        return true;
+                    }
+                    else if (SpellID1 == 187698 && CanCastTarTrap("player"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Tar Trap - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Tar Trap");
+                        return true;
+                    }
                     #endregion
 
                     #region Beast Mastery Spells - Target GCD

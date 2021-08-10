@@ -32,9 +32,9 @@ namespace AimsharpWow.Modules
             "A Murder of Crows", "Multi-Shot", "Double Tap", "Explosive Shot", "Volley",
             "Kill Shot", "Bite", "Arcane Shot", "Barrage", "Serpent Sting", "Chimaera Shot",
             "Hunter's Mark", "Tranquilizing Shot", "Exhilaration", "Mend Pet", "Trueshot", "Aimed Shot",
-            "Rapid Fire", "Bursting Shot", "Steady Shot", "Wailing Arrow",
+            "Rapid Fire", "Bursting Shot", "Steady Shot", "Wailing Arrow", "Flare",
 
-            "Freezing Trap", "Tar Trap", "Aspect of the Turtle", "Intimidation", "Binding Shot",
+            "Freezing Trap", "Tar Trap", "Aspect of the Turtle", "Binding Shot",
 
 
             "Summon Steward", "Fleshcraft",
@@ -337,6 +337,14 @@ namespace AimsharpWow.Modules
 
             return false;
         }
+
+        private bool CanCastFlare(string unit)
+        {
+            if (Aimsharp.CanCast("Flare", unit, false, true) || (Aimsharp.SpellCooldown("Flare") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
         #endregion
 
         #region Debuffs
@@ -370,7 +378,6 @@ namespace AimsharpWow.Modules
 
             Macros.Add("FreezingTrapOff", "/" + FiveLetters + " FreezingTrap");
             Macros.Add("TarTrapOff", "/" + FiveLetters + " TarTrap");
-            Macros.Add("IntimidationOff", "/" + FiveLetters + " Intimidation");
             Macros.Add("WildSpiritsOff", "/" + FiveLetters + " WildSpirits");
             Macros.Add("ResonatingArrowOff", "/" + FiveLetters + " ResonatingArrow");
             Macros.Add("BindingShotOff", "/" + FiveLetters + " BindingShot");
@@ -378,6 +385,8 @@ namespace AimsharpWow.Modules
             Macros.Add("KillShotSQW", "/cqs\\n/cast Kill Shot");
             Macros.Add("TranqMO", "/cast [@mouseover] Tranquilizing Shot");
             Macros.Add("VolleyC", "/cast [@cursor] Volley");
+            Macros.Add("FlareC", "/cast [@cursor] Flare");
+            Macros.Add("TarTrapC", "/cast [@cursor] Tar Trap");
 
         }
 
@@ -1195,7 +1204,43 @@ namespace AimsharpWow.Modules
                     #endregion
 
                     #region General Spells - Player GCD
+                    if (SpellID1 == 1543 && CanCastFlare("player") && Aimsharp.CustomFunction("VolleyMouseover") == 1)
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Flare @ Cursor due to Mouseover - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("FlareC");
+                        return true;
+                    }
+                    else if (SpellID1 == 1543 && CanCastFlare("player"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Flare - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Flare");
+                        return true;
+                    }
 
+                    if (SpellID1 == 187698 && CanCastTarTrap("player") && Aimsharp.CustomFunction("VolleyMouseover") == 1)
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Tar Trap @ Cursor due to Mouseover - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("TarTrapC");
+                        return true;
+                    }
+                    else if (SpellID1 == 187698 && CanCastTarTrap("player"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Tar Trap - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Tar Trap");
+                        return true;
+                    }
                     #endregion
 
                     #region Beast Mastery Spells - Target GCD
