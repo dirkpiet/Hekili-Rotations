@@ -1013,7 +1013,7 @@ namespace AimsharpWow.Modules
                 #endregion
 
                 #region Kidney Shot
-                if (KidneyShot)
+                if (KidneyShot && !GetCheckBox("Kidney Shot Queue - Dont wait for Max CP"))
                 {
                     if (SpellID1 == 1329 && CanCastMutilate("target"))
                     {

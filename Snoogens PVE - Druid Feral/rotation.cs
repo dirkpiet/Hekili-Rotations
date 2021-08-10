@@ -585,7 +585,7 @@ namespace AimsharpWow.Modules
             #endregion
 
             #region Remove Corruption
-            if (!NoDecurse && DiseasePoisonCheck > 0)
+            if (!NoDecurse && DiseasePoisonCheck > 0 && Aimsharp.GroupSize() <= 5 && Aimsharp.LastCast() != "Remove Corruption")
             {
                 PartyDict.Clear();
                 PartyDict.Add("player", Aimsharp.Health("player"));
@@ -744,6 +744,17 @@ namespace AimsharpWow.Modules
                         {
                             Aimsharp.PrintMessage("Casting Rake (Mouseover)", Color.Purple);
                         }
+                        return true;
+                    }
+                }
+                #endregion
+
+                #region Maim Max CP
+                if (Maim && !GetCheckBox("Maim Queue - Dont wait for Max CP"))
+                {
+                    if (Aimsharp.CanCast("Shred", "target", true, true) && Aimsharp.PlayerSecondaryPower() < 5)
+                    {
+                        Aimsharp.Cast("Shred");
                         return true;
                     }
                 }
