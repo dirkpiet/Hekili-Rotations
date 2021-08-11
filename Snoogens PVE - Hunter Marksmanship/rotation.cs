@@ -236,7 +236,7 @@ namespace AimsharpWow.Modules
 
         private bool CanCastTrueshot(string unit)
         {
-            if (Aimsharp.CanCast("Aspect of the Turtle", unit, false, true) || (Aimsharp.SpellCooldown("Aspect of the Turtle") <= 0 && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+            if (Aimsharp.CanCast("Trueshot", unit, false, true) || (Aimsharp.SpellCooldown("Trueshot") <= 0 && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
                 return true;
 
             return false;

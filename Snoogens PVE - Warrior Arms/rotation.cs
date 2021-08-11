@@ -54,6 +54,7 @@ namespace AimsharpWow.Modules
             "Storm Bolt",
             "Spell Reflection",
             "Taunt",
+            "Shattering Throw",
         };
 
         private List<string> m_SpellBook_Arms = new List<string> {

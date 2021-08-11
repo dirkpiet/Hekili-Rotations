@@ -591,7 +591,7 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("/xxxxx Blind - Casts Blind @ Target on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Sap - Casts Sap @ Target on the next GCD, turns off Auto Combat while On", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Distract - Casts Distract @ Manual/Cursor/Player on the next GCD", Color.Yellow);
-
+            Aimsharp.PrintMessage("/xxxxx KidneyShot - Casts Kidney Shit @ Target next GCD", Color.Yellow);
             Aimsharp.PrintMessage("-----", Color.Black);
 
             #region Racial Spells
