@@ -21,3 +21,5 @@
 100% SimC Accurate Rotation  
 ### [Warrior: Fury](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Warrior%20Fury)  
 100% SimC Accurate Rotation  
+### [Demon Hunter: Havoc](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Demon%20Hunter%20Havoc)  
+100% SimC Accurate Rotation  
