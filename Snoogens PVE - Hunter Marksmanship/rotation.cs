@@ -373,6 +373,9 @@ namespace AimsharpWow.Modules
             //Healthstone
             Macros.Add("Healthstone", "/use Healthstone");
 
+            //Phial
+            Macros.Add("PhialofSerenity", "/use Phial of Serenity");
+
             //SpellQueueWindow
             Macros.Add("SetSpellQueueCvar", "/console SpellQueueWindow " + (Aimsharp.Latency + 100));
 
@@ -446,6 +449,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting(" "));
             Settings.Add(new Setting("Use Trinkets on CD, dont wait for Hekili:", false));
             Settings.Add(new Setting("Auto Healthstone @ HP%", 0, 100, 25));
+            Settings.Add(new Setting("Auto Phial of Serenity @ HP%", 0, 100, 35));
             Settings.Add(new Setting("Kicks/Interrupts"));
             Settings.Add(new Setting("Kick at milliseconds remaining", 50, 1500, 500));
             Settings.Add(new Setting("Kick channels after milliseconds", 50, 1500, 500));
@@ -733,6 +737,20 @@ namespace AimsharpWow.Modules
                         Aimsharp.PrintMessage("Using Healthstone - Player HP% " + Aimsharp.Health("player") + " due to setting being on HP% " + GetSlider("Auto Healthstone @ HP%"), Color.Purple);
                     }
                     Aimsharp.Cast("Healthstone");
+                    return true;
+                }
+            }
+
+            //Phial of Serenity
+            if (Aimsharp.CanUseItem("Phial of Serenity", false) && Aimsharp.ItemCooldown("Phial of Serenity") == 0)
+            {
+                if (Aimsharp.Health("player") <= GetSlider("Auto Phial of Serenity @ HP%"))
+                {
+                    if (Debug)
+                    {
+                        Aimsharp.PrintMessage("Using Phial of Serenity - Player HP% " + Aimsharp.Health("player") + " due to setting being on HP% " + GetSlider("Auto Phial of Serenity @ HP%"), Color.Purple);
+                    }
+                    Aimsharp.Cast("PhialofSerenity");
                     return true;
                 }
             }
