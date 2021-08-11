@@ -1,10 +1,7 @@
 # Snoogens PVE Rotations
 ## [Download Guide](https://github.com/Snoogens101/Rotations/wiki/Download-Guide)  
 ## [General Setup Guide](https://github.com/Snoogens101/Rotations/wiki/Setup-Guide)  
-### [Hunter: Beast Mastery](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Hunter%20Beast%20Mastery)  
-100% SimC Accurate Rotation with advanced CanCast Logic  
-### [Hunter: Marksmanship](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Hunter%20Marksmanship)  
-100% SimC Accurate Rotation with advanced CanCast Logic  
+## Melee  
 ### [Hunter: Survival](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Hunter%20Survival)  
 100% SimC Accurate Rotation with advanced CanCast Logic  
 ### [Monk: Windwalker](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Monk%20Windwalker)  
@@ -27,3 +24,10 @@
 100% SimC Accurate Rotation  
 ### [Death Knight: Frost](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Death%20Knight%20Frost)  
 100% SimC Accurate Rotation  
+## Ranged  
+### [Hunter: Beast Mastery](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Hunter%20Beast%20Mastery)  
+100% SimC Accurate Rotation with advanced CanCast Logic  
+### [Hunter: Marksmanship](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Hunter%20Marksmanship)  
+100% SimC Accurate Rotation with advanced CanCast Logic  
+### [Mage: Arcane](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Mage%20Arcane)  
+100% SimC Accurate Rotation 

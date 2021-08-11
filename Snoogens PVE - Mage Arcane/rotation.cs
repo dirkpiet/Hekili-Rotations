@@ -17,7 +17,7 @@ namespace AimsharpWow.Modules
         //Lists
         private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "NoDecurse", "DoorofShadows", "Polymorph", "Evocation", };
         private List<string> m_DebuffsList = new List<string> { "Polymorph", };
-        private List<string> m_BuffsList = new List<string> { "Arcane Intellect", "Arcane Power", "Evocation", "Shifting Power", };
+        private List<string> m_BuffsList = new List<string> { "Arcane Intellect", "Arcane Power", "Evocation", "Shifting Power", "Presence of Mind", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
         private List<string> m_ItemsList = new List<string> { "Phial of Serenity", "Healthstone", "Mana Gem", };
 
@@ -473,11 +473,21 @@ namespace AimsharpWow.Modules
             }
             #endregion
 
-            #region Cancel Logic
+            #region Above Pause Logic
             //Cancel Evocation
             if (Aimsharp.HasBuff("Evocation", "player", true) && Aimsharp.Mana("player") == 100)
             {
                 Aimsharp.StopCasting();
+                return true;
+            }
+
+            if (Aimsharp.CastingID("player") == 118 && Aimsharp.CastingRemaining("player") > 0 && Aimsharp.CastingRemaining("player") <= 400 && Aimsharp.IsCustomCodeOn("Polymorph"))
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Polymorph Queue", Color.Purple);
+                }
+                Aimsharp.Cast("PolymorphOff");
                 return true;
             }
             #endregion
@@ -642,7 +652,7 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
-            if (Polymorph && Aimsharp.CanCast("Polymorph", "mouseover", true, true) && Aimsharp.CustomFunction("MouseoverExists") == 1 && !Moving)
+            if (Polymorph && Aimsharp.CanCast("Polymorph", "mouseover", true, true) && !Moving)
             {
                 if (Debug)
                 {
@@ -973,7 +983,7 @@ namespace AimsharpWow.Modules
 
                     #region Covenants
                     ///Covenants
-                    if (SpellID1 == 307443 && Aimsharp.CanCast("Radiant Spark", "target", true, true))
+                    if (SpellID1 == 307443 && Aimsharp.CanCast("Radiant Spark", "target", true, true) && !Moving)
                     {
                         if (Debug)
                         {
@@ -1050,7 +1060,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 30451 && Aimsharp.CanCast("Arcane Blast", "target", true, true) && !Moving)
+                    if (SpellID1 == 30451 && Aimsharp.CanCast("Arcane Blast", "target", true, true) && (!Moving || Aimsharp.HasBuff("Presence of Mind", "player", true)))
                     {
                         if (Debug)
                         {
@@ -1390,6 +1400,18 @@ namespace AimsharpWow.Modules
             }
             #endregion
 
+            #region Above Pause Logic
+            if (Aimsharp.CastingID("player") == 118 && Aimsharp.CastingRemaining("player") > 0 && Aimsharp.CastingRemaining("player") <= 400 && Aimsharp.IsCustomCodeOn("Polymorph"))
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Polymorph Queue", Color.Purple);
+                }
+                Aimsharp.Cast("PolymorphOff");
+                return true;
+            }
+            #endregion
+
             #region Pause Checks
             if (Aimsharp.CastingID("player") > 0 || Aimsharp.IsChanneling("player"))
             {
@@ -1419,7 +1441,7 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
-            if (Polymorph && Aimsharp.CanCast("Polymorph", "mouseover", true, true) && Aimsharp.CustomFunction("MouseoverExists") == 1 && !Moving)
+            if (Polymorph && Aimsharp.CanCast("Polymorph", "mouseover", true, true) && !Moving)
             {
                 if (Debug)
                 {
