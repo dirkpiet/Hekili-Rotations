@@ -53,6 +53,7 @@ namespace AimsharpWow.Modules
             "Impending Victory",
             "Storm Bolt",
             "Spell Reflection",
+            "Taunt",
         };
 
         private List<string> m_SpellBook_Arms = new List<string> {
@@ -268,7 +269,6 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Auto Die by the Sword @ HP%", 0, 100, 10));
             Settings.Add(new Setting("Spear of Bastion Cast:", m_CastingList, "Player"));
             Settings.Add(new Setting("Ravager Cast:", m_CastingList, "Player"));
-            Settings.Add(new Setting("Door of Shadows Cast:", m_CastingList, "Manual"));
             Settings.Add(new Setting("Misc"));
             Settings.Add(new Setting("Debug:", false));
 
