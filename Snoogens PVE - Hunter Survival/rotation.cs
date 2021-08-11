@@ -19,7 +19,7 @@ namespace AimsharpWow.Modules
         private List<string> m_DebuffsList = new List<string> {  };
         private List<string> m_BuffsList = new List<string> { "Mend Pet", "Flayer's Mark", "Aspect of the Eagle", "Viper's Venom", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
-        private List<string> m_ItemsList = new List<string> { "Healthstone" };
+        private List<string> m_ItemsList = new List<string> { "Phial of Serenity", "Healthstone" };
 
         private List<string> m_SpellBook = new List<string> {
             //Covenants
