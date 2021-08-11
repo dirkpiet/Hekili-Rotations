@@ -867,7 +867,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 323639 && Aimsharp.CanCast("The Hunt", "target", true, true))
+                    if (SpellID1 == 323639 && Aimsharp.CanCast("The Hunt", "target", true, true) && !Moving)
                     {
                         if (Debug)
                         {
