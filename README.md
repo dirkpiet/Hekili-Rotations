@@ -10,10 +10,14 @@
 ### [Monk: Windwalker](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Monk%20Windwalker)  
 100% SimC Accurate Rotation with advanced CanCast Logic  
 ### [Rogue: Assassination](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Rogue%20Assassination)  
-100% SimC Accurate Rotation with advanced CanCast Logic  
+100% SimC Accurate Rotation with advanced CanCast Logic 
+### [Rogue: Outlaw](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Rogue%20Outlaw)  
+100% SimC Accurate Rotation  
+### [Rogue: Subtlety](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Rogue%20Subtlety)  
+100% SimC Accurate Rotation  
 ### [Druid: Feral](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Druid%20Feral)  
-100% SimC Accurate Rotation 
+100% SimC Accurate Rotation  
 ### [Warrior: Arms](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Warrior%20Arms)  
-100% SimC Accurate Rotation 
+100% SimC Accurate Rotation  
 ### [Warrior: Fury](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Warrior%20Fury)  
-100% SimC Accurate Rotation 
+100% SimC Accurate Rotation  
