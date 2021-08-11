@@ -23,3 +23,5 @@
 100% SimC Accurate Rotation  
 ### [Demon Hunter: Havoc](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Demon%20Hunter%20Havoc)  
 100% SimC Accurate Rotation  
+### [Death Knight: Unholy](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Death%20Knight%20Unholy)  
+100% SimC Accurate Rotation  
