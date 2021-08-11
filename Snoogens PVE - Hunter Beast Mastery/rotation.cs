@@ -1099,7 +1099,7 @@ namespace AimsharpWow.Modules
 
             #region Auto Target
             //Auto Target
-            if ((!Enemy || Enemy && !TargetAlive()) && EnemiesInMelee > 0)
+            if ((!Enemy || Enemy && !TargetAlive() || Enemy && !TargetInCombat) && EnemiesInMelee > 0)
             {
                 System.Threading.Thread.Sleep(50);
                 Aimsharp.Cast("TargetEnemy");
