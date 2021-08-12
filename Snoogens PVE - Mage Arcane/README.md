@@ -4,6 +4,3 @@
 
 ## Recommended Targeting Settings  
 ![](https://i.imgur.com/FgLpWHA.png)  
-
-## I recommend you place Spellsteal in Cooldowns, so it will automatically Spellsteal your Target when Cooldowns are enabled.    
-![](https://i.imgur.com/s8pnau7.png)  
