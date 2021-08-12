@@ -33,3 +33,5 @@
 100% SimC Accurate Rotation  
 ### [Mage: Fire](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Mage%20Fire)  
 100% SimC Accurate Rotation  
+### [Mage: Frost](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Mage%20Frost)  
+100% SimC Accurate Rotation  
