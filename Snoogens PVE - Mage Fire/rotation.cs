@@ -15,7 +15,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "NoDecurse", "NoCycle", "DoorofShadows", "Polymorph", "Evocation", "RingofFrost", "Flamestrike", "Meteor", "ArcaneExplosion", };
+        private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "NoDecurse", "NoCycle", "DoorofShadows", "Polymorph", "Evocation", "RingofFrost", "Flamestrike", "Meteor", "ArcaneExplosion", "FlamestrikeCursor",};
         private List<string> m_DebuffsList = new List<string> { "Polymorph", };
         private List<string> m_BuffsList = new List<string> { "Arcane Intellect", "Arcane Power", "Shifting Power", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
@@ -381,6 +381,7 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("/xxxxx Flamestrike - Casts Flamestrike @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Meteor - Casts Meteor @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx DoorofShadows - Casts Door of Shadows @ next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx FlamestrikeCursor - Toggles Flamestrike always @ Cursor (same as Option)", Color.Yellow);
             Aimsharp.PrintMessage("-----", Color.Black);
 
             #region Racial Spells
@@ -1459,7 +1460,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 2120 && Aimsharp.CanCast("Flamestrike", "player", false, true) && (Aimsharp.CustomFunction("FlamestrikeMouseover") == 1 || GetCheckBox("Always Cast Flamestrike @ Cursor during Rotation")))
+                    if (SpellID1 == 2120 && Aimsharp.CanCast("Flamestrike", "player", false, true) && (Aimsharp.CustomFunction("FlamestrikeMouseover") == 1 || GetCheckBox("Always Cast Flamestrike @ Cursor during Rotation") || Aimsharp.IsCustomCodeOn("FlamestrikeCursor")))
                     {
                         if (Debug)
                         {

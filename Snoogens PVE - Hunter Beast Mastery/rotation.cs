@@ -15,7 +15,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "FreezingTrap", "TarTrap", "Turtle", "Intimidation", "NoInterrupts", "NoCycle", "WildSpirits", "ResonatingArrow", "BindingShot", "Flare",};
+        private List<string> m_IngameCommandsList = new List<string> { "FreezingTrap", "TarTrap", "Turtle", "Intimidation", "NoInterrupts", "NoCycle", "WildSpirits", "ResonatingArrow", "BindingShot", "Flare", "FlareCursor", "TarTrapCursor" };
         private List<string> m_DebuffsList = new List<string> {  };
         private List<string> m_BuffsList = new List<string> { "Mend Pet", "Flayer's Mark", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
@@ -666,6 +666,8 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Auto Spirit Heal Player @ HP%", 0, 100, 60));
             Settings.Add(new Setting("Auto Spirit Heal Pet @ HP%", 0, 100, 30));
             Settings.Add(new Setting("Auto Mend Pet @ HP%", 0, 100, 60));
+            Settings.Add(new Setting("Always Cast Flare @ Cursor during Rotation", false));
+            Settings.Add(new Setting("Always Cast Tar Trap @ Cursor during Rotation", false));
             Settings.Add(new Setting("Misc"));
             Settings.Add(new Setting("Debug:", false));
 
@@ -701,6 +703,8 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("/xxxxx BindingShot - Casts Binding Shot @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx WildSpirits - Casts Wild Spirits @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx ResonatingArrow - Casts Resonating Arrow @ next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx FlareCursor - Toggles Flare always @ Cursor (same as Option)", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx TarTrapCursor - Toggles Tar Trap always @ Cursor (same as Option)", Color.Yellow);
             Aimsharp.PrintMessage("-----", Color.Black);
 
             #region Racial Spells
@@ -1508,7 +1512,7 @@ namespace AimsharpWow.Modules
                     #endregion
 
                     #region General Spells - Player GCD
-                    if (SpellID1 == 1543 && CanCastFlare("player") && Aimsharp.CustomFunction("VolleyMouseover") == 1)
+                    if (SpellID1 == 1543 && CanCastFlare("player") && (Aimsharp.CustomFunction("VolleyMouseover") == 1 || GetCheckBox("Always Cast Flare @ Cursor during Rotation") || Aimsharp.IsCustomCodeOn("FlareCursor")))
                     {
                         if (Debug)
                         {
@@ -1527,7 +1531,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 187698 && CanCastTarTrap("player") && Aimsharp.CustomFunction("VolleyMouseover") == 1)
+                    if (SpellID1 == 187698 && CanCastTarTrap("player") && (Aimsharp.CustomFunction("VolleyMouseover") == 1 || GetCheckBox("Always Cast Tar Trap @ Cursor during Rotation") || Aimsharp.IsCustomCodeOn("TarTrapCursor")))
                     {
                         if (Debug)
                         {
