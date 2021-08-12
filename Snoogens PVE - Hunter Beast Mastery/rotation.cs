@@ -15,7 +15,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "FreezingTrap", "TarTrap", "Turtle", "Intimidation", "NoInterrupts", "WildSpirits", "ResonatingArrow", "BindingShot", "Flare",};
+        private List<string> m_IngameCommandsList = new List<string> { "FreezingTrap", "TarTrap", "Turtle", "Intimidation", "NoInterrupts", "NoCycle", "WildSpirits", "ResonatingArrow", "BindingShot", "Flare",};
         private List<string> m_DebuffsList = new List<string> {  };
         private List<string> m_BuffsList = new List<string> { "Mend Pet", "Flayer's Mark", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
@@ -612,11 +612,37 @@ namespace AimsharpWow.Modules
 
             CustomFunctions.Add("HekiliWait", "if HekiliDisplayPrimary.Recommendations[1].wait ~= nil and HekiliDisplayPrimary.Recommendations[1].wait * 1000 > 0 then return math.floor(HekiliDisplayPrimary.Recommendations[1].wait * 1000) end return 0");
 
+            CustomFunctions.Add("HekiliCycle", "if HekiliDisplayPrimary.Recommendations[1].indicator ~= nil and HekiliDisplayPrimary.Recommendations[1].indicator == 'cycle' then return 1 end return 0");
+
+            CustomFunctions.Add("HekiliEnemies", "if Hekili.State.active_enemies ~= nil and Hekili.State.active_enemies > 0 then return Hekili.State.active_enemies end return 0");
+
             CustomFunctions.Add("PhialCount", "local count = GetItemCount(177278) if count ~= nil then return count end return 0");
 
             CustomFunctions.Add("TranqBuffCheck", "local markcheck = 0; if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Tranquilizing Shot','mouseover') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType  = UnitAura('mouseover', y, \"RAID\") if debuffType == '' or debuffType == 'Magic' then markcheck = markcheck + 2 end end return markcheck end return 0");
 
             CustomFunctions.Add("VolleyMouseover", "if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Steady Shot','mouseover') == 1 then return 1 end; return 0");
+
+            CustomFunctions.Add("GroupTargets",
+            "local UnitTargeted = 0 " +
+            "for i = 1, 20 do local unit = 'nameplate'..i " +
+                "if UnitExists(unit) then " +
+                    "if UnitCanAttack('player', unit) then " +
+                        "if GetNumGroupMembers() < 6 then " +
+                            "for p = 1, 4 do local partymember = 'party'..p " +
+                                "if UnitIsUnit(unit..'target', partymember) then UnitTargeted = p end " +
+                            "end " +
+                        "end " +
+                        "if GetNumGroupMembers() > 5 then " +
+                            "for r = 1, 40 do local raidmember = 'raid'..r " +
+                                "if UnitIsUnit(unit..'target', raidmember) then UnitTargeted = r end " +
+                            "end " +
+                        "end " +
+                        "if UnitIsUnit(unit..'target', 'player') then UnitTargeted = 5 end " +
+                    "else UnitTargeted = 0 " +
+                    "end " +
+                "end " +
+            "end " +
+            "return UnitTargeted");
         }
         #endregion
 
@@ -779,8 +805,11 @@ namespace AimsharpWow.Modules
             int SpellID1 = Aimsharp.CustomFunction("HekiliID1");
             int CooldownsToggle = Aimsharp.CustomFunction("CooldownsToggleCheck");
             int Wait = Aimsharp.CustomFunction("HekiliWait");
+            int Enemies = Aimsharp.CustomFunction("HekiliEnemies");
+            int TargetingGroup = Aimsharp.CustomFunction("GroupTargets");
 
             bool NoInterrupts= Aimsharp.IsCustomCodeOn("NoInterrupts");
+            bool NoCycle = Aimsharp.IsCustomCodeOn("NoCycle");
 
             bool Debug = GetCheckBox("Debug:") == true;
             bool UseTrinketsCD = GetCheckBox("Use Trinkets on CD, dont wait for Hekili:") == true;
@@ -1116,8 +1145,17 @@ namespace AimsharpWow.Modules
             #endregion
 
             #region Auto Target
+            //Hekili Cycle
+            if (!NoCycle && Aimsharp.CustomFunction("HekiliCycle") == 1 && Enemies > 1)
+            {
+                System.Threading.Thread.Sleep(50);
+                Aimsharp.Cast("TargetEnemy");
+                System.Threading.Thread.Sleep(50);
+                return true;
+            }
+
             //Auto Target
-            if ((!Enemy || Enemy && !TargetAlive() || Enemy && !TargetInCombat) && EnemiesInMelee > 0)
+            if (!NoCycle && (!Enemy || Enemy && !TargetAlive() || Enemy && !TargetInCombat) && (EnemiesInMelee > 0 || TargetingGroup > 0))
             {
                 System.Threading.Thread.Sleep(50);
                 Aimsharp.Cast("TargetEnemy");
