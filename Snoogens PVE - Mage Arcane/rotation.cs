@@ -15,7 +15,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "NoDecurse", "DoorofShadows", "Polymorph", "Evocation", };
+        private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "NoDecurse", "NoCycle", "DoorofShadows", "Polymorph", "Evocation", "RingofFrost", "ArcaneExplosion", };
         private List<string> m_DebuffsList = new List<string> { "Polymorph", };
         private List<string> m_BuffsList = new List<string> { "Arcane Intellect", "Arcane Power", "Evocation", "Shifting Power", "Presence of Mind", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
@@ -71,6 +71,8 @@ namespace AimsharpWow.Modules
         };
 
         private List<string> m_RaceList = new List<string> { "human", "dwarf", "nightelf", "gnome", "draenei", "pandaren", "orc", "scourge", "tauren", "troll", "bloodelf", "goblin", "worgen", "voidelf", "lightforgeddraenei", "highmountaintauren", "nightborne", "zandalaritroll", "magharorc", "kultiran", "darkirondwarf", "vulpera", "mechagnome" };
+
+        private List<string> m_CastingList = new List<string> { "Manual", "Cursor", "Player" };
 
         private List<int> Torghast_InnerFlame = new List<int> { 258935, 258938, 329422, 329423, };
 
@@ -212,7 +214,7 @@ namespace AimsharpWow.Modules
 
             //Queues
             Macros.Add("PolymorphOff", "/" + FiveLetters + " Polymorph");
-            Macros.Add("PolymorphMO", "/cast [@mouseover] Polymorph");
+            Macros.Add("RingofFrostOff", "/" + FiveLetters + " RingofFrost");
 
             Macros.Add("FOC_party1", "/focus party1");
             Macros.Add("FOC_party2", "/focus party2");
@@ -220,6 +222,11 @@ namespace AimsharpWow.Modules
             Macros.Add("FOC_party4", "/focus party4");
             Macros.Add("FOC_player", "/focus player");
             Macros.Add("RC_FOC", "/cast [@focus] Remove Curse");
+
+            Macros.Add("PolymorphMO", "/cast [@mouseover] Polymorph");
+            Macros.Add("SpellstealMO", "/cast [@mouseover] Spellsteal");
+            Macros.Add("RingofFrostC", "/cast [@cursor] RingofFrost");
+            Macros.Add("RingofFrostP", "/cast [@player] RingofFrost");
         }
 
         private void InitializeSpells()
@@ -259,9 +266,11 @@ namespace AimsharpWow.Modules
 
             CustomFunctions.Add("HekiliWait", "if HekiliDisplayPrimary.Recommendations[1].wait ~= nil and HekiliDisplayPrimary.Recommendations[1].wait * 1000 > 0 then return math.floor(HekiliDisplayPrimary.Recommendations[1].wait * 1000) end return 0");
 
-            CustomFunctions.Add("PhialCount", "local count = GetItemCount(177278) if count ~= nil then return count end return 0");
+            CustomFunctions.Add("HekiliCycle", "if HekiliDisplayPrimary.Recommendations[1].indicator ~= nil and HekiliDisplayPrimary.Recommendations[1].indicator == 'cycle' then return 1 end return 0");
 
-            CustomFunctions.Add("VolleyMouseover", "if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Steady Shot','mouseover') == 1 then return 1 end; return 0");
+            CustomFunctions.Add("HekiliEnemies", "if Hekili.State.active_enemies ~= nil and Hekili.State.active_enemies > 0 then return Hekili.State.active_enemies end return 0");
+
+            CustomFunctions.Add("PhialCount", "local count = GetItemCount(177278) if count ~= nil then return count end return 0");
 
             CustomFunctions.Add("UnitIsFocus", "local foc=0; " +
             "\nif UnitExists('focus') and UnitIsUnit('party1','focus') then foc = 1; end" +
@@ -284,6 +293,31 @@ namespace AimsharpWow.Modules
             "if type ~= nil and type == \"Curse\" then y = y +16; end end " +
             "return y");
 
+            CustomFunctions.Add("GroupTargets",
+                    "local UnitTargeted = 0 " +
+                    "for i = 1, 20 do local unit = 'nameplate'..i " +
+                        "if UnitExists(unit) then " +
+                            "if UnitCanAttack('player', unit) then " +
+                                "if GetNumGroupMembers() < 6 then " +
+                                    "for p = 1, 4 do local partymember = 'party'..p " +
+                                        "if UnitIsUnit(unit..'target', partymember) then UnitTargeted = p end " +
+                                    "end " +
+                                "end " +
+                                "if GetNumGroupMembers() > 5 then " +
+                                    "for r = 1, 40 do local raidmember = 'raid'..r " +
+                                        "if UnitIsUnit(unit..'target', raidmember) then UnitTargeted = r end " +
+                                    "end " +
+                                "end " +
+                                "if UnitIsUnit(unit..'target', 'player') then UnitTargeted = 5 end " +
+                            "else UnitTargeted = 0 " +
+                            "end " +
+                        "end " +
+                    "end " +
+                    "return UnitTargeted");
+
+            CustomFunctions.Add("SpellstealCheckMouseover", "local markcheck = 0; if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Spellsteal','mouseover') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType,_,_,_,isStealable  = UnitAura('mouseover', y) if debuffType == 'Magic' and isStealable == true then markcheck = markcheck + 2 end end return markcheck end return 0");
+
+            CustomFunctions.Add("SpellstealCheckTarget", "local markcheck = 0; if UnitExists('target') and UnitIsDead('target') ~= true and UnitAffectingCombat('target') and IsSpellInRange('Spellsteal','target') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType,_,_,_,isStealable  = UnitAura('target', y) if debuffType == 'Magic' and isStealable == true then markcheck = markcheck + 2 end end return markcheck end return 0");
 
         }
         #endregion
@@ -303,10 +337,13 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("General"));
             Settings.Add(new Setting("Auto Start Combat:", true));
             Settings.Add(new Setting("Arcane Intellect Out of Combat:", true));
+            Settings.Add(new Setting("Auto Spellsteal Target:", true));
+            Settings.Add(new Setting("Auto Spellsteal Mouseover:", true));
             Settings.Add(new Setting("Auto Prismatic Barrier @ HP%", 0, 100, 90));
             Settings.Add(new Setting("Auto Ice Block @ HP%", 0, 100, 25));
             Settings.Add(new Setting("Auto Alter Time @ HP%", 0, 100, 15));
             Settings.Add(new Setting("Auto Greater Invisibility @ HP%", 0, 100, 35));
+            Settings.Add(new Setting("Ring of Frost Cast:", m_CastingList, "Manual"));
             Settings.Add(new Setting("Misc"));
             Settings.Add(new Setting("Debug:", false));
 
@@ -332,9 +369,12 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("-----", Color.Black);
             Aimsharp.PrintMessage("- General -", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoInterrupts - Disables Interrupts", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx NoCycle - Disables Target Cycle", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoDecurse - Disables Decurse", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Polymorph - Casts Polymorph @ Mouseover next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx ArcaneExplosion - Spams Arcane Explosion until turned Off", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Evocation - Casts Evocation @ next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx RingofFrost - Casts Ring of Frost @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx DoorofShadows - Casts Door of Shadows @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("-----", Color.Black);
 
@@ -440,9 +480,12 @@ namespace AimsharpWow.Modules
             int SpellID1 = Aimsharp.CustomFunction("HekiliID1");
             int CooldownsToggle = Aimsharp.CustomFunction("CooldownsToggleCheck");
             int Wait = Aimsharp.CustomFunction("HekiliWait");
+            int Enemies = Aimsharp.CustomFunction("HekiliEnemies");
+            int TargetingGroup = Aimsharp.CustomFunction("GroupTargets");
 
             bool NoInterrupts= Aimsharp.IsCustomCodeOn("NoInterrupts");
             bool NoDecurse = Aimsharp.IsCustomCodeOn("NoDecurse");
+            bool NoCycle = Aimsharp.IsCustomCodeOn("NoCycle");
 
             bool Debug = GetCheckBox("Debug:") == true;
             bool UseTrinketsCD = GetCheckBox("Use Trinkets on CD, dont wait for Hekili:") == true;
@@ -507,6 +550,11 @@ namespace AimsharpWow.Modules
             {
                 return false;
             }
+
+            if (Aimsharp.IsCustomCodeOn("RingofFrost") && Aimsharp.SpellCooldown("Ring of Frost") - Aimsharp.GCD() <= 0 && Aimsharp.CustomFunction("IsRMBDown") == 1)
+            {
+                return false;
+            }
             #endregion
 
             #region Interrupts
@@ -541,20 +589,6 @@ namespace AimsharpWow.Modules
             #endregion
 
             #region Auto Spells and Items
-            //Auto Healthstone
-            if (Aimsharp.CanUseItem("Healthstone", false) && Aimsharp.ItemCooldown("Healthstone") == 0)
-            {
-                if (Aimsharp.Health("player") <= GetSlider("Auto Healthstone @ HP%"))
-                {
-                    if (Debug)
-                    {
-                        Aimsharp.PrintMessage("Using Healthstone - Player HP% " + Aimsharp.Health("player") + " due to setting being on HP% " + GetSlider("Auto Healthstone @ HP%"), Color.Purple);
-                    }
-                    Aimsharp.Cast("Healthstone");
-                    return true;
-                }
-            }
-
             //Auto Healthstone
             if (Aimsharp.CanUseItem("Healthstone", false) && Aimsharp.ItemCooldown("Healthstone") == 0)
             {
@@ -638,6 +672,34 @@ namespace AimsharpWow.Modules
                     return true;
                 }
             }
+
+            //Auto Spellsteal Mouseover
+            if (Aimsharp.CanCast("Spellsteal", "mouseover", true, true))
+            {
+                if (GetCheckBox("Auto Spellsteal Mouseover:") && Aimsharp.CustomFunction("SpellstealCheckMouseover") == 3)
+                {
+                    Aimsharp.Cast("SpellstealMO");
+                    if (Debug)
+                    {
+                        Aimsharp.PrintMessage("Casting Spellsteal on Mouseover", Color.Purple);
+                    }
+                    return true;
+                }
+            }
+
+            //Auto Spellsteal Target
+            if (Aimsharp.CanCast("Spellsteal", "target", true, true))
+            {
+                if (GetCheckBox("Auto Spellsteal Target:") && Aimsharp.CustomFunction("SpellstealCheckTarget") == 3)
+                {
+                    Aimsharp.Cast("Spellsteal");
+                    if (Debug)
+                    {
+                        Aimsharp.PrintMessage("Casting Spellsteal on Target", Color.Purple);
+                    }
+                    return true;
+                }
+            }
             #endregion
 
             #region Queues
@@ -673,13 +735,24 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
-            if (Evocation && Aimsharp.CanCast("Evocation", "target", true, true) && !Moving)
+            if (Evocation && Aimsharp.CanCast("Evocation", "player", false, true) && !Moving)
             {
                 if (Debug)
                 {
                     Aimsharp.PrintMessage("Casting Evocation - Queue", Color.Purple);
                 }
                 Aimsharp.Cast("Evocation");
+                return true;
+            }
+
+            bool ArcaneExplosion = Aimsharp.IsCustomCodeOn("ArcaneExplosion");
+            if (ArcaneExplosion && Aimsharp.CanCast("Arcane Explosion", "player", false, true))
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Arcane Explosion - Queue", Color.Purple);
+                }
+                Aimsharp.Cast("Arcane Explosion");
                 return true;
             }
 
@@ -702,6 +775,47 @@ namespace AimsharpWow.Modules
                 }
                 Aimsharp.Cast("Door of Shadows");
                 return true;
+            }
+
+            //Queue Ring of Frost
+            string RingofFrostCast = GetDropDown("Ring of Frost Cast:");
+            bool RingofFrost = Aimsharp.IsCustomCodeOn("RingofFrost");
+            if ((Aimsharp.SpellCooldown("Ring of Frost") - Aimsharp.GCD() > 2000 || Moving) && RingofFrost)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Ring of Frost Queue", Color.Purple);
+                }
+                Aimsharp.Cast("RingofFrostOff");
+                return true;
+            }
+
+            if (RingofFrost && Aimsharp.CanCast("Ring of Frost", "player", false, true) && !Moving)
+            {
+                switch (RingofFrostCast)
+                {
+                    case "Manual":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Ring of Frost - " + RingofFrostCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("Ring of Frost");
+                        return true;
+                    case "Player":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Ring of Frost - " + RingofFrostCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("RingofFrostP");
+                        return true;
+                    case "Cursor":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Ring of Frost - " + RingofFrostCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("RingofFrostC");
+                        return true;
+                }
             }
             #endregion
 
@@ -752,8 +866,17 @@ namespace AimsharpWow.Modules
             #endregion
 
             #region Auto Target
+            //Hekili Cycle
+            if (!NoCycle && Aimsharp.CustomFunction("HekiliCycle") == 1 && Enemies > 1)
+            {
+                System.Threading.Thread.Sleep(50);
+                Aimsharp.Cast("TargetEnemy");
+                System.Threading.Thread.Sleep(50);
+                return true;
+            }
+
             //Auto Target
-            if ((!Enemy || Enemy && !TargetAlive() || Enemy && !TargetInCombat) && EnemiesInMelee > 0)
+            if (!NoCycle && (!Enemy || Enemy && !TargetAlive() || Enemy && !TargetInCombat) && (EnemiesInMelee > 0 || TargetingGroup > 0))
             {
                 System.Threading.Thread.Sleep(50);
                 Aimsharp.Cast("TargetEnemy");
@@ -764,7 +887,7 @@ namespace AimsharpWow.Modules
 
             if (Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat && Wait <= 200)
             {
-                if (Aimsharp.Range("target") <= 40 && !Aimsharp.HasDebuff("Polymorph", "target", true) && !Polymorph)
+                if (Aimsharp.Range("target") <= 40 && !Aimsharp.HasDebuff("Polymorph", "target", true) && !Polymorph && !ArcaneExplosion)
                 {
                     #region Trinkets
                     if (CooldownsToggle == 1 && UseTrinketsCD && Aimsharp.CanUseTrinket(0))
@@ -1423,6 +1546,11 @@ namespace AimsharpWow.Modules
                 return false;
             }
 
+            if (Aimsharp.IsCustomCodeOn("RingofFrost") && Aimsharp.SpellCooldown("Ring of Frost") - Aimsharp.GCD() <= 0 && Aimsharp.CustomFunction("IsRMBDown") == 1)
+            {
+                return false;
+            }
+
             if (Aimsharp.IsCustomCodeOn("DoorofShadows") && Aimsharp.SpellCooldown("Door of Shadows") - Aimsharp.GCD() <= 0 && Aimsharp.CustomFunction("IsRMBDown") == 1)
             {
                 return false;
@@ -1462,13 +1590,24 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
-            if (Evocation && Aimsharp.CanCast("Evocation", "target", true, true) && !Moving)
+            if (Evocation && Aimsharp.CanCast("Evocation", "player", false, true) && !Moving)
             {
                 if (Debug)
                 {
                     Aimsharp.PrintMessage("Casting Evocation - Queue", Color.Purple);
                 }
                 Aimsharp.Cast("Evocation");
+                return true;
+            }
+
+            bool ArcaneExplosion = Aimsharp.IsCustomCodeOn("ArcaneExplosion");
+            if (ArcaneExplosion && Aimsharp.CanCast("Arcane Explosion", "player", false, true))
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Arcane Explosion - Queue", Color.Purple);
+                }
+                Aimsharp.Cast("Arcane Explosion");
                 return true;
             }
 
@@ -1491,6 +1630,47 @@ namespace AimsharpWow.Modules
                 }
                 Aimsharp.Cast("Door of Shadows");
                 return true;
+            }
+
+            //Queue Ring of Frost
+            string RingofFrostCast = GetDropDown("Ring of Frost Cast:");
+            bool RingofFrost = Aimsharp.IsCustomCodeOn("RingofFrost");
+            if ((Aimsharp.SpellCooldown("Ring of Frost") - Aimsharp.GCD() > 2000 || Moving) && RingofFrost)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Ring of Frost Queue", Color.Purple);
+                }
+                Aimsharp.Cast("RingofFrostOff");
+                return true;
+            }
+
+            if (RingofFrost && Aimsharp.CanCast("Ring of Frost", "player", false, true) && !Moving)
+            {
+                switch (RingofFrostCast)
+                {
+                    case "Manual":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Ring of Frost - " + RingofFrostCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("Ring of Frost");
+                        return true;
+                    case "Player":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Ring of Frost - " + RingofFrostCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("RingofFrostP");
+                        return true;
+                    case "Cursor":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Ring of Frost - " + RingofFrostCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("RingofFrostC");
+                        return true;
+                }
             }
             #endregion
 

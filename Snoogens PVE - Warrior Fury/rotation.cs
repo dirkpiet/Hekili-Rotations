@@ -15,7 +15,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "StormBolt", "IntimidatingShout", "SpearofBastion", "DoorofShadows", "NoInterrupts", "NoCycle", };
+        private List<string> m_IngameCommandsList = new List<string> { "StormBolt", "IntimidatingShout", "SpearofBastion", "Bladestorm", "DoorofShadows", "NoInterrupts", "NoCycle", };
         private List<string> m_DebuffsList = new List<string> { };
         private List<string> m_BuffsList = new List<string> { "Defensive Stance", "Battle Shout", "Bladestorm", "Voracious Culling Blade", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
@@ -188,6 +188,7 @@ namespace AimsharpWow.Modules
             Macros.Add("IntimidatingShoutOff", "/" + FiveLetters + " IntimidatingShout");
             Macros.Add("SpearofBastionOff", "/" + FiveLetters + " SpearofBastion");
             Macros.Add("DoorofShadowsOff", "/" + FiveLetters + " DoorofShadows");
+            Macros.Add("BladestormOff", "/" + FiveLetters + " Bladestorm");
 
             //CancelAura
             Macros.Add("CancelBladestorm", "/cancelaura Bladestorm");
@@ -288,6 +289,7 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("/xxxxx NoCycle - Disables Target Cycle", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx StormBolt - Casts Storm Bolt @ Target on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx IntimidatingShout - Casts Intimidating Shout @ Target on the next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx Bladestorm - Casts Bladestorm @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx SpearofBastion - Casts Spear of Bastion @ Manual/Player on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx DoorofShadows - Casts Spear of Bastion @ Manual on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("-----", Color.Black);
@@ -395,6 +397,7 @@ namespace AimsharpWow.Modules
             int Wait = Aimsharp.CustomFunction("HekiliWait");
 
             bool NoInterrupts = Aimsharp.IsCustomCodeOn("NoInterrupts");
+            bool NoCycle = Aimsharp.IsCustomCodeOn("NoCycle");
 
             bool Debug = GetCheckBox("Debug:") == true;
             bool UseTrinketsCD = GetCheckBox("Use Trinkets on CD, dont wait for Hekili:") == true;
@@ -426,6 +429,21 @@ namespace AimsharpWow.Modules
             }
             #endregion
 
+            #region Above Pause Logic
+            bool Bladestorm = Aimsharp.IsCustomCodeOn("Bladestorm");
+            if (Aimsharp.SpellCooldown("Bladestorm") - Aimsharp.GCD() > 2000 && Aimsharp.BuffRemaining("Bladestorm", "player", true) <= 0 && Bladestorm)
+            {
+                Aimsharp.Cast("BladestormOff");
+                return true;
+            }
+
+            if (SpellID1 == 999999 && Aimsharp.HasBuff("Bladestorm", "player", true) && !Bladestorm)
+            {
+                Aimsharp.Cast("CancelBladestorm");
+                return true;
+            }
+            #endregion
+
             #region Pause Checks
             if (Aimsharp.CastingID("player") > 0 || Aimsharp.IsChanneling("player"))
             {
@@ -445,14 +463,6 @@ namespace AimsharpWow.Modules
             if (Aimsharp.IsCustomCodeOn("DoorofShadows") && Aimsharp.SpellCooldown("Door of Shadows") - Aimsharp.GCD() <= 0 && Aimsharp.CustomFunction("IsRMBDown") == 1)
             {
                 return false;
-            }
-            #endregion
-
-            #region CancelLogic
-            if (SpellID1 == 999999 && Aimsharp.HasBuff("Bladestorm", "player", true))
-            {
-                Aimsharp.Cast("CancelBladestorm");
-                return true;
             }
             #endregion
 
@@ -559,6 +569,20 @@ namespace AimsharpWow.Modules
 
             #region Queues
             //Queues
+            //Queue Bladestorm
+            if (Aimsharp.SpellCooldown("Bladestorm") - Aimsharp.GCD() > 2000 && Aimsharp.BuffRemaining("Bladestorm", "player", true) <= 0 && Bladestorm)
+            {
+                Aimsharp.Cast("BladestormOff");
+                return true;
+            }
+
+            if (Bladestorm && Aimsharp.CanCast("Bladestorm", "target", true, true))
+            {
+                Aimsharp.PrintMessage("Queued Bladestorm");
+                Aimsharp.Cast("Bladestorm");
+                return true;
+            }
+
             //Queue StormBolt
             bool StormBolt = Aimsharp.IsCustomCodeOn("StormBolt");
             if (Aimsharp.SpellCooldown("Storm Bolt") - Aimsharp.GCD() > 2000 && StormBolt && Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat)
@@ -646,7 +670,7 @@ namespace AimsharpWow.Modules
 
             #region Auto Target
             //Hekili Cycle
-            if (Aimsharp.CustomFunction("HekiliCycle") == 1 && EnemiesInMelee > 1)
+            if (!NoCycle && Aimsharp.CustomFunction("HekiliCycle") == 1 && EnemiesInMelee > 1)
             {
                 System.Threading.Thread.Sleep(50);
                 Aimsharp.Cast("TargetEnemy");
@@ -655,7 +679,7 @@ namespace AimsharpWow.Modules
             }
 
             //Auto Target
-            if ((!Enemy || Enemy && !TargetAlive() || Enemy && !TargetInCombat) && EnemiesInMelee > 0)
+            if (!NoCycle && (!Enemy || Enemy && !TargetAlive() || Enemy && !TargetInCombat) && EnemiesInMelee > 0)
             {
                 System.Threading.Thread.Sleep(50);
                 Aimsharp.Cast("TargetEnemy");
@@ -1130,6 +1154,21 @@ namespace AimsharpWow.Modules
             }
             #endregion
 
+            #region Above Pause Logic
+            bool Bladestorm = Aimsharp.IsCustomCodeOn("Bladestorm");
+            if (Aimsharp.SpellCooldown("Bladestorm") - Aimsharp.GCD() > 2000 && Aimsharp.BuffRemaining("Bladestorm", "player", true) <= 0 && Bladestorm)
+            {
+                Aimsharp.Cast("BladestormOff");
+                return true;
+            }
+
+            if (SpellID1 == 999999 && Aimsharp.HasBuff("Bladestorm", "player", true) && !Bladestorm)
+            {
+                Aimsharp.Cast("CancelBladestorm");
+                return true;
+            }
+            #endregion
+
             #region Pause Checks
             if (Aimsharp.CastingID("player") > 0 || Aimsharp.IsChanneling("player"))
             {
@@ -1154,6 +1193,20 @@ namespace AimsharpWow.Modules
 
             #region Queues
             //Queues
+            //Queue Bladestorm
+            if (Aimsharp.SpellCooldown("Bladestorm") - Aimsharp.GCD() > 2000 && Aimsharp.BuffRemaining("Bladestorm", "player", true) <= 0 && Bladestorm)
+            {
+                Aimsharp.Cast("BladestormOff");
+                return true;
+            }
+
+            if (Bladestorm && Aimsharp.CanCast("Bladestorm", "target", true, true))
+            {
+                Aimsharp.PrintMessage("Queued Bladestorm");
+                Aimsharp.Cast("Bladestorm");
+                return true;
+            }
+
             //Queue StormBolt
             bool StormBolt = Aimsharp.IsCustomCodeOn("StormBolt");
             if (Aimsharp.SpellCooldown("Storm Bolt") - Aimsharp.GCD() > 2000 && StormBolt && Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat)

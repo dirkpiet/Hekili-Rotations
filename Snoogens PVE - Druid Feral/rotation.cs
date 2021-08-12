@@ -234,7 +234,9 @@ namespace AimsharpWow.Modules
 
             CustomFunctions.Add("RakeDebuffCheck", "local markcheck = 0; if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Rake','mouseover') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,_,_,_,source  = UnitDebuff('mouseover', y) if name == 'Rake' then markcheck = markcheck + 2 end end return markcheck end return 0");
 
-            CustomFunctions.Add("EnrageBuffCheck", "local markcheck = 0; if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Soothe','mouseover') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType  = UnitAura('mouseover', y, \"RAID\") if debuffType == '' then markcheck = markcheck + 2 end end return markcheck end return 0");
+            CustomFunctions.Add("EnrageBuffCheckMouseover", "local markcheck = 0; if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Soothe','mouseover') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType  = UnitAura('mouseover', y, \"RAID\") if debuffType == '' or name == 'Enrage' then markcheck = markcheck + 2 end end return markcheck end return 0");
+
+            CustomFunctions.Add("EnrageBuffCheckTarget", "local markcheck = 0; if UnitExists('target') and UnitIsDead('target') ~= true and UnitAffectingCombat('target') and IsSpellInRange('Soothe','target') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType  = UnitAura('target', y, \"RAID\") if debuffType == '' or name == 'Enrage' then markcheck = markcheck + 2 end end return markcheck end return 0");
 
             CustomFunctions.Add("CooldownsToggleCheck", "local loading, finished = IsAddOnLoaded(\"Hekili\") if loading == true and finished == true then local cooldowns = Hekili:GetToggleState(\"cooldowns\") if cooldowns == true then return 1 else if cooldowns == false then return 2 end end end return 0");
             
@@ -277,6 +279,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Prowl Out of Combat:", true));
             Settings.Add(new Setting("Spread Rake with Mouseover:", false));
             Settings.Add(new Setting("Soothe Mouseover:", true));
+            Settings.Add(new Setting("Soothe Target:", true));
             Settings.Add(new Setting("Maim Queue - Dont wait for Max CP", false));
             Settings.Add(new Setting("Auto Renewal @ HP%", 0, 100, 20));
             Settings.Add(new Setting("Auto Barkskin @ HP%", 0, 100, 40));
@@ -418,17 +421,20 @@ namespace AimsharpWow.Modules
 
             int DiseasePoisonCheck = Aimsharp.CustomFunction("DiseasePoisonCheck");
             int MarkDebuffMO = Aimsharp.CustomFunction("RakeDebuffCheck");
-            int EnrageBuffMO = Aimsharp.CustomFunction("EnrageBuffCheck");
+            int EnrageBuffMO = Aimsharp.CustomFunction("EnrageBuffCheckMouseover");
+            int EnrageBuffTarget = Aimsharp.CustomFunction("EnrageBuffCheckTarget");
             int CooldownsToggle = Aimsharp.CustomFunction("CooldownsToggleCheck");
 
             bool NoDecurse = Aimsharp.IsCustomCodeOn("NoDecurse");
             bool NoInterrupts = Aimsharp.IsCustomCodeOn("NoInterrupts");
+            bool NoCycle = Aimsharp.IsCustomCodeOn("NoCycle");
             bool MightyBash = Aimsharp.IsCustomCodeOn("MightyBash");
             bool MassEntanglement = Aimsharp.IsCustomCodeOn("MassEntanglement");
 
             bool Debug = GetCheckBox("Debug:") == true;
             bool MOMark = GetCheckBox("Spread Rake with Mouseover:") == true;
             bool MOSoothe = GetCheckBox("Soothe Mouseover:") == true;
+            bool TargetSoothe = GetCheckBox("Soothe Target:") == true;
             bool UseTrinketsCD = GetCheckBox("Use Trinkets on CD, dont wait for Hekili:") == true;
 
             bool IsInterruptable = Aimsharp.IsInterruptable("target");
@@ -633,7 +639,7 @@ namespace AimsharpWow.Modules
             #region Auto Target
             //Auto Target
             //Hekili Cycle
-            if (Aimsharp.CustomFunction("HekiliCycle") == 1 && EnemiesInMelee > 1)
+            if (!NoCycle && Aimsharp.CustomFunction("HekiliCycle") == 1 && EnemiesInMelee > 1)
             {
                 System.Threading.Thread.Sleep(50);
                 Aimsharp.Cast("TargetEnemy");
@@ -642,7 +648,7 @@ namespace AimsharpWow.Modules
             }
 
             //Auto Target
-            if ((!Enemy || Enemy && !TargetAlive() || Enemy && !TargetInCombat) && EnemiesInMelee > 0)
+            if (!NoCycle && (!Enemy || Enemy && !TargetAlive() || Enemy && !TargetInCombat) && EnemiesInMelee > 0)
             {
                 System.Threading.Thread.Sleep(50);
                 Aimsharp.Cast("TargetEnemy");
@@ -697,7 +703,7 @@ namespace AimsharpWow.Modules
                 }
 
                 bool Maim = Aimsharp.IsCustomCodeOn("Maim");
-                //Queue Mighty Bash
+                //Queue Maim
                 if (Maim && Aimsharp.SpellCooldown("Maim") - Aimsharp.GCD() > 2000)
                 {
                     if (Debug)
@@ -729,6 +735,20 @@ namespace AimsharpWow.Modules
                         if (Debug)
                         {
                             Aimsharp.PrintMessage("Casting Soothe (Mouseover)", Color.Purple);
+                        }
+                        return true;
+                    }
+                }
+
+                //Soothe Target
+                if (Aimsharp.CanCast("Soothe", "target", true, true))
+                {
+                    if (TargetSoothe && EnrageBuffTarget == 3)
+                    {
+                        Aimsharp.Cast("Soothe");
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Soothe (Target)", Color.Purple);
                         }
                         return true;
                     }
