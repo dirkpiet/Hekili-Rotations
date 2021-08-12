@@ -15,7 +15,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "DoorofShadows", "NoInterrupts", "NoCycle", "ChaosNova", "Imprison", "Darkness", "FelEruption", };
+        private List<string> m_IngameCommandsList = new List<string> { "DoorofShadows", "NoInterrupts", "NoCycle", "NoMovement", "ChaosNova", "Imprison", "Darkness", "FelEruption", "FelRush", "Felblade", };
         private List<string> m_DebuffsList = new List<string> { "Imprison", };
         private List<string> m_BuffsList = new List<string> { "Netherwalk", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
@@ -159,6 +159,8 @@ namespace AimsharpWow.Modules
             Macros.Add("ImprisonOff", "/" + FiveLetters + " Imprison");
             Macros.Add("DarknessOff", "/" + FiveLetters + " Darkness");
             Macros.Add("FelEruptionOff", "/" + FiveLetters + " FelEruption");
+            Macros.Add("FelRushOff", "/" + FiveLetters + " FelRush");
+            Macros.Add("FelbladeOff", "/" + FiveLetters + " Felblade");
 
         }
 
@@ -221,10 +223,10 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Kick channels after milliseconds", 50, 1500, 500));
             Settings.Add(new Setting("General"));
             Settings.Add(new Setting("Auto Start Combat:", true));
+            Settings.Add(new Setting("Suggest but don't cast Movement Based Abilities:", false));
             Settings.Add(new Setting("Auto Darkness @ HP%", 0, 100, 40));
             Settings.Add(new Setting("Auto Blur @ HP%", 0, 100, 15));
             Settings.Add(new Setting("Auto Netherwalk @ HP%", 0, 100, 5));
-            Settings.Add(new Setting("Door of Shadows Cast:", m_CastingList, "Manual"));
             Settings.Add(new Setting("Misc"));
             Settings.Add(new Setting("Debug:", false));
 
@@ -254,6 +256,8 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("/xxxxx FelEruption - Casts Fel Eruption @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Darkness - Casts Darkness @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Imprison - Casts Imprison @ next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx FelRush - Casts Fel Rush @ next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx Felblade - Casts Felblade @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("-----", Color.Black);
 
             #region Racial Spells
@@ -359,6 +363,7 @@ namespace AimsharpWow.Modules
             int Wait = Aimsharp.CustomFunction("HekiliWait");
 
             bool NoInterrupts = Aimsharp.IsCustomCodeOn("NoInterrupts");
+            bool NoCycle = Aimsharp.IsCustomCodeOn("NoCycle");
 
             bool Debug = GetCheckBox("Debug:") == true;
             bool UseTrinketsCD = GetCheckBox("Use Trinkets on CD, dont wait for Hekili:") == true;
@@ -495,6 +500,50 @@ namespace AimsharpWow.Modules
 
             #region Queues
             //Queues
+            bool FelRush = Aimsharp.IsCustomCodeOn("FelRush");
+            //Queue Fel Rush
+            if (FelRush && (Aimsharp.SpellCooldown("Fel Rush") - Aimsharp.GCD() > 1000 && Aimsharp.SpellCharges("Fel Rush") == 0 || Aimsharp.RechargeTime("Fel Rush") > 9500 && Aimsharp.SpellCharges("Fel Rush") == 1))
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Fel Rush queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("FelRushOff");
+                return true;
+            }
+
+            if (FelRush && Aimsharp.CanCast("Fel Rush", "player", false, true))
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Fel Rush through queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("Fel Rush");
+                return true;
+            }
+
+            bool Felblade = Aimsharp.IsCustomCodeOn("Felblade");
+            //Queue Felblade
+            if (Felblade && Aimsharp.SpellCooldown("Felblade") - Aimsharp.GCD() > 2000)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Felblade queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("FelbladeOff");
+                return true;
+            }
+
+            if (Felblade && Aimsharp.CanCast("Felblade", "target", true, true) && Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Felblade through queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("Felblade");
+                return true;
+            }
+
             bool ChaosNova = Aimsharp.IsCustomCodeOn("ChaosNova");
             //Queue Chaos Nova
             if (ChaosNova && Aimsharp.SpellCooldown("Chaos Nova") - Aimsharp.GCD() > 2000)
@@ -607,7 +656,7 @@ namespace AimsharpWow.Modules
 
             #region Auto Target
             //Hekili Cycle
-            if (Aimsharp.CustomFunction("HekiliCycle") == 1 && EnemiesInMelee > 1)
+            if (!NoCycle && Aimsharp.CustomFunction("HekiliCycle") == 1 && EnemiesInMelee > 1)
             {
                 System.Threading.Thread.Sleep(50);
                 Aimsharp.Cast("TargetEnemy");
@@ -616,7 +665,7 @@ namespace AimsharpWow.Modules
             }
 
             //Auto Target
-            if ((!Enemy || Enemy && !TargetAlive() || Enemy && !TargetInCombat) && EnemiesInMelee > 0)
+            if (!NoCycle && (!Enemy || Enemy && !TargetAlive() || Enemy && !TargetInCombat) && EnemiesInMelee > 0)
             {
                 System.Threading.Thread.Sleep(50);
                 Aimsharp.Cast("TargetEnemy");
@@ -627,7 +676,7 @@ namespace AimsharpWow.Modules
 
             if (Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat)
             {
-                if (Wait <= 200 && !Aimsharp.HasDebuff("Imprison", "target", true) && !Imprison)
+                if (Wait <= 200 && !Aimsharp.HasDebuff("Imprison", "target", true) && !Imprison && !Felblade && !FelRush)
                 {
                     #region Trinkets
                     //Trinkets
@@ -924,7 +973,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 198793 && Aimsharp.CanCast("Vengeful Retreat", "player", false, true) && !Moving)
+                    if (SpellID1 == 198793 && Aimsharp.CanCast("Vengeful Retreat", "player", false, true) && !Moving && !GetCheckBox("Suggest but don't cast Movement Based Abilities:"))
                     {
                         Aimsharp.Cast("Vengeful Retreat");
                         return true;
@@ -942,7 +991,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 195072 && Aimsharp.CanCast("Fel Rush", "player", false, true) && !Moving)
+                    if (SpellID1 == 195072 && Aimsharp.CanCast("Fel Rush", "player", false, true) && !Moving && !GetCheckBox("Suggest but don't cast Movement Based Abilities:"))
                     {
                         Aimsharp.Cast("Fel Rush");
                         return true;
@@ -1017,7 +1066,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 232893 && Aimsharp.CanCast("Felblade", "target", true, true))
+                    if (SpellID1 == 232893 && Aimsharp.CanCast("Felblade", "target", true, true) && !GetCheckBox("Suggest but don't cast Movement Based Abilities:"))
                     {
                         Aimsharp.Cast("Felblade");
                         return true;
@@ -1070,6 +1119,50 @@ namespace AimsharpWow.Modules
 
             #region Queues
             //Queues
+            bool FelRush = Aimsharp.IsCustomCodeOn("FelRush");
+            //Queue Fel Rush
+            if (FelRush && (Aimsharp.SpellCooldown("Fel Rush") - Aimsharp.GCD() > 1000 && Aimsharp.SpellCharges("Fel Rush") == 0 || Aimsharp.RechargeTime("Fel Rush") > 9500 && Aimsharp.SpellCharges("Fel Rush") == 1))
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Fel Rush queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("FelRushOff");
+                return true;
+            }
+
+            if (FelRush && Aimsharp.CanCast("Fel Rush", "player", false, true))
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Fel Rush through queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("Fel Rush");
+                return true;
+            }
+
+            bool Felblade = Aimsharp.IsCustomCodeOn("Felblade");
+            //Queue Felblade
+            if (Felblade && Aimsharp.SpellCooldown("Felblade") - Aimsharp.GCD() > 2000)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Felblade queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("FelbladeOff");
+                return true;
+            }
+
+            if (Felblade && Aimsharp.CanCast("Felblade", "target", true, true) && Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Felblade through queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("Felblade");
+                return true;
+            }
+
             bool ChaosNova = Aimsharp.IsCustomCodeOn("ChaosNova");
             //Queue Chaos Nova
             if (ChaosNova && Aimsharp.SpellCooldown("Chaos Nova") - Aimsharp.GCD() > 2000)
