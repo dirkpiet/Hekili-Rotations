@@ -30,4 +30,6 @@
 ### [Hunter: Marksmanship](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Hunter%20Marksmanship)  
 100% SimC Accurate Rotation with advanced CanCast Logic  
 ### [Mage: Arcane](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Mage%20Arcane)  
-100% SimC Accurate Rotation 
+100% SimC Accurate Rotation  
+### [Mage: Fire](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Mage%20Fire)  
+100% SimC Accurate Rotation  

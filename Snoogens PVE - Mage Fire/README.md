@@ -1,9 +1,9 @@
-# Snoogens PVE - Mage Arcane
+# Snoogens PVE - Mage Fire
 ## Recommended Core Settings  
-![](https://i.imgur.com/QvG7jFx.png)   
+![](https://i.imgur.com/RUbKtIW.png)   
 
 ## Recommended Targeting Settings  
-![](https://i.imgur.com/FgLpWHA.png)  
+![](https://i.imgur.com/ogJ10UJ.png)  
 
 ## I recommend you place Spellsteal in Cooldowns, so it will automatically Spellsteal your Target when Cooldowns are enabled.    
-![](https://i.imgur.com/s8pnau7.png)  
+![](https://i.imgur.com/gFCvmm6.png)  
