@@ -1023,7 +1023,7 @@ namespace AimsharpWow.Modules
             }
             #endregion
 
-            if (Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat)
+            if (Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat && !ResonatingArrow && !WildSpirits && !Aimsharp.IsCustomCodeOn("FreezingTrap") && !Aimsharp.IsCustomCodeOn("TarTrap"))
             {
                 //Tranquilizing Shot Mouseover
                 if (CanCastTranquilizingShot("mouseover"))
