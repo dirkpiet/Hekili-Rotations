@@ -13,7 +13,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "MightyBash", "MassEntanglement", "NoDecurse", "Maim", "NoInterrupts", "NoCycle", };
+        private List<string> m_IngameCommandsList = new List<string> { "MightyBash", "MassEntanglement", "NoDecurse", "Maim", "NoInterrupts", "NoCycle", "Rebirth", };
         private List<string> m_DebuffsList = new List<string> { "Rake", };
         private List<string> m_BuffsList = new List<string> { "Predatory Swiftness", "Prowl", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
@@ -27,7 +27,7 @@ namespace AimsharpWow.Modules
             "Skull Bash",
 
             //General
-            "Rake", "Shred", "Savage Roar", "Ferocious Bite", "Rip", "Tiger's Fury", "Berserk",
+            "Rake", "Shred", "Savage Roar", "Ferocious Bite", "Rip", "Tiger's Fury", "Berserk", "Rebirth",
             "Survival Instincts", "Maim", "Renewal", "Mass Entanglement", "Swipe", "Thrash", "Incarnation: King of the Jungle", "Brutal Slash",
             "Feral Frenzy", "Heart of the Wild", "Remove Corruption", "Summon Steward", "Mighty Bash", "Wild Charge", "Tiger Dash", "Prowl",
             "Cat Form", "Primal Wrath", "Moonkin Form", "Sunfire", "Barkskin", "Regrowth", "Starsurge", "Moonfire", "Fleshcraft", "Soothe",
@@ -181,12 +181,13 @@ namespace AimsharpWow.Modules
             //Mouseover Macros
             Macros.Add("RakeMO", "/cast [@mouseover] Rake");
             Macros.Add("SootheMO", "/cast [@mouseover] Soothe");
+            Macros.Add("RebirthMO", "/cast [@mouseover] Rebirth");
 
             //Queues
             Macros.Add("MightyBashOff", "/" + FiveLetters + " MightyBash");
             Macros.Add("MassEntanglementOff", "/" + FiveLetters + " MassEntanglement");
             Macros.Add("MaimOff", "/" + FiveLetters + " Maim");
-
+            Macros.Add("RebirthOff", "/" + FiveLetters + " Rebirth");
 
         }
 
@@ -215,7 +216,7 @@ namespace AimsharpWow.Modules
         {
             CustomFunctions.Add("HekiliID1", "local loading, finished = IsAddOnLoaded(\"Hekili\") \r\nif loading == true and finished == true then \r\n    local id=Hekili_GetRecommendedAbility(\"Primary\",1)\r\n\tif id ~= nil then\r\n\t\r\n    if id<0 then \r\n\t    local spell = Hekili.Class.abilities[id]\r\n\t    if spell ~= nil and spell.item ~= nil then \r\n\t    \tid=spell.item\r\n\t\t    local topTrinketLink = GetInventoryItemLink(\"player\",13)\r\n\t\t    local bottomTrinketLink = GetInventoryItemLink(\"player\",14)\r\n\t\t    if topTrinketLink  ~= nil then\r\n                local trinketid = GetItemInfoInstant(topTrinketLink)\r\n                if trinketid ~= nil then\r\n\t\t\t        if trinketid == id then\r\n\t\t\t\t        return 1\r\n                    end\r\n\t\t\t    end\r\n\t\t    end\r\n\t\t    if bottomTrinketLink ~= nil then\r\n                local trinketid = GetItemInfoInstant(bottomTrinketLink)\r\n                if trinketid ~= nil then\r\n    \t\t\t    if trinketid == id then\r\n\t    \t\t\t    return 2\r\n                    end\r\n\t\t\t    end\r\n\t\t    end\r\n\t    end \r\n    end\r\n    return id\r\nend\r\nend\r\nreturn 0");
 
-            CustomFunctions.Add("DiseasePoisonCheck", "local y=0; " +
+            CustomFunctions.Add("CursePoisonCheck", "local y=0; " +
                 "for i=1,25 do local name,_,_,type=UnitDebuff(\"player\",i,\"RAID\"); " +
                 "if type ~= nil and type == \"Curse\" or type == \"Poison\" then y = y +1; end end " +
                 "for i=1,25 do local name,_,_,type=UnitDebuff(\"party1\",i,\"RAID\"); " +
@@ -259,6 +260,7 @@ namespace AimsharpWow.Modules
             CustomFunctions.Add("IsTargeting", "if SpellIsTargeting()\r\n then return 1\r\n end\r\n return 0");
 
             CustomFunctions.Add("IsRMBDown", "local MBD = 0 local isDown = IsMouseButtonDown(\"RightButton\") if isDown == true then MBD = 1 end return MBD");
+
         }
         #endregion
 
@@ -419,7 +421,7 @@ namespace AimsharpWow.Modules
             int Wait = Aimsharp.CustomFunction("HekiliWait");
             bool Moving = Aimsharp.PlayerIsMoving();
 
-            int DiseasePoisonCheck = Aimsharp.CustomFunction("DiseasePoisonCheck");
+            int CursePoisonCheck = Aimsharp.CustomFunction("CursePoisonCheck");
             int MarkDebuffMO = Aimsharp.CustomFunction("RakeDebuffCheck");
             int EnrageBuffMO = Aimsharp.CustomFunction("EnrageBuffCheckMouseover");
             int EnrageBuffTarget = Aimsharp.CustomFunction("EnrageBuffCheckTarget");
@@ -591,7 +593,7 @@ namespace AimsharpWow.Modules
             #endregion
 
             #region Remove Corruption
-            if (!NoDecurse && DiseasePoisonCheck > 0 && Aimsharp.GroupSize() <= 5 && Aimsharp.LastCast() != "Remove Corruption")
+            if (!NoDecurse && CursePoisonCheck > 0 && Aimsharp.GroupSize() <= 5 && Aimsharp.LastCast() != "Remove Corruption")
             {
                 PartyDict.Clear();
                 PartyDict.Add("player", Aimsharp.Health("player"));
@@ -606,7 +608,7 @@ namespace AimsharpWow.Modules
                     }
                 }
 
-                int states = Aimsharp.CustomFunction("DiseasePoisonCheck");
+                int states = Aimsharp.CustomFunction("CursePoisonCheck");
                 CleansePlayers target;
 
                 foreach (var unit in PartyDict.OrderBy(unit => unit.Value))
