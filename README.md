@@ -35,3 +35,5 @@
 100% SimC Accurate Rotation  
 ### [Mage: Frost](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Mage%20Frost)  
 100% SimC Accurate Rotation  
+### [Druid: Balance](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Druid%20Balance)  
+100% SimC Accurate Rotation 
