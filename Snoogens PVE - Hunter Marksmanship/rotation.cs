@@ -43,6 +43,8 @@ namespace AimsharpWow.Modules
 
         private List<string> m_RaceList = new List<string> { "human", "dwarf", "nightelf", "gnome", "draenei", "pandaren", "orc", "scourge", "tauren", "troll", "bloodelf", "goblin", "worgen", "voidelf", "lightforgeddraenei", "highmountaintauren", "nightborne", "zandalaritroll", "magharorc", "kultiran", "darkirondwarf", "vulpera", "mechagnome" };
 
+        private List<string> m_CastingList = new List<string> { "Manual", "Cursor", "Player" };
+
         private List<int> Torghast_InnerFlame = new List<int> { 258935, 258938, 329422, 329423, };
 
         List<int> InstanceIDList = new List<int>
@@ -141,7 +143,7 @@ namespace AimsharpWow.Modules
 
         private bool CanCastWildSpirits(string unit)
         {
-            if (Aimsharp.CanCast("Wild Spirits", unit, true, true) || (Aimsharp.SpellCooldown("Wild Spirits") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) <= 43 && Aimsharp.CovenantID() == 3 && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+            if (Aimsharp.CanCast("Wild Spirits", unit, false, true) || (Aimsharp.SpellCooldown("Wild Spirits") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.CovenantID() == 3 && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
                 return true;
 
             return false;
@@ -149,7 +151,7 @@ namespace AimsharpWow.Modules
 
         private bool CanCastResonatingArrow(string unit)
         {
-            if (Aimsharp.CanCast("Resonating Arrow", unit, true, true) || (Aimsharp.SpellCooldown("Resonating Arrow") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) <= 43 && Aimsharp.CovenantID() == 3 && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+            if (Aimsharp.CanCast("Resonating Arrow", unit, false, true) || (Aimsharp.SpellCooldown("Resonating Arrow") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.CovenantID() == 3 && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
                 return true;
 
             return false;
@@ -392,6 +394,11 @@ namespace AimsharpWow.Modules
             Macros.Add("FlareC", "/cast [@cursor] Flare");
             Macros.Add("TarTrapC", "/cast [@cursor] Tar Trap");
 
+            Macros.Add("ResonatingArrowP", "/cast [@player] Resonating Arrow");
+            Macros.Add("WildSpiritsP", "/cast [@player] Wild Spirits");
+            Macros.Add("ResonatingArrowC", "/cast [@cursor] Resonating Arrow");
+            Macros.Add("WildSpiritsC", "/cast [@cursor] Wild Spirits");
+
         }
 
         private void InitializeSpells()
@@ -484,6 +491,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Auto Aspect of the Turtle @ HP%", 0, 100, 20));
             Settings.Add(new Setting("Auto Exhilaration @ HP%", 0, 100, 40));
             Settings.Add(new Setting("Auto Mend Pet @ HP%", 0, 100, 60));
+            Settings.Add(new Setting("Covenant Cast:", m_CastingList, "Manual"));
             Settings.Add(new Setting("Always Cast Volley @ Cursor during Rotation", false));
             Settings.Add(new Setting("Always Cast Flare @ Cursor during Rotation", false));
             Settings.Add(new Setting("Always Cast Tar Trap @ Cursor during Rotation", false));
@@ -798,6 +806,87 @@ namespace AimsharpWow.Modules
             #endregion
 
             #region Queues
+            //Queue Resonating Arrow
+            string CovenantCast = GetDropDown("Covenant Cast:");
+            bool ResonatingArrow = Aimsharp.IsCustomCodeOn("ResonatingArrow");
+            if (Aimsharp.SpellCooldown("Resonating Arrow") - Aimsharp.GCD() > 2000 && ResonatingArrow)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Resonating Arrow Queue", Color.Purple);
+                }
+                Aimsharp.Cast("ResonatingArrowOff");
+                return true;
+            }
+
+            if (ResonatingArrow && CanCastResonatingArrow("player"))
+            {
+                switch (CovenantCast)
+                {
+                    case "Manual":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Resonating Arrow - " + CovenantCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("Resonating Arrow");
+                        return true;
+                    case "Player":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Resonating Arrow - " + CovenantCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("ResonatingArrowP");
+                        return true;
+                    case "Cursor":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Resonating Arrow - " + CovenantCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("ResonatingArrowC");
+                        return true;
+                }
+            }
+
+            //Queue Wild Spirits
+            bool WildSpirits = Aimsharp.IsCustomCodeOn("WildSpirits");
+            if (Aimsharp.SpellCooldown("Wild Spirits") - Aimsharp.GCD() > 2000 && WildSpirits)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Wild Spirits Queue", Color.Purple);
+                }
+                Aimsharp.Cast("WildSpiritsOff");
+                return true;
+            }
+
+            if (WildSpirits && CanCastWildSpirits("player"))
+            {
+                switch (CovenantCast)
+                {
+                    case "Manual":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Wild Spirits - " + CovenantCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("Wild Spirits");
+                        return true;
+                    case "Player":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Wild Spirits - " + CovenantCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("WildSpiritsP");
+                        return true;
+                    case "Cursor":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Wild Spirits - " + CovenantCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("WildSpiritsC");
+                        return true;
+                }
+            }
+
             //Queue Freezing Trap
             if (Aimsharp.IsCustomCodeOn("FreezingTrap") && Aimsharp.SpellCooldown("Freezing Trap") - Aimsharp.GCD() > 2000)
             {
@@ -858,48 +947,6 @@ namespace AimsharpWow.Modules
                     Aimsharp.PrintMessage("Casting Flare through queue toggle", Color.Purple);
                 }
                 Aimsharp.Cast("Flare");
-                return true;
-            }
-
-            //Queue Wild Spirits
-            if (Aimsharp.IsCustomCodeOn("WildSpirits") && Aimsharp.SpellCooldown("Wild Spirits") - Aimsharp.GCD() > 2000)
-            {
-                if (Debug)
-                {
-                    Aimsharp.PrintMessage("Turning Off Wild Spirits Queue", Color.Purple);
-                }
-                Aimsharp.Cast("WildSpiritsOff");
-                return true;
-            }
-
-            if (Aimsharp.IsCustomCodeOn("WildSpirits") && CanCastWildSpirits("player"))
-            {
-                if (Debug)
-                {
-                    Aimsharp.PrintMessage("Casting Wild Spirits through queue toggle", Color.Purple);
-                }
-                Aimsharp.Cast("Wild Spirits");
-                return true;
-            }
-
-            //Queue Resonating Arrow
-            if (Aimsharp.IsCustomCodeOn("ResonatingArrow") && Aimsharp.SpellCooldown("Resonating Arrow") - Aimsharp.GCD() > 2000)
-            {
-                if (Debug)
-                {
-                    Aimsharp.PrintMessage("Turning Off Resonating Arrow Queue", Color.Purple);
-                }
-                Aimsharp.Cast("ResonatingArrowOff");
-                return true;
-            }
-
-            if (Aimsharp.IsCustomCodeOn("ResonatingArrow") && CanCastResonatingArrow("player"))
-            {
-                if (Debug)
-                {
-                    Aimsharp.PrintMessage("Casting Resonating Arrow through queue toggle", Color.Purple);
-                }
-                Aimsharp.Cast("Resonating Arrow");
                 return true;
             }
 
@@ -1537,6 +1584,87 @@ namespace AimsharpWow.Modules
             #endregion
 
             #region Queues
+            //Queue Resonating Arrow
+            string CovenantCast = GetDropDown("Covenant Cast:");
+            bool ResonatingArrow = Aimsharp.IsCustomCodeOn("ResonatingArrow");
+            if (Aimsharp.SpellCooldown("Resonating Arrow") - Aimsharp.GCD() > 2000 && ResonatingArrow)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Resonating Arrow Queue", Color.Purple);
+                }
+                Aimsharp.Cast("ResonatingArrowOff");
+                return true;
+            }
+
+            if (ResonatingArrow && CanCastResonatingArrow("player"))
+            {
+                switch (CovenantCast)
+                {
+                    case "Manual":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Resonating Arrow - " + CovenantCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("Resonating Arrow");
+                        return true;
+                    case "Player":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Resonating Arrow - " + CovenantCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("ResonatingArrowP");
+                        return true;
+                    case "Cursor":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Resonating Arrow - " + CovenantCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("ResonatingArrowC");
+                        return true;
+                }
+            }
+
+            //Queue Wild Spirits
+            bool WildSpirits = Aimsharp.IsCustomCodeOn("WildSpirits");
+            if (Aimsharp.SpellCooldown("Wild Spirits") - Aimsharp.GCD() > 2000 && WildSpirits)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Wild Spirits Queue", Color.Purple);
+                }
+                Aimsharp.Cast("WildSpiritsOff");
+                return true;
+            }
+
+            if (WildSpirits && CanCastWildSpirits("player"))
+            {
+                switch (CovenantCast)
+                {
+                    case "Manual":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Wild Spirits - " + CovenantCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("Wild Spirits");
+                        return true;
+                    case "Player":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Wild Spirits - " + CovenantCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("WildSpiritsP");
+                        return true;
+                    case "Cursor":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Wild Spirits - " + CovenantCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("WildSpiritsC");
+                        return true;
+                }
+            }
+
             //Queue Freezing Trap
             if (Aimsharp.IsCustomCodeOn("FreezingTrap") && Aimsharp.SpellCooldown("Freezing Trap") - Aimsharp.GCD() > 2000)
             {
@@ -1599,48 +1727,6 @@ namespace AimsharpWow.Modules
                     Aimsharp.PrintMessage("Casting Flare through queue toggle", Color.Purple);
                 }
                 Aimsharp.Cast("Flare");
-                return true;
-            }
-
-            //Queue Wild Spirits
-            if (Aimsharp.IsCustomCodeOn("WildSpirits") && Aimsharp.SpellCooldown("Wild Spirits") - Aimsharp.GCD() > 2000)
-            {
-                if (Debug)
-                {
-                    Aimsharp.PrintMessage("Turning Off Wild Spirits Queue", Color.Purple);
-                }
-                Aimsharp.Cast("WildSpiritsOff");
-                return true;
-            }
-
-            if (Aimsharp.IsCustomCodeOn("WildSpirits") && CanCastWildSpirits("player"))
-            {
-                if (Debug)
-                {
-                    Aimsharp.PrintMessage("Casting Wild Spirits through queue toggle", Color.Purple);
-                }
-                Aimsharp.Cast("Wild Spirits");
-                return true;
-            }
-
-            //Queue Resonating Arrow
-            if (Aimsharp.IsCustomCodeOn("ResonatingArrow") && Aimsharp.SpellCooldown("Resonating Arrow") - Aimsharp.GCD() > 2000)
-            {
-                if (Debug)
-                {
-                    Aimsharp.PrintMessage("Turning Off Resonating Arrow Queue", Color.Purple);
-                }
-                Aimsharp.Cast("ResonatingArrowOff");
-                return true;
-            }
-
-            if (Aimsharp.IsCustomCodeOn("ResonatingArrow") && CanCastResonatingArrow("player"))
-            {
-                if (Debug)
-                {
-                    Aimsharp.PrintMessage("Casting Resonating Arrow through queue toggle", Color.Purple);
-                }
-                Aimsharp.Cast("Resonating Arrow");
                 return true;
             }
 
