@@ -371,6 +371,7 @@ namespace AimsharpWow.Modules
             int Wait = Aimsharp.CustomFunction("HekiliWait");
 
             bool NoInterrupts = Aimsharp.IsCustomCodeOn("NoInterrupts");
+            bool NoCycle = Aimsharp.IsCustomCodeOn("NoCycle");
 
             bool Debug = GetCheckBox("Debug:") == true;
             bool UseTrinketsCD = GetCheckBox("Use Trinkets on CD, dont wait for Hekili:") == true;
@@ -721,7 +722,7 @@ namespace AimsharpWow.Modules
 
             #region Auto Target
             //Hekili Cycle
-            if (Aimsharp.CustomFunction("HekiliCycle") == 1 && EnemiesInMelee > 1)
+            if (!NoCycle && Aimsharp.CustomFunction("HekiliCycle") == 1 && EnemiesInMelee > 1)
             {
                 System.Threading.Thread.Sleep(50);
                 Aimsharp.Cast("TargetEnemy");
@@ -730,7 +731,7 @@ namespace AimsharpWow.Modules
             }
 
             //Auto Target
-            if ((!Enemy || Enemy && !TargetAlive() || Enemy && !TargetInCombat) && EnemiesInMelee > 0)
+            if (!NoCycle && (!Enemy || Enemy && !TargetAlive() || Enemy && !TargetInCombat) && EnemiesInMelee > 0)
             {
                 System.Threading.Thread.Sleep(50);
                 Aimsharp.Cast("TargetEnemy");
@@ -982,7 +983,7 @@ namespace AimsharpWow.Modules
                                 {
                                     Aimsharp.PrintMessage("Casting Death's Due - " + DeathsDueCast + " - Queue", Color.Purple);
                                 }
-                                Aimsharp.Cast("Death's Duey");
+                                Aimsharp.Cast("Death's Due");
                                 return true;
                             case "Player":
                                 if (Debug)
