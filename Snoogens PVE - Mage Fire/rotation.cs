@@ -15,9 +15,9 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "NoDecurse", "NoCycle", "DoorofShadows", "Polymorph", "Evocation", "RingofFrost", "Flamestrike", "Meteor", "ArcaneExplosion", "FlamestrikeCursor",};
+        private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "NoDecurse", "NoCycle", "DoorofShadows", "Polymorph", "Evocation", "RingofFrost", "Flamestrike", "Meteor", "ArcaneExplosion", "FlamestrikeCursor", "NoSpellsteal"};
         private List<string> m_DebuffsList = new List<string> { "Polymorph", };
-        private List<string> m_BuffsList = new List<string> { "Arcane Intellect", "Arcane Power", "Shifting Power", };
+        private List<string> m_BuffsList = new List<string> { "Arcane Intellect", "Arcane Power", "Shifting Power", "Combustion" };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
         private List<string> m_ItemsList = new List<string> { "Phial of Serenity", "Healthstone", };
 
@@ -302,7 +302,7 @@ namespace AimsharpWow.Modules
                     "if UnitCanAttack('player', unit) then " +
                         "if GetNumGroupMembers() < 6 then " +
                             "for p = 1, 4 do local partymember = 'party'..p " +
-                                "if UnitIsUnit(unit..'target', partymember) then UnitTargeted = p end " +
+                                "if UnitIsUnit(unit..'target', partymember) then UnitTargeted = p end " +   
                             "end " +
                         "end " +
                         "if GetNumGroupMembers() > 5 then " +
@@ -341,6 +341,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Arcane Intellect Out of Combat:", true));
             Settings.Add(new Setting("Auto Spellsteal Target:", true));
             Settings.Add(new Setting("Auto Spellsteal Mouseover:", true));
+            Settings.Add(new Setting("Don't Spellsteal during Combustion:", true));
             Settings.Add(new Setting("Auto Blazing Barrier @ HP%", 0, 100, 90));
             Settings.Add(new Setting("Auto Ice Block @ HP%", 0, 100, 25));
             Settings.Add(new Setting("Auto Alter Time @ HP%", 0, 100, 15));
@@ -375,6 +376,7 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("/xxxxx NoInterrupts - Disables Interrupts", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoCycle - Disables Target Cycle", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoDecurse - Disables Decurse", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx NoSpellsteal - Disables Spellsteal", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Polymorph - Casts Polymorph @ Mouseover next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx ArcaneExplosion - Spams Arcane Explosion until turned Off", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx RingofFrost - Casts Ring of Frost @ next GCD", Color.Yellow);      
@@ -492,6 +494,7 @@ namespace AimsharpWow.Modules
             bool NoInterrupts= Aimsharp.IsCustomCodeOn("NoInterrupts");
             bool NoDecurse = Aimsharp.IsCustomCodeOn("NoDecurse");
             bool NoCycle = Aimsharp.IsCustomCodeOn("NoCycle");
+            bool NoSpellsteal = Aimsharp.IsCustomCodeOn("NoSpellsteal");
 
             bool Debug = GetCheckBox("Debug:") == true;
             bool UseTrinketsCD = GetCheckBox("Use Trinkets on CD, dont wait for Hekili:") == true;
@@ -706,7 +709,7 @@ namespace AimsharpWow.Modules
             }
 
             //Auto Spellsteal Mouseover
-            if (Aimsharp.CanCast("Spellsteal", "mouseover", true, true))
+            if (!NoSpellsteal && Aimsharp.CanCast("Spellsteal", "mouseover", true, true) && (!GetCheckBox("Don't Spellsteal during Combustion:") || GetCheckBox("Don't Spellsteal during Combustion:") && !Aimsharp.HasBuff("Combustion", "player", true)))
             {
                 if (GetCheckBox("Auto Spellsteal Mouseover:") && Aimsharp.CustomFunction("SpellstealCheckMouseover") == 3)
                 {
@@ -720,7 +723,7 @@ namespace AimsharpWow.Modules
             }
 
             //Auto Spellsteal Target
-            if (Aimsharp.CanCast("Spellsteal", "target", true, true))
+            if (!NoSpellsteal && Aimsharp.CanCast("Spellsteal", "target", true, true) && (!GetCheckBox("Don't Spellsteal during Combustion:") || GetCheckBox("Don't Spellsteal during Combustion:") && !Aimsharp.HasBuff("Combustion", "player", true)))
             {
                 if (GetCheckBox("Auto Spellsteal Target:") && Aimsharp.CustomFunction("SpellstealCheckTarget") == 3)
                 {
@@ -873,7 +876,7 @@ namespace AimsharpWow.Modules
             //Queue Flamestrike
             string FlamestrikeCast = GetDropDown("Flamestrike Cast:");
             bool Flamestrike = Aimsharp.IsCustomCodeOn("Flamestrike");
-            if ((Aimsharp.SpellCooldown("Flamestrike") - Aimsharp.GCD() > 2000 || Moving) && Flamestrike)
+            if ((Aimsharp.SpellCooldown("Flamestrike") - Aimsharp.GCD() > 2000 || Moving || Aimsharp.LastCast() == "Flamestrike") && Flamestrike)
             {
                 if (Debug)
                 {
@@ -1286,7 +1289,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 30449 && Aimsharp.CanCast("Spellsteal", "target", true, true))
+                    if (!NoSpellsteal && SpellID1 == 30449 && Aimsharp.CanCast("Spellsteal", "target", true, true) && (!GetCheckBox("Don't Spellsteal during Combustion:") || GetCheckBox("Don't Spellsteal during Combustion:") && !Aimsharp.HasBuff("Combustion", "player", true)))
                     {
                         if (Debug)
                         {
@@ -1479,23 +1482,32 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 153561 && Aimsharp.CanCast("Meteor", "player", false, true) && Aimsharp.CustomFunction("FlamestrikeMouseover") == 1)
+                    if (SpellID1 == 153561 && Aimsharp.CanCast("Meteor", "player", false, true))
                     {
-                        if (Debug)
+                        switch (MeteorCast)
                         {
-                            Aimsharp.PrintMessage("Casting Meteor @ Cursor due to Mouseover - " + SpellID1, Color.Purple);
+                            case "Manual":
+                                if (Debug)
+                                {
+                                    Aimsharp.PrintMessage("Casting Meteor - " + MeteorCast + " - " + SpellID1, Color.Purple);
+                                }
+                                Aimsharp.Cast("Meteor");
+                                return true;
+                            case "Player":
+                                if (Debug)
+                                {
+                                    Aimsharp.PrintMessage("Casting Meteor - " + MeteorCast + " - " + SpellID1, Color.Purple);
+                                }
+                                Aimsharp.Cast("MeteorP");
+                                return true;
+                            case "Cursor":
+                                if (Debug)
+                                {
+                                    Aimsharp.PrintMessage("Casting Meteor - " + MeteorCast + " - " + SpellID1, Color.Purple);
+                                }
+                                Aimsharp.Cast("MeteorC");
+                                return true;
                         }
-                        Aimsharp.Cast("MeteorC");
-                        return true;
-                    }
-                    else if (SpellID1 == 153561 && Aimsharp.CanCast("Meteor", "player", false, true))
-                    {
-                        if (Debug)
-                        {
-                            Aimsharp.PrintMessage("Casting Meteor - " + SpellID1, Color.Purple);
-                        }
-                        Aimsharp.Cast("Meteor");
-                        return true;
                     }
                     #endregion
 
@@ -1791,7 +1803,7 @@ namespace AimsharpWow.Modules
             //Queue Flamestrike
             string FlamestrikeCast = GetDropDown("Flamestrike Cast:");
             bool Flamestrike = Aimsharp.IsCustomCodeOn("Flamestrike");
-            if ((Aimsharp.SpellCooldown("Flamestrike") - Aimsharp.GCD() > 2000 || Moving) && Flamestrike)
+            if ((Aimsharp.SpellCooldown("Flamestrike") - Aimsharp.GCD() > 2000 || Moving || Aimsharp.LastCast() == "Flamestrike") && Flamestrike)
             {
                 if (Debug)
                 {
