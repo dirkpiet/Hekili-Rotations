@@ -15,9 +15,9 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "NoDecurse", "NoCycle", "DoorofShadows", "Polymorph", "Evocation", "RingofFrost", "Blizzard", "ArcaneExplosion", "FrozenOrb", "BlizzardCursor", "FrozenOrbCursor",};
+        private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "NoDecurse", "NoCycle", "DoorofShadows", "Polymorph", "Evocation", "RingofFrost", "Blizzard", "ArcaneExplosion", "FrozenOrb", "BlizzardCursor", "FrozenOrbCursor", "NoSpellsteal",};
         private List<string> m_DebuffsList = new List<string> { "Polymorph", };
-        private List<string> m_BuffsList = new List<string> { "Arcane Intellect", "Arcane Power", "Shifting Power", };
+        private List<string> m_BuffsList = new List<string> { "Arcane Intellect", "Arcane Power", "Shifting Power", "Icy Veins", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
         private List<string> m_ItemsList = new List<string> { "Phial of Serenity", "Healthstone", };
 
@@ -341,6 +341,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Arcane Intellect Out of Combat:", true));
             Settings.Add(new Setting("Auto Spellsteal Target:", true));
             Settings.Add(new Setting("Auto Spellsteal Mouseover:", true));
+            Settings.Add(new Setting("Don't Spellsteal during Icy Veins:", true));
             Settings.Add(new Setting("Auto Ice Barrier @ HP%", 0, 100, 90));
             Settings.Add(new Setting("Auto Ice Block @ HP%", 0, 100, 25));
             Settings.Add(new Setting("Auto Alter Time @ HP%", 0, 100, 15));
@@ -376,6 +377,7 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("/xxxxx NoInterrupts - Disables Interrupts", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoCycle - Disables Target Cycle", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoDecurse - Disables Decurse", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx NoSpellsteal - Disables Spellsteal", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Polymorph - Casts Polymorph @ Mouseover next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx ArcaneExplosion - Spams Arcane Explosion until turned Off", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx RingofFrost - Casts Ring of Frost @ next GCD", Color.Yellow);      
@@ -494,6 +496,7 @@ namespace AimsharpWow.Modules
             bool NoInterrupts= Aimsharp.IsCustomCodeOn("NoInterrupts");
             bool NoDecurse = Aimsharp.IsCustomCodeOn("NoDecurse");
             bool NoCycle = Aimsharp.IsCustomCodeOn("NoCycle");
+            bool NoSpellsteal = Aimsharp.IsCustomCodeOn("NoSpellsteal");
 
             bool Debug = GetCheckBox("Debug:") == true;
             bool UseTrinketsCD = GetCheckBox("Use Trinkets on CD, dont wait for Hekili:") == true;
@@ -681,7 +684,7 @@ namespace AimsharpWow.Modules
             }
 
             //Auto Spellsteal Mouseover
-            if (Aimsharp.CanCast("Spellsteal", "mouseover", true, true))
+            if (!NoSpellsteal && Aimsharp.CanCast("Spellsteal", "mouseover", true, true) && (!GetCheckBox("Don't Spellsteal during Icy Veins:") || GetCheckBox("Don't Spellsteal during Icy Veins:") && !Aimsharp.HasBuff("Icy Veins", "player", true)))
             {
                 if (GetCheckBox("Auto Spellsteal Mouseover:") && Aimsharp.CustomFunction("SpellstealCheckMouseover") == 3)
                 {
@@ -695,7 +698,7 @@ namespace AimsharpWow.Modules
             }
 
             //Auto Spellsteal Target
-            if (Aimsharp.CanCast("Spellsteal", "target", true, true))
+            if (!NoSpellsteal && Aimsharp.CanCast("Spellsteal", "target", true, true) && (!GetCheckBox("Don't Spellsteal during Icy Veins:") || GetCheckBox("Don't Spellsteal during Icy Veins:") && !Aimsharp.HasBuff("Icy Veins", "player", true)))
             {
                 if (GetCheckBox("Auto Spellsteal Target:") && Aimsharp.CustomFunction("SpellstealCheckTarget") == 3)
                 {
@@ -1271,7 +1274,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 30449 && Aimsharp.CanCast("Spellsteal", "target", true, true))
+                    if (!NoSpellsteal && SpellID1 == 30449 && Aimsharp.CanCast("Spellsteal", "target", true, true) && (!GetCheckBox("Don't Spellsteal during Icy Veins:") || GetCheckBox("Don't Spellsteal during Icy Veins:") && !Aimsharp.HasBuff("Icy Veins", "player", true)))
                     {
                         if (Debug)
                         {
