@@ -291,7 +291,7 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("/xxxxx IntimidatingShout - Casts Intimidating Shout @ Target on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Bladestorm - Casts Bladestorm @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx SpearofBastion - Casts Spear of Bastion @ Manual/Player on the next GCD", Color.Yellow);
-            Aimsharp.PrintMessage("/xxxxx DoorofShadows - Casts Spear of Bastion @ Manual on the next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx DoorofShadows - Casts Door of Shadows @ Manual on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("-----", Color.Black);
 
             #region Racial Spells
@@ -414,7 +414,7 @@ namespace AimsharpWow.Modules
             int EnemiesInMelee = Aimsharp.EnemiesInMelee();
             bool Moving = Aimsharp.PlayerIsMoving();
             int PlayerHP = Aimsharp.Health("player");
-            bool MeleeRange = Aimsharp.Range("target") <= 6;
+            bool MeleeRange = Aimsharp.Range("target") <= 3;
             bool TargetInCombat = Aimsharp.InCombat("target") || SpecialUnitList.Contains(Aimsharp.UnitID("target")) || !InstanceIDList.Contains(Aimsharp.GetMapID());
             #endregion
 
@@ -915,7 +915,7 @@ namespace AimsharpWow.Modules
                         Aimsharp.Cast("Condemn");
                         return true;
                     }
-                    if (SpellID1 == 325886 && Aimsharp.CanCast("Ancient Aftershock", "player", false, true))
+                    if (SpellID1 == 325886 && Aimsharp.CanCast("Ancient Aftershock", "player", false, true) && MeleeRange)
                     {
                         Aimsharp.Cast("Ancient Aftershock");
                         return true;
