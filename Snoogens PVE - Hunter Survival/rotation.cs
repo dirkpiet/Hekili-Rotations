@@ -429,6 +429,9 @@ namespace AimsharpWow.Modules
             Macros.Add("SteelTrapC", "/cast [@cursor] Steel Trap");
             Macros.Add("FlareC", "/cast [@cursor] Flare");
             Macros.Add("TarTrapC", "/cast [@cursor] Tar Trap");
+            Macros.Add("FreezingTrapC", "/cast [@cursor] Freezing Trap");
+            Macros.Add("TarTrapP", "/cast [@player] Tar Trap");
+            Macros.Add("FreezingTrapP", "/cast [@player] Freezing Trap");
 
             Macros.Add("ResonatingArrowP", "/cast [@player] Resonating Arrow");
             Macros.Add("WildSpiritsP", "/cast [@player] Wild Spirits");
@@ -504,6 +507,8 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Auto Exhilaration @ HP%", 0, 100, 40));
             Settings.Add(new Setting("Auto Mend Pet @ HP%", 0, 100, 60));
             Settings.Add(new Setting("Covenant Cast:", m_CastingList, "Manual"));
+            Settings.Add(new Setting("Freezing Trap Cast:", m_CastingList, "Manual"));
+            Settings.Add(new Setting("Tar Trap Cast:", m_CastingList, "Manual"));
             Settings.Add(new Setting("Always Cast Flare @ Cursor during Rotation", false));
             Settings.Add(new Setting("Always Cast Tar Trap @ Cursor during Rotation", false));
             Settings.Add(new Setting("Misc"));
@@ -896,8 +901,10 @@ namespace AimsharpWow.Modules
                 }
             }
 
+            string FreezingTrapCast = GetDropDown("Freezing Trap Cast:");
+            bool FreezingTrap = Aimsharp.IsCustomCodeOn("FreezingTrap");
             //Queue Freezing Trap
-            if (Aimsharp.IsCustomCodeOn("FreezingTrap") && Aimsharp.SpellCooldown("Freezing Trap") - Aimsharp.GCD() > 2000)
+            if (FreezingTrap && Aimsharp.SpellCooldown("Freezing Trap") - Aimsharp.GCD() > 2000)
             {
                 if (Debug)
                 {
@@ -907,18 +914,38 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
-            if (Aimsharp.IsCustomCodeOn("FreezingTrap") && CanCastFreezingTrap("player"))
+            if (FreezingTrap && CanCastFreezingTrap("player"))
             {
-                if (Debug)
+                switch (FreezingTrapCast)
                 {
-                    Aimsharp.PrintMessage("Casting Freezing Trap through queue toggle", Color.Purple);
+                    case "Manual":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Freezing Trap - " + FreezingTrapCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("Freezing Trap");
+                        return true;
+                    case "Player":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Freezing Trap - " + FreezingTrapCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("FreezingTrapP");
+                        return true;
+                    case "Cursor":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Freezing Trap - " + FreezingTrapCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("FreezingTrapC");
+                        return true;
                 }
-                Aimsharp.Cast("Freezing Trap");
-                return true;
             }
 
+            string TarTrapCast = GetDropDown("Tar Trap Cast:");
+            bool TarTrap = Aimsharp.IsCustomCodeOn("TarTrap");
             //Queue Tar Trap
-            if (Aimsharp.IsCustomCodeOn("TarTrap") && Aimsharp.SpellCooldown("Tar Trap") - Aimsharp.GCD() > 2000)
+            if (TarTrap && Aimsharp.SpellCooldown("Tar Trap") - Aimsharp.GCD() > 2000)
             {
                 if (Debug)
                 {
@@ -928,14 +955,32 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
-            if (Aimsharp.IsCustomCodeOn("TarTrap") && CanCastTarTrap("player"))
+            if (TarTrap && CanCastTarTrap("player"))
             {
-                if (Debug)
+                switch (TarTrapCast)
                 {
-                    Aimsharp.PrintMessage("Casting Tar Trap through queue toggle", Color.Purple);
+                    case "Manual":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Tar Trap - " + TarTrapCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("Tar Trap");
+                        return true;
+                    case "Player":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Tar Trap - " + TarTrapCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("TarTrapP");
+                        return true;
+                    case "Cursor":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Tar Trap - " + TarTrapCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("TarTrapC");
+                        return true;
                 }
-                Aimsharp.Cast("Tar Trap");
-                return true;
             }
 
             //Queue Flare
@@ -1735,8 +1780,10 @@ namespace AimsharpWow.Modules
                 }
             }
 
+            string FreezingTrapCast = GetDropDown("Freezing Trap Cast:");
+            bool FreezingTrap = Aimsharp.IsCustomCodeOn("FreezingTrap");
             //Queue Freezing Trap
-            if (Aimsharp.IsCustomCodeOn("FreezingTrap") && Aimsharp.SpellCooldown("Freezing Trap") - Aimsharp.GCD() > 2000)
+            if (FreezingTrap && Aimsharp.SpellCooldown("Freezing Trap") - Aimsharp.GCD() > 2000)
             {
                 if (Debug)
                 {
@@ -1746,19 +1793,38 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
-            if (Aimsharp.IsCustomCodeOn("FreezingTrap") && Aimsharp.CanCast("Freezing Trap", "player", false, true))
+            if (FreezingTrap && CanCastFreezingTrap("player"))
             {
-                if (Debug)
+                switch (FreezingTrapCast)
                 {
-                    Aimsharp.PrintMessage("Casting Freezing Trap through queue toggle", Color.Purple);
+                    case "Manual":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Freezing Trap - " + FreezingTrapCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("Freezing Trap");
+                        return true;
+                    case "Player":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Freezing Trap - " + FreezingTrapCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("FreezingTrapP");
+                        return true;
+                    case "Cursor":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Freezing Trap - " + FreezingTrapCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("FreezingTrapC");
+                        return true;
                 }
-                Aimsharp.PrintMessage("Queued Freezing Trap");
-                Aimsharp.Cast("Freezing Trap");
-                return true;
             }
 
+            string TarTrapCast = GetDropDown("Tar Trap Cast:");
+            bool TarTrap = Aimsharp.IsCustomCodeOn("TarTrap");
             //Queue Tar Trap
-            if (Aimsharp.IsCustomCodeOn("TarTrap") && Aimsharp.SpellCooldown("Tar Trap") - Aimsharp.GCD() > 2000)
+            if (TarTrap && Aimsharp.SpellCooldown("Tar Trap") - Aimsharp.GCD() > 2000)
             {
                 if (Debug)
                 {
@@ -1768,15 +1834,32 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
-            if (Aimsharp.IsCustomCodeOn("TarTrap") && Aimsharp.CanCast("Tar Trap", "player", false, true))
+            if (TarTrap && CanCastTarTrap("player"))
             {
-                if (Debug)
+                switch (TarTrapCast)
                 {
-                    Aimsharp.PrintMessage("Casting Tar Trap through queue toggle", Color.Purple);
+                    case "Manual":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Tar Trap - " + TarTrapCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("Tar Trap");
+                        return true;
+                    case "Player":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Tar Trap - " + TarTrapCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("TarTrapP");
+                        return true;
+                    case "Cursor":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Tar Trap - " + TarTrapCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("TarTrapC");
+                        return true;
                 }
-                Aimsharp.PrintMessage("Queued Tar Trap");
-                Aimsharp.Cast("Tar Trap");
-                return true;
             }
 
             //Queue Flare
