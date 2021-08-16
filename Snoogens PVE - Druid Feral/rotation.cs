@@ -1168,7 +1168,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 164812 && Aimsharp.CanCast("Moonfire", "target", true, true))
+                    if ((SpellID1 == 164812 || SpellID1 == 155625) && Aimsharp.CanCast("Moonfire", "target", true, true))
                     {
                         if (Debug)
                         {
