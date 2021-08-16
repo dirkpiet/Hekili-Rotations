@@ -37,3 +37,9 @@
 100% SimC Accurate Rotation  
 ### [Druid: Balance](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Druid%20Balance)  
 100% SimC Accurate Rotation 
+### [Warlock: Affliction](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Warlock%20Affliction)  
+100% SimC Accurate Rotation 
+### [Warlock: Demonology](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Warlock%20Demonology)  
+100% SimC Accurate Rotation 
+### [Warlock: Destruction](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Warlock%20Destruction)  
+100% SimC Accurate Rotation 
