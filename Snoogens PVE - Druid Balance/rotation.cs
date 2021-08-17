@@ -70,6 +70,8 @@ namespace AimsharpWow.Modules
             "Stellar Flare", //202347
             "Fury of Elune", //202770
             "New Moon", //274281
+            "Half Moon", //202768, 274282
+            "Full Moon", //274283
             "Ursol's Vortex",
 
             "Summon Steward", "Fleshcraft", "Door of Shadows",
@@ -1412,6 +1414,26 @@ namespace AimsharpWow.Modules
                     #endregion
 
                     #region Balance - Target GCD
+                    if ((SpellID1 == 202768 || SpellID1 == 274282) && Aimsharp.CanCast("Half Moon", "target", true, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Half Moon - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Half Moon");
+                        return true;
+                    }
+
+                    if (SpellID1 == 274283 && Aimsharp.CanCast("Full Moon", "target", true, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Full Moon - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Full Moon");
+                        return true;
+                    }
+
                     if (SpellID1 == 194153 && Aimsharp.CanCast("Starfire", "target", true, true))
                     {
                         if (Debug)
