@@ -1496,6 +1496,34 @@ namespace AimsharpWow.Modules
                     #endregion
 
                     #region Balance - Player GCD
+                    if (SpellID1 == 205636 && Aimsharp.CanCast("Force of Nature", "player", false, true))
+                    {
+                        switch (ForceofNatureCast)
+                        {
+                            case "Manual":
+                                if (Debug)
+                                {
+                                    Aimsharp.PrintMessage("Casting Force of Nature - " + ForceofNatureCast, Color.Purple);
+                                }
+                                Aimsharp.Cast("Force of Nature");
+                                return true;
+                            case "Player":
+                                if (Debug)
+                                {
+                                    Aimsharp.PrintMessage("Casting Force of Nature - " + ForceofNatureCast, Color.Purple);
+                                }
+                                Aimsharp.Cast("ForceofNatureP");
+                                return true;
+                            case "Cursor":
+                                if (Debug)
+                                {
+                                    Aimsharp.PrintMessage("Casting Force of Nature - " + ForceofNatureCast, Color.Purple);
+                                }
+                                Aimsharp.Cast("ForceofNatureC");
+                                return true;
+                        }
+                    }
+
                     if (SpellID1 == 24858 && Aimsharp.CanCast("Moonkin Form", "player", false, true))
                     {
                         if (Debug)
