@@ -480,7 +480,7 @@ namespace AimsharpWow.Modules
             Macros.Add("SapOff", "/" + FiveLetters + " Sap");
             Macros.Add("KidneyShotOff", "/" + FiveLetters + " KidneyShot");
             Macros.Add("GrapplingHookOff", "/" + FiveLetters + " GrapplingHook");
-            Macros.Add("GrapplingHookC", "/cast [@cursor] GrapplingHook");
+            Macros.Add("GrapplingHookC", "/cast [@cursor] Grappling Hook");
 
             Macros.Add("BoneSpikeMO", "/cast [@mouseover] Serrated Bone Spike");
 
