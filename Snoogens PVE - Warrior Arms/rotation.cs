@@ -15,7 +15,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "StormBolt", "IntimidatingShout", "SpearofBastion", "Ravager", "Bladestorm", "DoorofShadows", "NoInterrupts", "NoCycle", };
+        private List<string> m_IngameCommandsList = new List<string> { "StormBolt", "IntimidatingShout", "SpearofBastion", "Ravager", "Bladestorm", "DoorofShadows", "NoInterrupts", "NoCycle", "SweepingStrikes", };
         private List<string> m_DebuffsList = new List<string> { };
         private List<string> m_BuffsList = new List<string> { "Defensive Stance", "Battle Shout", "Bladestorm", "Voracious Culling Blade",};
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
@@ -135,7 +135,7 @@ namespace AimsharpWow.Modules
 
         List<int> TorghastList = new List<int> { 1618 - 1641, 1645, 1705, 1712, 1716, 1720, 1721, 1736, 1749, 1751 - 1754, 1756 - 1812, 1833 - 1911, 1913, 1914, 1920, 1921, 1962 - 1969, 1974 - 1988, 2010 - 2012, 2019 };
 
-        List<int> SpecialUnitList = new List<int> { 176581, 176920, 178008, 168326, 168969, };
+        List<int> SpecialUnitList = new List<int> { 176581, 176920, 178008, 168326, 168969, 175861, };
 #endregion
 
         #region Misc Checks
@@ -197,6 +197,7 @@ namespace AimsharpWow.Modules
             Macros.Add("DoorofShadowsOff", "/" + FiveLetters + " DoorofShadows");
             Macros.Add("RavagerOff", "/" + FiveLetters + " Ravager");
             Macros.Add("BladestormOff", "/" + FiveLetters + " Bladestorm");
+            Macros.Add("SweepingStrikesOff", "/" + FiveLetters + " SweepingStrikes");
 
             //CancelAura
             Macros.Add("CancelBladestorm", "/cancelaura Bladestorm");
@@ -299,6 +300,7 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("/xxxxx StormBolt - Casts Storm Bolt @ Target on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx IntimidatingShout - Casts Intimidating Shout @ Target on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Bladestorm - Casts Bladestorm @ next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx SweepingStrikes - Casts Sweeping Strikes @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx SpearofBastion - Casts Spear of Bastion @ Manual/Player on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Ravager - Casts Spear of Ravager @ Manual/Player on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx DoorofShadows - Casts Door of Shadows @ Manual on the next GCD", Color.Yellow);
@@ -584,6 +586,20 @@ namespace AimsharpWow.Modules
 
             #region Queues
             //Queues
+            //Queue Sweeping Strikes
+            bool SweepingStrikes = Aimsharp.IsCustomCodeOn("SweepingStrikes");
+            if (Aimsharp.SpellCooldown("Sweeping Strikes") - Aimsharp.GCD() > 2000 && SweepingStrikes)
+            {
+                Aimsharp.Cast("SweepingStrikesOff");
+                return true;
+            }
+
+            if (SweepingStrikes && Aimsharp.CanCast("Sweeping Strikes", "player", false, true))
+            {
+                Aimsharp.Cast("Sweeping Strikes");
+                return true;
+            }
+
             //Queue Bladestorm
             if (Aimsharp.SpellCooldown("Bladestorm") - Aimsharp.GCD() > 2000 && Aimsharp.BuffRemaining("Bladestorm", "player", true) <= 0 && Bladestorm)
             {
@@ -591,9 +607,8 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
-            if (Bladestorm && Aimsharp.CanCast("Bladestorm", "target", true, true))
+            if (Bladestorm && Aimsharp.CanCast("Bladestorm", "player", false, true))
             {
-                Aimsharp.PrintMessage("Queued Bladestorm");
                 Aimsharp.Cast("Bladestorm");
                 return true;
             }
@@ -1282,6 +1297,21 @@ namespace AimsharpWow.Modules
 
             #region Queues
             //Queues
+            //Queue Sweeping Strikes
+            bool SweepingStrikes = Aimsharp.IsCustomCodeOn("SweepingStrikes");
+            if (Aimsharp.SpellCooldown("Sweeping Strikes") - Aimsharp.GCD() > 2000 && SweepingStrikes)
+            {
+                Aimsharp.Cast("SweepingStrikesOff");
+                return true;
+            }
+
+            if (SweepingStrikes && Aimsharp.CanCast("Sweeping Strikes", "player", false, true))
+            {
+                Aimsharp.PrintMessage("Queued Sweeping Strikes");
+                Aimsharp.Cast("Sweeping Strikes");
+                return true;
+            }
+
             //Queue Bladestorm
             if (Aimsharp.SpellCooldown("Bladestorm") - Aimsharp.GCD() > 2000 && Aimsharp.BuffRemaining("Bladestorm", "player", true) <= 0 && Bladestorm)
             {
@@ -1289,12 +1319,13 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
-            if (Bladestorm && Aimsharp.CanCast("Bladestorm", "target", true, true))
+            if (Bladestorm && Aimsharp.CanCast("Bladestorm", "player", false, true))
             {
                 Aimsharp.PrintMessage("Queued Bladestorm");
                 Aimsharp.Cast("Bladestorm");
                 return true;
             }
+
             //Queue StormBolt
             bool StormBolt = Aimsharp.IsCustomCodeOn("StormBolt");
             if (Aimsharp.SpellCooldown("Storm Bolt") - Aimsharp.GCD() > 2000 && StormBolt && Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat)
