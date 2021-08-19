@@ -479,6 +479,7 @@ namespace AimsharpWow.Modules
             Macros.Add("GarroteMO", "/cast [@mouseover] Garrote");
             Macros.Add("RuptureMO", "/cast [@mouseover] Rupture");
             Macros.Add("BoneSpikeMO", "/cast [@mouseover] Serrated Bone Spike");
+            Macros.Add("BlindMO", "/cast [@mouseover] Blind");
 
         }
 
@@ -590,7 +591,7 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("- General -", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoInterrupts - Disables Interrupts", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoCycle - Disables Target Cycle", Color.Yellow);
-            Aimsharp.PrintMessage("/xxxxx Blind - Casts Blind @ Target on the next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx Blind - Casts Blind @ Mouseover on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Sap - Casts Sap @ Target on the next GCD, turns off Auto Combat while On", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Distract - Casts Distract @ Manual/Cursor/Player on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx KidneyShot - Casts Kidney Shit @ Target next GCD", Color.Yellow);
@@ -877,13 +878,13 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
-            if (Blind && Aimsharp.CanCast("Blind", "target", true, true))
+            if (Blind && Aimsharp.CanCast("Blind", "mouseover", true, true))
             {
                 if (Debug)
                 {
                     Aimsharp.PrintMessage("Casting Blind - Queue", Color.Purple);
                 }
-                Aimsharp.Cast("Blind");
+                Aimsharp.Cast("BlindMO");
                 return true;
             }
 
@@ -1666,13 +1667,13 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
-            if (Blind && Aimsharp.CanCast("Blind", "target", true, true))
+            if (Blind && Aimsharp.CanCast("Blind", "mouseover", true, true))
             {
                 if (Debug)
                 {
                     Aimsharp.PrintMessage("Casting Blind - Queue", Color.Purple);
                 }
-                Aimsharp.Cast("Blind");
+                Aimsharp.Cast("BlindMO");
                 return true;
             }
 
