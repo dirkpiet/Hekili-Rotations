@@ -99,7 +99,7 @@ namespace AimsharpWow.Modules
 
         List<int> TorghastList = new List<int> { 1618 - 1641, 1645, 1705, 1712, 1716, 1720, 1721, 1736, 1749, 1751 - 1754, 1756 - 1812, 1833 - 1911, 1913, 1914, 1920, 1921, 1962 - 1969, 1974 - 1988, 2010 - 2012, 2019 };
 
-        List<int> SpecialUnitList = new List<int> { 176581, 176920, 178008, 168326, 168969, };
+        List<int> SpecialUnitList = new List<int> { 176581, 176920, 178008, 168326, 168969, 175861, };
         #endregion
 
         #region Misc Checks
