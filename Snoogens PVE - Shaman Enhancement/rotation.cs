@@ -251,6 +251,8 @@ namespace AimsharpWow.Modules
             Macros.Add("EarthElementalOff", "/" + FiveLetters + " EarthElemental");
             Macros.Add("TremorTotemOff", "/" + FiveLetters + " TremorTotem");
 
+            Macros.Add("PurgeMO", "/cast [@mouseover] Purge");
+
         }
 
         private void InitializeSpells()
@@ -645,6 +647,20 @@ namespace AimsharpWow.Modules
                 }
                 Aimsharp.Cast("Astral Shift", true);
                 return true;
+            }
+
+            //Auto Purge Mouseover
+            if (Aimsharp.CanCast("Purge", "mouseover", true, true))
+            {
+                if (GetCheckBox("Auto Purge Mouseover:") && Aimsharp.CustomFunction("PurgeCheckMouseover") == 3)
+                {
+                    Aimsharp.Cast("PurgeMO");
+                    if (Debug)
+                    {
+                        Aimsharp.PrintMessage("Casting Purge on Mouseover", Color.Purple);
+                    }
+                    return true;
+                }
             }
             #endregion
 
