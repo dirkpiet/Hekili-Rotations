@@ -47,3 +47,5 @@
 100% SimC Accurate Rotation 
 ### [Shaman: Elemental](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Shaman%20Elemental)  
 100% SimC Accurate Rotation  
+### [Priest: Shadow](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Priest%20Shadow)  
+100% SimC Accurate Rotation  
