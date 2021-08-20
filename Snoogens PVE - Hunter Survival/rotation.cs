@@ -1315,22 +1315,58 @@ namespace AimsharpWow.Modules
 
                     if (SpellID1 == 308491 && CanCastResonatingArrow("player"))
                     {
-                        if (Debug)
+                        switch (CovenantCast)
                         {
-                            Aimsharp.PrintMessage("Casting Resonating Arrow - " + SpellID1, Color.Purple);
+                            case "Manual":
+                                if (Debug)
+                                {
+                                    Aimsharp.PrintMessage("Casting Resonating Arrow - " + CovenantCast + " - " + SpellID1, Color.Purple);
+                                }
+                                Aimsharp.Cast("Resonating Arrow");
+                                return true;
+                            case "Player":
+                                if (Debug)
+                                {
+                                    Aimsharp.PrintMessage("Casting Resonating Arrow - " + CovenantCast + " - " + SpellID1, Color.Purple);
+                                }
+                                Aimsharp.Cast("ResonatingArrowP");
+                                return true;
+                            case "Cursor":
+                                if (Debug)
+                                {
+                                    Aimsharp.PrintMessage("Casting Resonating Arrow - " + CovenantCast + " - " + SpellID1, Color.Purple);
+                                }
+                                Aimsharp.Cast("ResonatingArrowC");
+                                return true;
                         }
-                        Aimsharp.Cast("Resonating Arrow");
-                        return true;
                     }
 
                     if (SpellID1 == 328231 && CanCastWildSpirits("player"))
                     {
-                        if (Debug)
+                        switch (CovenantCast)
                         {
-                            Aimsharp.PrintMessage("Casting Wild Spirits - " + SpellID1, Color.Purple);
+                            case "Manual":
+                                if (Debug)
+                                {
+                                    Aimsharp.PrintMessage("Casting Wild Spirits - " + CovenantCast + " - " + SpellID1, Color.Purple);
+                                }
+                                Aimsharp.Cast("Wild Spirits");
+                                return true;
+                            case "Player":
+                                if (Debug)
+                                {
+                                    Aimsharp.PrintMessage("Casting Wild Spirits - " + CovenantCast + " - " + SpellID1, Color.Purple);
+                                }
+                                Aimsharp.Cast("WildSpiritsP");
+                                return true;
+                            case "Cursor":
+                                if (Debug)
+                                {
+                                    Aimsharp.PrintMessage("Casting Wild Spirits - " + CovenantCast + " - " + SpellID1, Color.Purple);
+                                }
+                                Aimsharp.Cast("WildSpiritsC");
+                                return true;
                         }
-                        Aimsharp.Cast("Wild Spirits");
-                        return true;
                     }
 
                     if (SpellID1 == 325028 && CanCastDeathChakram("target"))
