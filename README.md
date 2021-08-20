@@ -24,6 +24,8 @@
 100% SimC Accurate Rotation  
 ### [Death Knight: Frost](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Death%20Knight%20Frost)  
 100% SimC Accurate Rotation  
+### [Shaman: Enhancement](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Shaman%20Enhancement)  
+100% SimC Accurate Rotation  
 ## Ranged  
 ### [Hunter: Beast Mastery](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Hunter%20Beast%20Mastery)  
 100% SimC Accurate Rotation with advanced CanCast Logic  
@@ -43,3 +45,5 @@
 100% SimC Accurate Rotation 
 ### [Warlock: Destruction](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Warlock%20Destruction)  
 100% SimC Accurate Rotation 
+### [Shaman: Elemental](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Shaman%20Elemental)  
+100% SimC Accurate Rotation  
