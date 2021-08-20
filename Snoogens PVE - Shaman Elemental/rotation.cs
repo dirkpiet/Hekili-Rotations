@@ -265,6 +265,8 @@ namespace AimsharpWow.Modules
 
             Macros.Add("PrimalSpell", "/cast [talent:6/2] Eye of the Storm\\n/cast [talent:6/2] Meteor");
 
+            Macros.Add("PurgeMO", "/cast [@mouseover] Purge");
+
         }
 
         private void InitializeSpells()
@@ -699,6 +701,20 @@ namespace AimsharpWow.Modules
                 }
                 Aimsharp.Cast("Astral Shift", true);
                 return true;
+            }
+
+            //Auto Purge Mouseover
+            if (Aimsharp.CanCast("Purge", "mouseover", true, true))
+            {
+                if (GetCheckBox("Auto Purge Mouseover:") && Aimsharp.CustomFunction("PurgeCheckMouseover") == 3)
+                {
+                    Aimsharp.Cast("PurgeMO");
+                    if (Debug)
+                    {
+                        Aimsharp.PrintMessage("Casting Purge on Mouseover", Color.Purple);
+                    }
+                    return true;
+                }
             }
             #endregion
 
