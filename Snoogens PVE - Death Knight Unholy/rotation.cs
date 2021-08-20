@@ -25,6 +25,8 @@ namespace AimsharpWow.Modules
             //Covenants
             "Shackle the Unworthy", "Swarming Mist", "Death's Due", "Abomination Limb",
 
+            "Fleshcraft",
+
             //Interrupt
             "Mind Freeze",
 
