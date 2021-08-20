@@ -24,14 +24,14 @@ namespace AimsharpWow.Modules
         private List<string> m_SpellBook_General = new List<string> {
             //Covenants
             "Weapons of Order", "Fallen Order", "Faeline Stomp", "Bonedust Brew",
-
+            "Summon Steward", "Fleshcraft",
             //Interrupt
             "Spear Hand Strike",
 
             //General Monk
             "Paralysis", "Spinning Crane Kick", "Vivify", "Fortifying Brew", "Tiger Palm", "Chi Torpedo", "Dampen Harm",
             "Roll", "Leg Sweep", "Blackout Kick", "Touch of Death", "Transcendence", "Transcendence: Transfer", "Rushing Jade Wind", "Ring of Peace",
-            "Expel Harm", "Crackling Jade Lightning", "Detox", "Summon Steward", "Provoke", "Chi Wave", "Chi Burst", "Tiger's Lust",
+            "Expel Harm", "Crackling Jade Lightning", "Detox", "Provoke", "Chi Wave", "Chi Burst", "Tiger's Lust",
             "Fist of the White Tiger", "Rising Sun Kick", "Touch of Karma", "Invoke Xuen, the White Tiger", "Storm, Earth, and Fire",
             "Storm, Earth, and Fire: Fixate", "Fists of Fury", "Flying Serpent Kick", "Fist of the White Tiger", "Energizing Elixir",
             "Diffuse Magic", "Whirling Dragon Punch", "Serenity",
