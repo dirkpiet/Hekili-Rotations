@@ -26,6 +26,8 @@
 100% SimC Accurate Rotation  
 ### [Shaman: Enhancement](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Shaman%20Enhancement)  
 100% SimC Accurate Rotation  
+### [Paladin: Retribution](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Paladin%20Retribution)  
+100% SimC Accurate Rotation  
 ## Ranged  
 ### [Hunter: Beast Mastery](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Hunter%20Beast%20Mastery)  
 100% SimC Accurate Rotation with advanced CanCast Logic  
