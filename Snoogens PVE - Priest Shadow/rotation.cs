@@ -15,8 +15,8 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "NoCycle", "NoPurify", "ShadowCrash", "MindControl", "LeapofFaith", "ShackleUndead", "PowerInfusion", "MindBomb", "PsychicHorror", "PsychicScream", "MassDispel", "DoorofShadows", "VampiricTouch", "ShadowWordPain", };
-        private List<string> m_DebuffsList = new List<string> { };
+        private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "NoCycle", "NoPurify", "ShadowCrash", "MindControl", "LeapofFaith", "ShackleUndead", "PowerInfusion", "MindBomb", "PsychicHorror", "PsychicScream", "MassDispel", "DoorofShadows", "VampiricTouch", "ShadowWordPain", "BodyandSoul", };
+        private List<string> m_DebuffsList = new List<string> { "Weakened Soul", };
         private List<string> m_BuffsList = new List<string> { };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
         private List<string> m_ItemsList = new List<string> { "Phial of Serenity", "Healthstone" };
@@ -412,6 +412,7 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("/xxxxx ShadowCrash - Casts Shadow Crash @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx PsychicScream - Casts Psychic Scream @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx MassDispel - Casts Mass Dispel @ next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx BodyandSoul - Casts Power Word: Shield when moving for the speed increase", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx DoorofShadows - Casts Door of Shadows @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("-----", Color.Black);
 
@@ -697,7 +698,7 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
-            //Auto Spellsteal Mouseover
+            //Auto Dispel Magic Mouseover
             if (Aimsharp.CanCast("Dispel Magic", "mouseover", true, true))
             {
                 if (GetCheckBox("Auto Dispel Magic Mouseover:") && Aimsharp.CustomFunction("DispelMagicCheckMouseover") == 3)
@@ -709,6 +710,14 @@ namespace AimsharpWow.Modules
                     }
                     return true;
                 }
+            }
+
+            //Auto Body and Soul PWS
+            bool BodyandSoul = Aimsharp.IsCustomCodeOn("BodyandSoul");
+            if (BodyandSoul && Aimsharp.CanCast("Power Word: Shield", "player", false, true) && !Aimsharp.HasDebuff("Weakened Soul", "player", true) && !Aimsharp.HasDebuff("Weakened Soul", "player", false) && Aimsharp.Talent(2,1) && Moving)
+            {
+                Aimsharp.Cast("Power Word: Shield");
+                return true;
             }
             #endregion
 
@@ -2016,6 +2025,14 @@ namespace AimsharpWow.Modules
                     Aimsharp.PrintMessage("Casting Summon Steward due to Phial Count being: " + PhialCount, Color.Purple);
                 }
                 Aimsharp.Cast("Summon Steward");
+                return true;
+            }
+
+            //Auto Body and Soul PWS
+            bool BodyandSoul = Aimsharp.IsCustomCodeOn("BodyandSoul");
+            if (BodyandSoul && Aimsharp.CanCast("Power Word: Shield", "player", false, true) && !Aimsharp.HasDebuff("Weakened Soul", "player", true) && !Aimsharp.HasDebuff("Weakened Soul", "player", false) && Aimsharp.Talent(2, 1) && Moving)
+            {
+                Aimsharp.Cast("Power Word: Shield");
                 return true;
             }
             #endregion
