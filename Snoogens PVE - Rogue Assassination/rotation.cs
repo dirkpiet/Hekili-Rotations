@@ -15,7 +15,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "Distract", "Blind", "Sap", "KidneyShot", "NoCycle",};
+        private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "Distract", "Blind", "Sap", "KidneyShot", "NoCycle", "FunnelAOE",};
         private List<string> m_DebuffsList = new List<string> { "Sap", "Blind", "Garrote", "Rupture", "Serrated Bone Spike", };
         private List<string> m_BuffsList = new List<string> { "Stealth", "Vanish", "Blindside", "Subterfuge",};
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
@@ -481,6 +481,9 @@ namespace AimsharpWow.Modules
             Macros.Add("BoneSpikeMO", "/cast [@mouseover] Serrated Bone Spike");
             Macros.Add("BlindMO", "/cast [@mouseover] Blind");
 
+            Macros.Add("FunnelOn", "/run Hekili.State.settings.spec.settings.priority_rotation = true");
+            Macros.Add("FunnelOff", "/run Hekili.State.settings.spec.settings.priority_rotation = false");
+
         }
 
         private void InitializeSpells()
@@ -536,6 +539,8 @@ namespace AimsharpWow.Modules
             CustomFunctions.Add("IsRMBDown", "local MBD = 0 local isDown = IsMouseButtonDown(\"RightButton\") if isDown == true then MBD = 1 end return MBD");
 
             CustomFunctions.Add("CycleNotEnabled", "local cycle = 0 if Hekili.State.settings.spec.cycle == true then cycle = 1 else if Hekili.State.settings.spec.cycle == false then cycle = 2 end end return cycle");
+
+            CustomFunctions.Add("FunnelAOE", "if Hekili.State.settings.spec.settings.priority_rotation == false then return 1 else if Hekili.State.settings.spec.settings.priority_rotation == true then return 2 end end return 0");
         }
         #endregion
 
@@ -591,6 +596,7 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("- General -", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoInterrupts - Disables Interrupts", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoCycle - Disables Target Cycle", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx FunnelAOE - Enables Funnel AOE in Hekili", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Blind - Casts Blind @ Mouseover on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Sap - Casts Sap @ Target on the next GCD, turns off Auto Combat while On", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Distract - Casts Distract @ Manual/Cursor/Player on the next GCD", Color.Yellow);
@@ -740,6 +746,20 @@ namespace AimsharpWow.Modules
                     Aimsharp.PrintMessage("Setting SQW to: " + (Aimsharp.Latency + 100), Color.Purple);
                 }
                 Aimsharp.Cast("SetSpellQueueCvar");
+            }
+            #endregion
+
+            #region Hekili Toggles
+            if (Aimsharp.CustomFunction("FunnelAOE") == 1 && Aimsharp.IsCustomCodeOn("FunnelAOE"))
+            {
+                Aimsharp.Cast("FunnelOn");
+                return true;
+            }
+
+            if (Aimsharp.CustomFunction("FunnelAOE") == 2 && !Aimsharp.IsCustomCodeOn("FunnelAOE"))
+            {
+                Aimsharp.Cast("FunnelOff");
+                return true;
             }
             #endregion
 
@@ -1634,6 +1654,20 @@ namespace AimsharpWow.Modules
                     Aimsharp.PrintMessage("Setting SQW to: " + (Aimsharp.Latency + 100), Color.Purple);
                 }
                 Aimsharp.Cast("SetSpellQueueCvar");
+            }
+            #endregion
+
+            #region Hekili Toggles
+            if (Aimsharp.CustomFunction("FunnelAOE") == 1 && Aimsharp.IsCustomCodeOn("FunnelAOE"))
+            {
+                Aimsharp.Cast("FunnelOn");
+                return true;
+            }
+
+            if (Aimsharp.CustomFunction("FunnelAOE") == 2 && !Aimsharp.IsCustomCodeOn("FunnelAOE"))
+            {
+                Aimsharp.Cast("FunnelOff");
+                return true;
             }
             #endregion
 
