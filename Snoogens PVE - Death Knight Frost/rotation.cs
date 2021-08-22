@@ -40,6 +40,7 @@ namespace AimsharpWow.Modules
             "Howling Blast", "Obliterate", "Pillar of Frost", "Remorseless Winter",
             "Horn of Winter", "Asphyxiate", "Blinding Sleet", "Frostscythe",
             "Hypothermic Presence", "Glacial Advance", "Breath of Sindragosa",
+            "Death Pact",
         };
 
         private List<string> m_RaceList = new List<string> { "human", "dwarf", "nightelf", "gnome", "draenei", "pandaren", "orc", "scourge", "tauren", "troll", "bloodelf", "goblin", "worgen", "voidelf", "lightforgeddraenei", "highmountaintauren", "nightborne", "zandalaritroll", "magharorc", "kultiran", "darkirondwarf", "vulpera", "mechagnome" };
