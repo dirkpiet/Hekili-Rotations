@@ -15,7 +15,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "FreezingTrap", "TarTrap", "Turtle", "Intimidation", "NoInterrupts", "NoCycle", "WildSpirits", "ResonatingArrow", "BindingShot", "Flare", "FlareCursor", "TarTrapCursor" };
+        private List<string> m_IngameCommandsList = new List<string> { "FreezingTrap", "TarTrap", "Turtle", "Intimidation", "NoInterrupts", "NoCycle", "WildSpirits", "ResonatingArrow", "BindingShot", "Flare", "FlareCursor", "TarTrapCursor", "SerpentSting", };
         private List<string> m_DebuffsList = new List<string> {  };
         private List<string> m_BuffsList = new List<string> { "Mend Pet", "Flayer's Mark", "Aspect of the Eagle", "Viper's Venom", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
@@ -437,6 +437,8 @@ namespace AimsharpWow.Modules
             Macros.Add("WildSpiritsP", "/cast [@player] Wild Spirits");
             Macros.Add("ResonatingArrowC", "/cast [@cursor] Resonating Arrow");
             Macros.Add("WildSpiritsC", "/cast [@cursor] Wild Spirits");
+
+            Macros.Add("SerpentStingMO", "/cast [@mouseover] Serpent Sting");
         }
 
         private void InitializeSpells()
@@ -484,6 +486,9 @@ namespace AimsharpWow.Modules
 
             CustomFunctions.Add("VolleyMouseover", "if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Steady Shot','mouseover') == 1 then return 1 end; return 0");
 
+            CustomFunctions.Add("SSCheckMouseover", "local markcheck = 0; if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Serpent Sting','mouseover') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType,_,_,_  = UnitDebuff('mouseover', y) if name == 'Serpent Sting' then markcheck = markcheck + 2 end end return markcheck end return 0");
+
+            CustomFunctions.Add("TargetIsMouseover", "if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitExists('target') and UnitIsDead('target') ~= true and UnitIsUnit('mouseover', 'target') then return 1 end; return 0");
 
         }
         #endregion
@@ -546,6 +551,7 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("/xxxxx BindingShot - Casts Binding Shot @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx WildSpirits - Casts Wild Spirits @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx ResonatingArrow - Casts Resonating Arrow @ next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx SerpentSting - Enables Serpent Sting @ Mouseover spread", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx FlareCursor - Toggles Flare always @ Cursor (same as Option)", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx TarTrapCursor - Toggles Tar Trap always @ Cursor (same as Option)", Color.Yellow);
             Aimsharp.PrintMessage("-----", Color.Black);
@@ -1082,6 +1088,17 @@ namespace AimsharpWow.Modules
                         }
                         return true;
                     }
+                }
+
+                bool SerpentSting = Aimsharp.IsCustomCodeOn("SerpentSting");
+                if (SerpentSting && CanCastSerpentSting("mouseover") && Aimsharp.CustomFunction("TargetIsMouseover") == 0 && Aimsharp.CustomFunction("SSCheckMouseover") == 1)
+                {
+                    if (Debug)
+                    {
+                        Aimsharp.PrintMessage("Casting Serpent Sting - Mouseover", Color.Purple);
+                    }
+                    Aimsharp.Cast("SerpentStingMO");
+                    return true;
                 }
 
                 if (Wait <= 200)
