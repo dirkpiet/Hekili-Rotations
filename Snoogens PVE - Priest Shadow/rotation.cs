@@ -17,7 +17,7 @@ namespace AimsharpWow.Modules
         //Lists
         private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "NoCycle", "NoPurify", "ShadowCrash", "MindControl", "LeapofFaith", "ShackleUndead", "PowerInfusion", "MindBomb", "PsychicHorror", "PsychicScream", "MassDispel", "DoorofShadows", "VampiricTouch", "ShadowWordPain", "BodyandSoul", };
         private List<string> m_DebuffsList = new List<string> { "Weakened Soul", };
-        private List<string> m_BuffsList = new List<string> { };
+        private List<string> m_BuffsList = new List<string> { "Dark Thought", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
         private List<string> m_ItemsList = new List<string> { "Phial of Serenity", "Healthstone" };
 
@@ -565,6 +565,16 @@ namespace AimsharpWow.Modules
                     Aimsharp.PrintMessage("Casting Searing Nightmare - " + SpellID1, Color.Purple);
                 }
                 Aimsharp.Cast("Searing Nightmare");
+                return true;
+            }
+
+            if (SpellID1 == 8092 && Aimsharp.CanCast("Mind Blast", "target", true, false) && Aimsharp.HasBuff("Dark Thought", "player", true) && Wait <= 200)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Casting Mind Blast - " + SpellID1, Color.Purple);
+                }
+                Aimsharp.Cast("Mind Blast");
                 return true;
             }
 
