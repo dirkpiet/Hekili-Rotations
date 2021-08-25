@@ -1077,6 +1077,12 @@ namespace AimsharpWow.Modules
                         Aimsharp.Cast("Fel Eruption");
                         return true;
                     }
+
+                    if (SpellID1 == 185123 && Aimsharp.CanCast("Throw Glaive", "target", true, true))
+                    {
+                        Aimsharp.Cast("Throw Glaive");
+                        return true;
+                    }
                     #endregion
                 }
 
