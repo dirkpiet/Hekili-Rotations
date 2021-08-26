@@ -16,10 +16,10 @@ namespace AimsharpWow.Modules
         #region Lists
         //Lists
         private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "NoCycle", "NoCleanse", "FinalReckoning", "BlessingofFreedom", "BlessingofProtection", "BlessingofSacrifice", "DivineShield", "AshenHallow", "HammerofJustice", "BlindingLight", "Repentance", "DivineSteed", "WordofGlory", "DoorofShadows" };
-        private List<string> m_DebuffsList = new List<string> { };
-        private List<string> m_BuffsList = new List<string> { };
+        private List<string> m_DebuffsList = new List<string> { "Gripping Infection", "Wretched Poison", "Barbed Shackles", "Bindings of Misery", };
+        private List<string> m_BuffsList = new List<string> { "Selfless Healer", "Shield of Vengeance", "Divine Steed", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
-        private List<string> m_ItemsList = new List<string> { "Phial of Serenity", "Healthstone" };
+        private List<string> m_ItemsList = new List<string> { "Phial of Serenity", "Healthstone", "Spiritual Healing Potion", };
 
         private List<string> m_SpellBook_General = new List<string> {
             //Covenants
@@ -173,6 +173,58 @@ namespace AimsharpWow.Modules
 
             return false;
         }
+
+        public bool UnitBelowThreshold(int check)
+        {
+            if (Aimsharp.Health("player") > 0 && Aimsharp.Health("player") <= check ||
+                Aimsharp.Health("party1") > 0 && Aimsharp.Health("party1") <= check ||
+                Aimsharp.Health("party2") > 0 && Aimsharp.Health("party2") <= check ||
+                Aimsharp.Health("party3") > 0 && Aimsharp.Health("party3") <= check ||
+                Aimsharp.Health("party4") > 0 && Aimsharp.Health("party4") <= check)
+                return true;
+
+            return false;
+        }
+
+        public string FrozenBinds()
+        {
+            if ((Aimsharp.CastingID("target") == 320788 || Aimsharp.CastingID("target") == 323730) && Aimsharp.CustomFunction("TargetingParty") == 5)
+                return "player";
+
+            if ((Aimsharp.CastingID("target") == 320788 || Aimsharp.CastingID("target") == 323730) && Aimsharp.CustomFunction("TargetingParty") == 1)
+                return "party1";
+
+            if ((Aimsharp.CastingID("target") == 320788 || Aimsharp.CastingID("target") == 323730) && Aimsharp.CustomFunction("TargetingParty") == 2)
+                return "party2";
+
+            if ((Aimsharp.CastingID("target") == 320788 || Aimsharp.CastingID("target") == 323730) && Aimsharp.CustomFunction("TargetingParty") == 3)
+                return "party3";
+
+            if ((Aimsharp.CastingID("target") == 320788 || Aimsharp.CastingID("target") == 323730) && Aimsharp.CustomFunction("TargetingParty") == 4)
+                return "party4";
+
+            return "NONE";
+        }
+
+        public string Carnage()
+        {
+            if ((Aimsharp.CastingID("target") == 356925 || Aimsharp.CastingID("target") == 356924) && Aimsharp.CustomFunction("TargetingParty") == 5)
+                return "player";
+
+            if ((Aimsharp.CastingID("target") == 356925 || Aimsharp.CastingID("target") == 356924) && Aimsharp.CustomFunction("TargetingParty") == 1)
+                return "party1";
+
+            if ((Aimsharp.CastingID("target") == 356925 || Aimsharp.CastingID("target") == 356924) && Aimsharp.CustomFunction("TargetingParty") == 2)
+                return "party2";
+
+            if ((Aimsharp.CastingID("target") == 356925 || Aimsharp.CastingID("target") == 356924) && Aimsharp.CustomFunction("TargetingParty") == 3)
+                return "party3";
+
+            if ((Aimsharp.CastingID("target") == 356925 || Aimsharp.CastingID("target") == 356924) && Aimsharp.CustomFunction("TargetingParty") == 4)
+                return "party4";
+
+            return "NONE";
+        }
         #endregion
 
         #region CanCasts
@@ -180,7 +232,22 @@ namespace AimsharpWow.Modules
         #endregion
 
         #region Debuffs
+        public int UnitDebuffFreedomPriority(string unit)
+        {
+            if (Aimsharp.HasDebuff("Gripping Infection", unit, false))
+                return Aimsharp.DebuffRemaining("Gripping Infection", unit, false);
 
+            if (Aimsharp.HasDebuff("Wretched Poison", unit, false))
+                return Aimsharp.DebuffRemaining("Wretched Poison", unit, false);
+
+            if (Aimsharp.HasDebuff("Barbed Shackles", unit, false))
+                return Aimsharp.DebuffRemaining("Barbed Shackles", unit, false);
+
+            if (Aimsharp.HasDebuff("Bindings of Misery", unit, false) && unit == "player")
+                return Aimsharp.DebuffRemaining("Bindings of Misery", unit, false);
+
+            return 0;
+        }
         #endregion
 
         #region Buffs
@@ -201,6 +268,7 @@ namespace AimsharpWow.Modules
             //Trinket
             Macros.Add("TopTrinket", "/use 13");
             Macros.Add("BotTrinket", "/use 14");
+            Macros.Add("Weapon", "/use 16");
 
             //Healthstone
             Macros.Add("Healthstone", "/use Healthstone");
@@ -208,15 +276,27 @@ namespace AimsharpWow.Modules
             //Phial
             Macros.Add("PhialofSerenity", "/use Phial of Serenity");
 
+            //HP Pot
+            Macros.Add("SpiritualHPPotion", "/use Spiritual Healing Potion");
+
             //SpellQueueWindow
             Macros.Add("SetSpellQueueCvar", "/console SpellQueueWindow " + (Aimsharp.Latency + 100));
 
+            //Focus Units
             Macros.Add("FOC_party1", "/focus party1");
             Macros.Add("FOC_party2", "/focus party2");
             Macros.Add("FOC_party3", "/focus party3");
             Macros.Add("FOC_party4", "/focus party4");
             Macros.Add("FOC_player", "/focus player");
+
+            //Focus Spells
             Macros.Add("CT_FOC", "/cast [@focus] Cleanse Toxins");
+            Macros.Add("FOL_FOC", "/cast [@focus] Flash of Light");
+            Macros.Add("WOG_FOC", "/cast [@focus] Word of Glory");
+            Macros.Add("LOH_FOC", "/cast [@focus] Lay on Hands");
+            Macros.Add("BOS_FOC", "/cast [@focus] Blessing of Sacrifice");
+            Macros.Add("BOF_FOC", "/cast [@focus] Blessing of Freedom");
+            Macros.Add("BOP_FOC", "/cast [@focus] Blessing of Protection");
 
             //Queues
             Macros.Add("FinalReckoningOff", "/" + FiveLetters + " FinalReckoning");
@@ -269,7 +349,7 @@ namespace AimsharpWow.Modules
 
         private void InitializeCustomLUAFunctions()
         {
-            CustomFunctions.Add("HekiliID1", "local loading, finished = IsAddOnLoaded(\"Hekili\") \r\nif loading == true and finished == true then \r\n    local id=Hekili_GetRecommendedAbility(\"Primary\",1)\r\n\tif id ~= nil then\r\n\t\r\n    if id<0 then \r\n\t    local spell = Hekili.Class.abilities[id]\r\n\t    if spell ~= nil and spell.item ~= nil then \r\n\t    \tid=spell.item\r\n\t\t    local topTrinketLink = GetInventoryItemLink(\"player\",13)\r\n\t\t    local bottomTrinketLink = GetInventoryItemLink(\"player\",14)\r\n\t\t    if topTrinketLink  ~= nil then\r\n                local trinketid = GetItemInfoInstant(topTrinketLink)\r\n                if trinketid ~= nil then\r\n\t\t\t        if trinketid == id then\r\n\t\t\t\t        return 1\r\n                    end\r\n\t\t\t    end\r\n\t\t    end\r\n\t\t    if bottomTrinketLink ~= nil then\r\n                local trinketid = GetItemInfoInstant(bottomTrinketLink)\r\n                if trinketid ~= nil then\r\n    \t\t\t    if trinketid == id then\r\n\t    \t\t\t    return 2\r\n                    end\r\n\t\t\t    end\r\n\t\t    end\r\n\t    end \r\n    end\r\n    return id\r\nend\r\nend\r\nreturn 0");
+            CustomFunctions.Add("HekiliID1", "local loading, finished = IsAddOnLoaded(\"Hekili\") \r\nif loading == true and finished == true then \r\n    local id=Hekili_GetRecommendedAbility(\"Primary\",1)\r\n\tif id ~= nil then\r\n\t\r\n    if id<0 then \r\n\t    local spell = Hekili.Class.abilities[id]\r\n\t    if spell ~= nil and spell.item ~= nil then \r\n\t    \tid=spell.item\r\n\t\t    local topTrinketLink = GetInventoryItemLink(\"player\",13)\r\n\t\t    local bottomTrinketLink = GetInventoryItemLink(\"player\",14)\r\n\t\t    if topTrinketLink  ~= nil then\r\n                local trinketid = GetItemInfoInstant(topTrinketLink)\r\n                if trinketid ~= nil then\r\n\t\t\t        if trinketid == id then\r\n\t\t\t\t        return 1\r\n                    end\r\n\t\t\t    end\r\n\t\t    end\r\n\t\t    if bottomTrinketLink ~= nil then\r\n                local trinketid = GetItemInfoInstant(bottomTrinketLink)\r\n                if trinketid ~= nil then\r\n    \t\t\t    if trinketid == id then\r\n\t    \t\t\t    return 2\r\n                    end\r\n\t\t\t    end\r\n\t\t    end\r\n\t\t    if weaponLink ~= nil then\r\n                local weaponid = GetItemInfoInstant(weaponLink)\r\n                if weaponid ~= nil then\r\n    \t\t\t    if weaponid == id then\r\n\t    \t\t\t    return 3\r\n                    end\r\n\t\t\t    end\r\n\t\t    end\r\n\t    end \r\n    end\r\n    return id\r\nend\r\nend\r\nreturn 0");
 
             CustomFunctions.Add("PhialCount", "local count = GetItemCount(177278) if count ~= nil then return count end return 0");
 
@@ -312,10 +392,13 @@ namespace AimsharpWow.Modules
             "\nif UnitExists('focus') and UnitIsUnit('player','focus') then foc = 5; end" +
             "\nreturn foc");
 
-            CustomFunctions.Add("PurgeCheckMouseover", "local markcheck = 0; if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Purge','mouseover') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType,_,_,_  = UnitAura('mouseover', y, 'RAID') if debuffType == 'Magic' then markcheck = markcheck + 2 end end return markcheck end return 0");
-
-            //CustomFunctions.Add("PurgeCheckTarget", "local markcheck = 0; if UnitExists('target') and UnitIsDead('target') ~= true and UnitAffectingCombat('target') and IsSpellInRange('Purge','target') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType,_,_,_  = UnitAura('target', y, 'RAID') if debuffType == 'Magic' then markcheck = markcheck + 2 end end return markcheck end return 0");
-
+            CustomFunctions.Add("TargetingParty", "local result = 0" +
+            "\nif UnitExists('target') and UnitIsUnit('targettarget','party1') then result = 1 end" +
+            "\nif UnitExists('target') and UnitIsUnit('targettarget','party2') then result = 2 end" +
+            "\nif UnitExists('target') and UnitIsUnit('targettarget','party3') then result = 3 end" +
+            "\nif UnitExists('target') and UnitIsUnit('targettarget','party4') then result = 4 end" +
+            "\nif UnitExists('target') and UnitIsUnit('targettarget','player') then result = 5 end" +
+            "\nreturn result");
         }
         #endregion
 
@@ -328,6 +411,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Use Trinkets on CD, dont wait for Hekili:", false));
             Settings.Add(new Setting("Auto Healthstone @ HP%", 0, 100, 25));
             Settings.Add(new Setting("Auto Phial of Serenity @ HP%", 0, 100, 35));
+            Settings.Add(new Setting("Auto Spiritual Potion @ HP%", 0, 100, 25));
             Settings.Add(new Setting("Kicks/Interrupts"));
             Settings.Add(new Setting("Kick at milliseconds remaining", 50, 1500, 500));
             Settings.Add(new Setting("Kick channels after milliseconds", 50, 1500, 500));
@@ -337,6 +421,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Auto Lay on Hands @ HP%", 0, 100, 20));
             Settings.Add(new Setting("Auto Shield of Vengeance @ HP%", 0, 100, 50));
             Settings.Add(new Setting("Auto Word of Glory @ HP%", 0, 100, 40));
+            Settings.Add(new Setting("Auto Selfless Healer @ HP%", 0, 100, 40));
             Settings.Add(new Setting("Final Reckoning Cast:", m_CastingList, "Manual"));
             Settings.Add(new Setting("Ashen Hallow Cast:", m_CastingList, "Manual"));
             Settings.Add(new Setting("Misc"));
@@ -583,6 +668,56 @@ namespace AimsharpWow.Modules
             #endregion
 
             #region Auto Spells and Items
+            //Auto Frozen Binds Freedom
+            if (FrozenBinds() != "NONE")
+            {
+                if (Aimsharp.CanCast("Blessing of Freedom", FrozenBinds(), false, true) && (FrozenBinds() == "player" ||  Aimsharp.Range(FrozenBinds()) <= 40))
+                {
+                    if (!UnitFocus(FrozenBinds()))
+                    {
+                        Aimsharp.Cast("FOC_" + FrozenBinds(), true);
+                        return true;
+                    }
+                    else
+                    {
+                        if (UnitFocus(FrozenBinds()))
+                        {
+                            if (Debug)
+                            {
+                                Aimsharp.PrintMessage("Blessing of Freedom @ " + FrozenBinds() + " - Frozen Binds", Color.Purple);
+                            }
+                            Aimsharp.Cast("BOF_FOC");
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            //Auto Carnage Protection
+            if (Carnage() != "NONE")
+            {
+                if (Aimsharp.CanCast("Blessing of Protection", Carnage(), false, true) && (Carnage() == "player" || Aimsharp.Range(Carnage()) <= 40))
+                {
+                    if (!UnitFocus(Carnage()))
+                    {
+                        Aimsharp.Cast("FOC_" + Carnage(), true);
+                        return true;
+                    }
+                    else
+                    {
+                        if (UnitFocus(Carnage()))
+                        {
+                            if (Debug)
+                            {
+                                Aimsharp.PrintMessage("Blessing of Protection @ " + Carnage() + " - Carnage", Color.Purple);
+                            }
+                            Aimsharp.Cast("BOP_FOC");
+                            return true;
+                        }
+                    }
+                }
+            }
+
             //Auto Healthstone
             if (Aimsharp.CanUseItem("Healthstone", false) && Aimsharp.ItemCooldown("Healthstone") == 0)
             {
@@ -611,27 +746,187 @@ namespace AimsharpWow.Modules
                 }
             }
 
-            //Auto Word of Glory
-            if (PlayerHP <= WordofGloryHP && Aimsharp.CanCast("Word of Glory", "player", false, true) && Aimsharp.IsCustomCodeOn("WordofGlory"))
+            //Auto Spiritual Healing Potion
+            if (Aimsharp.CanUseItem("Spiritual Healing Potion", false) && Aimsharp.ItemCooldown("Spiritual Healing Potion") == 0)
             {
-                if (Debug)
+                if (Aimsharp.Health("player") <= GetSlider("Auto Spiritual Potion @ HP%"))
                 {
-                    Aimsharp.PrintMessage("Casting Word of Glory - Player HP% " + PlayerHP + " due to setting being on HP% " + WordofGloryHP, Color.Purple);
+                    if (Debug)
+                    {
+                        Aimsharp.PrintMessage("Using Spiritual Healing Potion - Player HP% " + Aimsharp.Health("player") + " due to setting being on HP% " + GetSlider("Auto Spiritual Potion @ HP%"), Color.Purple);
+                    }
+                    Aimsharp.Cast("SpiritualHPPotion");
+                    return true;
                 }
-                Aimsharp.Cast("Word of Glory");
-                return true;
             }
 
-            //Auto Lay on Hands
-            if (PlayerHP <= LayonHandsHP && Aimsharp.CanCast("Lay on Hands", "player", false, true))
+            #region Special Freedom
+            if ((UnitDebuffFreedomPriority("player") > 0 || UnitDebuffFreedomPriority("party1") > 0 || UnitDebuffFreedomPriority("party2") > 0 || UnitDebuffFreedomPriority("party3") > 0 || UnitDebuffFreedomPriority("party4") > 0) && Aimsharp.GroupSize() <= 5)
             {
-                if (Debug)
+                PartyDict.Clear();
+                PartyDict.Add("player", Aimsharp.Health("player"));
+
+                var partysize = Aimsharp.GroupSize();
+                for (int i = 1; i < partysize; i++)
                 {
-                    Aimsharp.PrintMessage("Casting Lay on Hands - Player HP% " + PlayerHP + " due to setting being on HP% " + LayonHandsHP, Color.Purple);
+                    var partyunit = ("party" + i);
+                    if (Aimsharp.Health(partyunit) > 0 && Aimsharp.Range(partyunit) <= 40)
+                    {
+                        PartyDict.Add(partyunit, Aimsharp.Health(partyunit));
+                    }
                 }
-                Aimsharp.Cast("Lay on Hands", true);
-                return true;
+
+                foreach (var unit in PartyDict.OrderBy(unit => unit.Value))
+                {
+                    if (Aimsharp.CanCast("Blessing of Freedom", unit.Key, false, true) && (unit.Key == "player" || Aimsharp.Range(unit.Key) <= 40) && UnitDebuffFreedomPriority(unit.Key) > 0)
+                    {
+                        if (!UnitFocus(unit.Key))
+                        {
+                            Aimsharp.Cast("FOC_" + unit.Key, true);
+                            return true;
+                        }
+                        else
+                        {
+                            if (UnitFocus(unit.Key))
+                            {
+                                Aimsharp.Cast("BOF_FOC");
+                                if (Debug)
+                                {
+                                    Aimsharp.PrintMessage("Blessing of Freedom @ " + unit.Key + " - " + unit.Value, Color.Purple);
+                                }
+                                return true;
+                            }
+                        }
+                    }
+                }
             }
+            #endregion
+
+            #region Selfless Healer
+            if (UnitBelowThreshold(GetSlider("Auto Selfless Healer @ HP%")) && Aimsharp.BuffStacks("Selfless Healer", "player", true) >= 4 && Aimsharp.GroupSize() <= 5)
+            {
+                PartyDict.Clear();
+                PartyDict.Add("player", Aimsharp.Health("player"));
+
+                var partysize = Aimsharp.GroupSize();
+                for (int i = 1; i < partysize; i++)
+                {
+                    var partyunit = ("party" + i);
+                    if (Aimsharp.Health(partyunit) > 0 && Aimsharp.Range(partyunit) <= 40)
+                    {
+                        PartyDict.Add(partyunit, Aimsharp.Health(partyunit));
+                    }
+                }
+
+                foreach (var unit in PartyDict.OrderBy(unit => unit.Value))
+                {
+                    if (Aimsharp.CanCast("Flash of Light", unit.Key, false, true) && (unit.Key == "player" || Aimsharp.Range(unit.Key) <= 40) && Aimsharp.Health(unit.Key) <= GetSlider("Auto Selfless Healer @ HP%"))
+                    {
+                        if (!UnitFocus(unit.Key))
+                        {
+                            Aimsharp.Cast("FOC_" + unit.Key, true);
+                            return true;
+                        }
+                        else
+                        {
+                            if (UnitFocus(unit.Key))
+                            {
+                                Aimsharp.Cast("FOL_FOC");
+                                if (Debug)
+                                {
+                                    Aimsharp.PrintMessage("Flash of Light @ " + unit.Key + " - " + unit.Value, Color.Purple);
+                                }
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Word of Glory
+            if (Aimsharp.IsCustomCodeOn("WordofGlory") && UnitBelowThreshold(GetSlider("Auto Word of Glory @ HP%")) && Aimsharp.CanCast("Word of Glory", "player", false, true) && Aimsharp.GroupSize() <= 5)
+            {
+                PartyDict.Clear();
+                PartyDict.Add("player", Aimsharp.Health("player"));
+
+                var partysize = Aimsharp.GroupSize();
+                for (int i = 1; i < partysize; i++)
+                {
+                    var partyunit = ("party" + i);
+                    if (Aimsharp.Health(partyunit) > 0 && Aimsharp.Range(partyunit) <= 40)
+                    {
+                        PartyDict.Add(partyunit, Aimsharp.Health(partyunit));
+                    }
+                }
+
+                foreach (var unit in PartyDict.OrderBy(unit => unit.Value))
+                {
+                    if (Aimsharp.CanCast("Word of Glory", unit.Key, false, true) && (unit.Key == "player" || Aimsharp.Range(unit.Key) <= 40) && Aimsharp.Health(unit.Key) <= GetSlider("Auto Word of Glory @ HP%"))
+                    {
+                        if (!UnitFocus(unit.Key))
+                        {
+                            Aimsharp.Cast("FOC_" + unit.Key, true);
+                            return true;
+                        }
+                        else
+                        {
+                            if (UnitFocus(unit.Key))
+                            {
+                                Aimsharp.Cast("WOG_FOC");
+                                if (Debug)
+                                {
+                                    Aimsharp.PrintMessage("Word of Glory @ " + unit.Key + " - " + unit.Value, Color.Purple);
+                                }
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Lay on Hands
+            if (UnitBelowThreshold(GetSlider("Auto Lay on Hands @ HP%")) && Aimsharp.CanCast("Lay on Hands", "player", false, true) && Aimsharp.GroupSize() <= 5)
+            {
+                PartyDict.Clear();
+                PartyDict.Add("player", Aimsharp.Health("player"));
+
+                var partysize = Aimsharp.GroupSize();
+                for (int i = 1; i < partysize; i++)
+                {
+                    var partyunit = ("party" + i);
+                    if (Aimsharp.Health(partyunit) > 0 && Aimsharp.Range(partyunit) <= 40)
+                    {
+                        PartyDict.Add(partyunit, Aimsharp.Health(partyunit));
+                    }
+                }
+
+                foreach (var unit in PartyDict.OrderBy(unit => unit.Value))
+                {
+                    if (Aimsharp.CanCast("Lay on Hands", unit.Key, false, true) && (unit.Key == "player" || Aimsharp.Range(unit.Key) <= 40) && Aimsharp.Health(unit.Key) <= GetSlider("Auto Lay on Hands @ HP%"))
+                    {
+                        if (!UnitFocus(unit.Key))
+                        {
+                            Aimsharp.Cast("FOC_" + unit.Key, true);
+                            return true;
+                        }
+                        else
+                        {
+                            if (UnitFocus(unit.Key))
+                            {
+                                Aimsharp.Cast("LOH_FOC");
+                                if (Debug)
+                                {
+                                    Aimsharp.PrintMessage("Lay on Hands @ " + unit.Key + " - " + unit.Value, Color.Purple);
+                                }
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
 
             //Auto Divine Shield
             if (PlayerHP <= DivineShieldHP && Aimsharp.CanCast("Divine Shield", "player", false, true))
@@ -654,6 +949,43 @@ namespace AimsharpWow.Modules
                 Aimsharp.Cast("Shield of Vengeance");
                 return true;
             }
+
+            #region Shield of Vengeance Sacrifice
+            if (Aimsharp.HasBuff("Shield of Vengeance", "player", true) && Aimsharp.BuffRemaining("Shield of Vengeance", "player", true) >= 12000 && Aimsharp.SpellCooldown("Blessing of Sacrifice") - Aimsharp.GCD() <= 0 && Aimsharp.GroupSize() <= 5)
+            {
+                var partysize = Aimsharp.GroupSize();
+                var tank = "NONE";
+                for (int i = 1; i < partysize; i++)
+                {
+                    var partyunit = ("party" + i);
+                    if (Aimsharp.Health(partyunit) > 0 && Aimsharp.Range(partyunit) <= 40 && Aimsharp.GetSpec(partyunit) == "TANK")
+                    {
+                        tank = partyunit;
+                    }
+                }
+
+                if (Aimsharp.CanCast("Blessing of Sacrifice", tank, true, true) && tank != "NONE")
+                {
+                    if (!UnitFocus(tank))
+                    {
+                        Aimsharp.Cast("FOC_" + tank, true);
+                        return true;
+                    }
+                    else
+                    {
+                        if (UnitFocus(tank))
+                        {
+                            Aimsharp.Cast("BOS_FOC");
+                            if (Debug)
+                            {
+                                Aimsharp.PrintMessage("Blessing of Sacrifice @ " + tank + " - " + Aimsharp.Health(tank), Color.Purple);
+                            }
+                            return true;
+                        }
+                    }
+                }
+            }
+            #endregion
             #endregion
 
             #region Queues
@@ -721,7 +1053,7 @@ namespace AimsharpWow.Modules
             }
 
             bool DivineSteed = Aimsharp.IsCustomCodeOn("DivineSteed");
-            if (DivineSteed && (Aimsharp.SpellCooldown("Divine Steed") - Aimsharp.GCD() > 1000 && Aimsharp.SpellCharges("Divine Steed") == 0 || Aimsharp.RechargeTime("Divine Steed") > 44500 && Aimsharp.SpellCharges("Divine Steed") == 1))
+            if (DivineSteed && Aimsharp.HasBuff("Divine Steed", "player", true))
             {
                 if (Debug)
                 {
@@ -731,7 +1063,7 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
-            if (DivineSteed && Aimsharp.CanCast("Divine Steed", "player", false, true))
+            if (DivineSteed && Aimsharp.CanCast("Divine Steed", "player", false, true) && !Aimsharp.HasBuff("Divine Steed", "player", true))
             {
                 if (Debug)
                 {
@@ -1040,6 +1372,16 @@ namespace AimsharpWow.Modules
                             Aimsharp.PrintMessage("Using Bot Trinket", Color.Purple);
                         }
                         Aimsharp.Cast("BotTrinket");
+                        return true;
+                    }
+
+                    if (SpellID1 == 3 && MeleeRange)
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Using Weapon", Color.Purple);
+                        }
+                        Aimsharp.Cast("Weapon");
                         return true;
                     }
                     #endregion
@@ -1483,7 +1825,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 53385 && Aimsharp.CanCast("Divine Storm", "player", false, true) && EnemiesInMelee > 0)
+                    if (SpellID1 == 53385 && Aimsharp.CanCast("Divine Storm", "player", false, true) && Aimsharp.Range("target") <= 3)
                     {
                         if (Debug)
                         {
@@ -1710,7 +2052,7 @@ namespace AimsharpWow.Modules
             }
 
             bool DivineSteed = Aimsharp.IsCustomCodeOn("DivineSteed");
-            if (DivineSteed && (Aimsharp.SpellCooldown("Divine Steed") - Aimsharp.GCD() > 1000 && Aimsharp.SpellCharges("Divine Steed") == 0 || Aimsharp.RechargeTime("Divine Steed") > 44500 && Aimsharp.SpellCharges("Divine Steed") == 1))
+            if (DivineSteed && Aimsharp.HasBuff("Divine Steed", "player", true))
             {
                 if (Debug)
                 {
@@ -1720,7 +2062,7 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
-            if (DivineSteed && Aimsharp.CanCast("Divine Steed", "player", false, true))
+            if (DivineSteed && Aimsharp.CanCast("Divine Steed", "player", false, true) && !Aimsharp.HasBuff("Divine Steed", "player", true))
             {
                 if (Debug)
                 {

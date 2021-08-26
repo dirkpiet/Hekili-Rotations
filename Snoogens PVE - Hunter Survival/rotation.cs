@@ -406,6 +406,7 @@ namespace AimsharpWow.Modules
             //Trinket
             Macros.Add("TopTrinket", "/use 13");
             Macros.Add("BotTrinket", "/use 14");
+            Macros.Add("Weapon", "/use 16");
 
             //Healthstone
             Macros.Add("Healthstone", "/use Healthstone");
@@ -464,7 +465,7 @@ namespace AimsharpWow.Modules
 
         private void InitializeCustomLUAFunctions()
         {
-            CustomFunctions.Add("HekiliID1", "local loading, finished = IsAddOnLoaded(\"Hekili\") \r\nif loading == true and finished == true then \r\n    local id=Hekili_GetRecommendedAbility(\"Primary\",1)\r\n\tif id ~= nil then\r\n\t\r\n    if id<0 then \r\n\t    local spell = Hekili.Class.abilities[id]\r\n\t    if spell ~= nil and spell.item ~= nil then \r\n\t    \tid=spell.item\r\n\t\t    local topTrinketLink = GetInventoryItemLink(\"player\",13)\r\n\t\t    local bottomTrinketLink = GetInventoryItemLink(\"player\",14)\r\n\t\t    if topTrinketLink  ~= nil then\r\n                local trinketid = GetItemInfoInstant(topTrinketLink)\r\n                if trinketid ~= nil then\r\n\t\t\t        if trinketid == id then\r\n\t\t\t\t        return 1\r\n                    end\r\n\t\t\t    end\r\n\t\t    end\r\n\t\t    if bottomTrinketLink ~= nil then\r\n                local trinketid = GetItemInfoInstant(bottomTrinketLink)\r\n                if trinketid ~= nil then\r\n    \t\t\t    if trinketid == id then\r\n\t    \t\t\t    return 2\r\n                    end\r\n\t\t\t    end\r\n\t\t    end\r\n\t    end \r\n    end\r\n    return id\r\nend\r\nend\r\nreturn 0");
+            CustomFunctions.Add("HekiliID1", "local loading, finished = IsAddOnLoaded(\"Hekili\") \r\nif loading == true and finished == true then \r\n    local id=Hekili_GetRecommendedAbility(\"Primary\",1)\r\n\tif id ~= nil then\r\n\t\r\n    if id<0 then \r\n\t    local spell = Hekili.Class.abilities[id]\r\n\t    if spell ~= nil and spell.item ~= nil then \r\n\t    \tid=spell.item\r\n\t\t    local topTrinketLink = GetInventoryItemLink(\"player\",13)\r\n\t\t    local bottomTrinketLink = GetInventoryItemLink(\"player\",14)\r\n\t\t    local weaponLink = GetInventoryItemLink(\"player\",16)\r\n\t\t    if topTrinketLink  ~= nil then\r\n                local trinketid = GetItemInfoInstant(topTrinketLink)\r\n                if trinketid ~= nil then\r\n\t\t\t        if trinketid == id then\r\n\t\t\t\t        return 1\r\n                    end\r\n\t\t\t    end\r\n\t\t    end\r\n\t\t    if bottomTrinketLink ~= nil then\r\n                local trinketid = GetItemInfoInstant(bottomTrinketLink)\r\n                if trinketid ~= nil then\r\n    \t\t\t    if trinketid == id then\r\n\t    \t\t\t    return 2\r\n                    end\r\n\t\t\t    end\r\n\t\t    end\r\n\t\t    if weaponLink ~= nil then\r\n                local weaponid = GetItemInfoInstant(weaponLink)\r\n                if weaponid ~= nil then\r\n    \t\t\t    if weaponid == id then\r\n\t    \t\t\t    return 3\r\n                    end\r\n\t\t\t    end\r\n\t\t    end\r\n\t    end \r\n    end\r\n    return id\r\nend\r\nend\r\nreturn 0");
 
             CustomFunctions.Add("GetSpellQueueWindow", "local sqw = GetCVar(\"SpellQueueWindow\"); if sqw ~= nil then return tonumber(sqw); end return 0");
 
@@ -674,6 +675,7 @@ namespace AimsharpWow.Modules
 
             bool Enemy = Aimsharp.TargetIsEnemy();
             int EnemiesInMelee = Aimsharp.EnemiesInMelee();
+            bool MeleeRange = Aimsharp.Range("target") <= 6;
             bool Moving = Aimsharp.PlayerIsMoving();
             bool MOTranq = GetCheckBox("Tranquilizing Shot Mouseover:") == true;
             int TranqBuffMO = Aimsharp.CustomFunction("TranqBuffCheck");
@@ -1104,7 +1106,7 @@ namespace AimsharpWow.Modules
                 if (Wait <= 200)
                 {
                     #region Trinkets
-                    if (CooldownsToggle == 1 && UseTrinketsCD && Aimsharp.CanUseTrinket(0))
+                    if (CooldownsToggle == 1 && UseTrinketsCD && Aimsharp.CanUseTrinket(0) && MeleeRange)
                     {
                         if (Debug)
                         {
@@ -1114,7 +1116,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (CooldownsToggle == 2 && UseTrinketsCD && Aimsharp.CanUseTrinket(1))
+                    if (CooldownsToggle == 2 && UseTrinketsCD && Aimsharp.CanUseTrinket(1) && MeleeRange)
                     {
                         if (Debug)
                         {
@@ -1124,7 +1126,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 1 && Aimsharp.CanUseTrinket(0))
+                    if (SpellID1 == 1 && Aimsharp.CanUseTrinket(0) && MeleeRange)
                     {
                         if (Debug)
                         {
@@ -1134,13 +1136,23 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 2 && Aimsharp.CanUseTrinket(1))
+                    if (SpellID1 == 2 && Aimsharp.CanUseTrinket(1) && MeleeRange)
                     {
                         if (Debug)
                         {
                             Aimsharp.PrintMessage("Using Bot Trinket", Color.Purple);
                         }
                         Aimsharp.Cast("BotTrinket");
+                        return true;
+                    }
+
+                    if (SpellID1 == 3 && MeleeRange)
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Using Weapon", Color.Purple);
+                        }
+                        Aimsharp.Cast("Weapon");
                         return true;
                     }
                     #endregion
