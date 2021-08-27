@@ -1173,7 +1173,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 152277 && Aimsharp.CanCast("Ravager", "player", false, true) && (RavagerCast != "Player" || RavagerCast == "Player" && MeleeRange))
+                    if (SpellID1 == 228920 && Aimsharp.CanCast("Ravager", "player", false, true) && (RavagerCast != "Player" || RavagerCast == "Player" && MeleeRange))
                     {
                         switch (RavagerCast)
                         {
