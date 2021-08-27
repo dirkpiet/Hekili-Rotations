@@ -52,3 +52,6 @@
 100% SimC Accurate Rotation  
 ### [Priest: Shadow](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Priest%20Shadow)  
 100% SimC Accurate Rotation  
+## Tanks  
+### [Warrior: Protection](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Warrior%20Protection)  
+100% SimC Accurate Rotation  
