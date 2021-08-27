@@ -17,7 +17,7 @@ namespace AimsharpWow.Modules
         //Lists
         private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "NoCycle", "NoDecurse", "EarthbindTotem", "WindRushTotem", "CapacitorTotem", "TremorTotem", "Hex", "EarthElemental", "VesperTotem", "FaeTransfusion", "DoorofShadows" };
         private List<string> m_DebuffsList = new List<string> { };
-        private List<string> m_BuffsList = new List<string> { };
+        private List<string> m_BuffsList = new List<string> { "Maelstrom Weapon", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
         private List<string> m_ItemsList = new List<string> { "Phial of Serenity", "Healthstone" };
 
@@ -179,6 +179,18 @@ namespace AimsharpWow.Modules
 
             return false;
         }
+
+        public bool UnitBelowThreshold(int check)
+        {
+            if (Aimsharp.Health("player") > 0 && Aimsharp.Health("player") <= check ||
+                Aimsharp.Health("party1") > 0 && Aimsharp.Health("party1") <= check ||
+                Aimsharp.Health("party2") > 0 && Aimsharp.Health("party2") <= check ||
+                Aimsharp.Health("party3") > 0 && Aimsharp.Health("party3") <= check ||
+                Aimsharp.Health("party4") > 0 && Aimsharp.Health("party4") <= check)
+                return true;
+
+            return false;
+        }
         #endregion
 
         #region CanCasts
@@ -223,6 +235,7 @@ namespace AimsharpWow.Modules
             Macros.Add("FOC_party4", "/focus party4");
             Macros.Add("FOC_player", "/focus player");
             Macros.Add("CS_FOC", "/cast [@focus] Cleanse Spirit");
+            Macros.Add("HS_FOC", "/cast [@focus] Healing Surge");
 
             //Queues
             Macros.Add("EarthbindTotemOff", "/" + FiveLetters + " EarthbindTotem");
@@ -321,9 +334,7 @@ namespace AimsharpWow.Modules
             "\nif UnitExists('focus') and UnitIsUnit('player','focus') then foc = 5; end" +
             "\nreturn foc");
 
-            CustomFunctions.Add("PurgeCheckMouseover", "local markcheck = 0; if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Purge','mouseover') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType,_,_,_  = UnitAura('mouseover', y, 'RAID') if debuffType == 'Magic' then markcheck = markcheck + 2 end end return markcheck end return 0");
-
-            //CustomFunctions.Add("PurgeCheckTarget", "local markcheck = 0; if UnitExists('target') and UnitIsDead('target') ~= true and UnitAffectingCombat('target') and IsSpellInRange('Purge','target') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType,_,_,_  = UnitAura('target', y, 'RAID') if debuffType == 'Magic' then markcheck = markcheck + 2 end end return markcheck end return 0");
+            CustomFunctions.Add("PurgeCheckMouseover", "local markcheck = 0; if UnitExists('mouseover') and UnitIsDead('mouseover') ~= true and UnitAffectingCombat('mouseover') and IsSpellInRange('Purge','mouseover') == 1 then markcheck = markcheck +1  for y = 1, 40 do local name,_,_,debuffType,_,_,_  = UnitBuff('mouseover', y) if debuffType == 'Magic' then markcheck = markcheck + 2 end end return markcheck end return 0");
 
         }
         #endregion
@@ -347,6 +358,8 @@ namespace AimsharpWow.Modules
             //Settings.Add(new Setting("Auto Purge Target:", true));
             Settings.Add(new Setting("Auto Purge Mouseover:", true));
             Settings.Add(new Setting("Auto Astral Shift @ HP%", 0, 100, 25));
+            Settings.Add(new Setting("Auto Healing Surge @ HP%", 0, 100, 40));
+            Settings.Add(new Setting("Auto Healing Stream Totem @ HP%", 0, 100, 50));
             Settings.Add(new Setting("Totem Cast:", m_CastingList, "Manual"));
             Settings.Add(new Setting("Covenant Cast:", m_CastingList, "Manual"));
             Settings.Add(new Setting("Misc"));
@@ -472,6 +485,8 @@ namespace AimsharpWow.Modules
                 Spellbook.Add("Shadowmeld"); //58984
             }
             #endregion
+
+            Totems.Add("Healing Stream Totem");
 
             InitializeSettings();
 
@@ -662,6 +677,81 @@ namespace AimsharpWow.Modules
                     return true;
                 }
             }
+
+            #region Maelstrom Healing Surge
+            if (UnitBelowThreshold(GetSlider("Auto Healing Surge @ HP%")) && Aimsharp.BuffStacks("Maelstrom Weapon", "player", true) >= 5)
+            {
+                PartyDict.Clear();
+                PartyDict.Add("player", Aimsharp.Health("player"));
+
+                var partysize = Aimsharp.GroupSize();
+                if (partysize <= 5)
+                {
+                    for (int i = 1; i < partysize; i++)
+                    {
+                        var partyunit = ("party" + i);
+                        if (Aimsharp.Health(partyunit) > 0 && Aimsharp.Range(partyunit) <= 40)
+                        {
+                            PartyDict.Add(partyunit, Aimsharp.Health(partyunit));
+                        }
+                    }
+                }
+
+                foreach (var unit in PartyDict.OrderBy(unit => unit.Value))
+                {
+                    if (Aimsharp.CanCast("Healing Surge", unit.Key, false, true) && (unit.Key == "player" || Aimsharp.Range(unit.Key) <= 40) && Aimsharp.Health(unit.Key) <= GetSlider("Auto Healing Surge @ HP%"))
+                    {
+                        if (!UnitFocus(unit.Key))
+                        {
+                            Aimsharp.Cast("FOC_" + unit.Key, true);
+                            return true;
+                        }
+                        else
+                        {
+                            if (UnitFocus(unit.Key))
+                            {
+                                Aimsharp.Cast("HS_FOC");
+                                if (Debug)
+                                {
+                                    Aimsharp.PrintMessage("Healing Surge @ " + unit.Key + " - " + unit.Value, Color.Purple);
+                                }
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Healing Totem
+            if (UnitBelowThreshold(GetSlider("Auto Healing Stream Totem @ HP%")) && Aimsharp.TotemRemaining("Healing Stream Totem") <= 0)
+            {
+                PartyDict.Clear();
+                PartyDict.Add("player", Aimsharp.Health("player"));
+
+                var partysize = Aimsharp.GroupSize();
+                if (partysize <= 5)
+                {
+                    for (int i = 1; i < partysize; i++)
+                    {
+                        var partyunit = ("party" + i);
+                        if (Aimsharp.Health(partyunit) > 0 && Aimsharp.Range(partyunit) <= 40)
+                        {
+                            PartyDict.Add(partyunit, Aimsharp.Health(partyunit));
+                        }
+                    }
+                }
+
+                foreach (var unit in PartyDict.OrderBy(unit => unit.Value))
+                {
+                    if (Aimsharp.CanCast("Healing Stream Totem", "player", false, true) && (unit.Key == "player" || Aimsharp.Range(unit.Key) <= 40) && Aimsharp.Health(unit.Key) <= GetSlider("Auto Healing Stream Totem @ HP%"))
+                    {
+                        Aimsharp.Cast("Healing Stream Totem");
+                        return true;
+                    }
+                }
+            }
+            #endregion
             #endregion
 
             #region Queues
