@@ -1340,7 +1340,7 @@ namespace AimsharpWow.Modules
 
                     #region General Spells - Target GCD
                     //Target - GCD
-                    if (SpellID1 == 8921 && Aimsharp.CanCast("Moonfire", "target", false, true))
+                    if (SpellID1 == 8921 && Aimsharp.CanCast("Moonfire", "target", true, true))
                     {
                         if (Debug)
                         {
@@ -1350,7 +1350,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 190984 && Aimsharp.CanCast("Wrath", "target", false, true))
+                    if (SpellID1 == 190984 && Aimsharp.CanCast("Wrath", "target", true, true))
                     {
                         if (Debug)
                         {
@@ -1360,7 +1360,7 @@ namespace AimsharpWow.Modules
                         return true;
                     }
 
-                    if (SpellID1 == 2908 && Aimsharp.CanCast("Soothe", "target", false, true))
+                    if (SpellID1 == 2908 && Aimsharp.CanCast("Soothe", "target", true, true))
                     {
                         if (Debug)
                         {
