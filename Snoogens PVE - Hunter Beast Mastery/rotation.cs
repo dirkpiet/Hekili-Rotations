@@ -241,7 +241,7 @@ namespace AimsharpWow.Modules
             "Barbed Shot", "Aspect of the Wild", "Kill Command", "A Murder of Crows", "Dire Beast", "Multi-Shot",
             "Kill Shot", "Cobra Shot", "Bite", "Cobra Spit", "Arcane Shot", "Auto Shot", "Bestial Wrath",
             "Hunter's Mark", "Tranquilizing Shot", "Exhilaration", "Spirit Pulse", "Spirit Mend", "Mend Pet",
-            "Wailing Arrow", "Binding Shot", "Flare",
+            "Wailing Arrow", "Binding Shot", "Flare", "Stampede",
 
             "Freezing Trap", "Tar Trap", "Aspect of the Turtle", "Intimidation", "Bloodshed",
 
@@ -505,6 +505,14 @@ namespace AimsharpWow.Modules
         private bool CanCastFlare(string unit)
         {
             if (Aimsharp.CanCast("Flare", unit, false, true) || (Aimsharp.SpellCooldown("Flare") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastStampede(string unit)
+        {
+            if (Aimsharp.CanCast("Stampede", unit, false, true) || (Aimsharp.SpellCooldown("Stampede") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range("target") <= 30 && Aimsharp.Talent(6, 3) && TargetAlive() && Aimsharp.GetPlayerLevel() >= 60 && !TorghastList.Contains(Aimsharp.GetMapID())))
                 return true;
 
             return false;
@@ -1738,6 +1746,16 @@ namespace AimsharpWow.Modules
                             Aimsharp.PrintMessage("Casting Aspect of the Wild - " + SpellID1, Color.Purple);
                         }
                         Aimsharp.Cast("Aspect of the Wild");
+                        return true;
+                    }
+
+                    if (SpellID1 == 201430 && CanCastStampede("player"))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Stampede - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Stampede");
                         return true;
                     }
                     #endregion
