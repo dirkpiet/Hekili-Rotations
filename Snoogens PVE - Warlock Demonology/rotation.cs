@@ -305,6 +305,8 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Summon Demon Out of Combat:", true));
             Settings.Add(new Setting("Auto Unending Resolve @ HP%", 0, 100, 25));
             Settings.Add(new Setting("Auto Dark Pact @ HP%", 0, 100, 15));
+            Settings.Add(new Setting("Auto Drain Life @ HP%", 0, 100, 25));
+            Settings.Add(new Setting("Auto Health Funnel @ HP%", 0, 100, 15));
             Settings.Add(new Setting("Shadowfury Cast:", m_CastingList, "Manual"));
             Settings.Add(new Setting("Bilescourge Bombers Cast:", m_CastingList, "Manual"));
             Settings.Add(new Setting("Always Cast Bilescourge Bombers @ Cursor during Rotation", false));
@@ -465,6 +467,7 @@ namespace AimsharpWow.Modules
             int EnemiesInMelee = Aimsharp.EnemiesInMelee();
             bool Moving = Aimsharp.PlayerIsMoving();
             int PlayerHP = Aimsharp.Health("player");
+            int PetHP = Aimsharp.Health("pet");
 
             bool TargetInCombat = Aimsharp.InCombat("target") || SpecialUnitList.Contains(Aimsharp.UnitID("target")) || !InstanceIDList.Contains(Aimsharp.GetMapID());
             #endregion
@@ -545,6 +548,19 @@ namespace AimsharpWow.Modules
                     }
                 }
 
+                if (Aimsharp.CanCast("Axe Toss", "target", true, true))
+                {
+                    if (IsInterruptable && !IsChanneling && CastingRemaining < KickValue)
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Target Casting ID: " + Aimsharp.CastingID("target") + ", Interrupting", Color.Purple);
+                        }
+                        Aimsharp.Cast("Axe Toss", true);
+                        return true;
+                    }
+                }
+
                 if (Aimsharp.CanCast("Spell Lock", "target", true, true))
                 {
                     if (IsInterruptable && IsChanneling && CastingElapsed > KickChannelsAfter)
@@ -554,6 +570,19 @@ namespace AimsharpWow.Modules
                             Aimsharp.PrintMessage("Target Channeling ID: " + Aimsharp.CastingID("target") + ", Interrupting", Color.Purple);
                         }
                         Aimsharp.Cast("Spell Lock", true);
+                        return true;
+                    }
+                }
+
+                if (Aimsharp.CanCast("Axe Toss", "target", true, true))
+                {
+                    if (IsInterruptable && IsChanneling && CastingElapsed > KickChannelsAfter)
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Target Channeling ID: " + Aimsharp.CastingID("target") + ", Interrupting", Color.Purple);
+                        }
+                        Aimsharp.Cast("Axe Toss", true);
                         return true;
                     }
                 }
@@ -612,6 +641,34 @@ namespace AimsharpWow.Modules
                     if (Debug)
                     {
                         Aimsharp.PrintMessage("Casting Dark Pact - Player HP% " + PlayerHP + " due to setting being on HP% " + GetSlider("Auto Dark Pact @ HP%"), Color.Purple);
+                    }
+                    return true;
+                }
+            }
+
+            //Auto Drain Life
+            if (Aimsharp.CanCast("Drain Life", "target", true, true))
+            {
+                if (PlayerHP <= GetSlider("Auto Drain Life @ HP%"))
+                {
+                    Aimsharp.Cast("Drain Life");
+                    if (Debug)
+                    {
+                        Aimsharp.PrintMessage("Casting Drain Life - Player HP% " + PlayerHP + " due to setting being on HP% " + GetSlider("Auto Drain Life @ HP%"), Color.Purple);
+                    }
+                    return true;
+                }
+            }
+
+            //Auto Health Funnel
+            if (Aimsharp.CanCast("Health Funnel", "pet", true, true))
+            {
+                if (PetHP <= GetSlider("Auto Health Funnel @ HP%"))
+                {
+                    Aimsharp.Cast("Health Funnel");
+                    if (Debug)
+                    {
+                        Aimsharp.PrintMessage("Casting Health Funnel - Pet HP% " + PetHP + " due to setting being on HP% " + GetSlider("Auto Health Funnel @ HP%"), Color.Purple);
                     }
                     return true;
                 }
