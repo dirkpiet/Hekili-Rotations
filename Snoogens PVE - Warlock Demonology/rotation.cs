@@ -663,7 +663,7 @@ namespace AimsharpWow.Modules
             //Auto Health Funnel
             if (Aimsharp.CanCast("Health Funnel", "pet", true, true))
             {
-                if (PetHP <= GetSlider("Auto Health Funnel @ HP%"))
+                if (PetHP <= GetSlider("Auto Health Funnel @ HP%") && PetHP > 1)
                 {
                     Aimsharp.Cast("Health Funnel");
                     if (Debug)
