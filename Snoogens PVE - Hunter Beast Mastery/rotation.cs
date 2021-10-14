@@ -16,7 +16,7 @@ namespace AimsharpWow.Modules
         #region Lists
         //Lists
         private List<string> m_IngameCommandsList = new List<string> { "FreezingTrap", "TarTrap", "Turtle", "Intimidation", "NoInterrupts", "NoCycle", "WildSpirits", "ResonatingArrow", "BindingShot", "Flare", "FlareCursor", "TarTrapCursor" };
-        private List<string> m_DebuffsList = new List<string> {  };
+        private List<string> m_DebuffsList = new List<string> { "Hunter's Mark", };
         private List<string> m_BuffsList = new List<string> { "Mend Pet", "Flayer's Mark", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
         private List<string> m_ItemsList = new List<string> { "Phial of Serenity", "Healthstone" };
@@ -566,6 +566,7 @@ namespace AimsharpWow.Modules
             Macros.Add("WildSpiritsOff", "/" + FiveLetters + " WildSpirits");
             Macros.Add("ResonatingArrowOff", "/" + FiveLetters + " ResonatingArrow");
             Macros.Add("FlareOff", "/" + FiveLetters + " Flare");
+            Macros.Add("BindingShotOff", "/" + FiveLetters + " BindingShot");
 
             Macros.Add("SpiritMendPlayer", "/cast [@player] Spirit Mend");
             Macros.Add("SpiritMendPet", "/cast [@pet] Spirit Mend");
