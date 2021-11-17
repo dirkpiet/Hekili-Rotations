@@ -324,6 +324,8 @@ namespace AimsharpWow.Modules
 
             Macros.Add("RepentanceMO", "/cast [@mouseover] Repentance");
 
+            Macros.Add("DivineToll", "/cast Divine Toll");
+
         }
 
         private void InitializeSpells()
@@ -803,18 +805,21 @@ namespace AimsharpWow.Modules
             #endregion
 
             #region Selfless Healer
-            if (UnitBelowThreshold(GetSlider("Auto Selfless Healer @ HP%")) && Aimsharp.BuffStacks("Selfless Healer", "player", true) >= 4 && Aimsharp.GroupSize() <= 5)
+            if (UnitBelowThreshold(GetSlider("Auto Selfless Healer @ HP%")) && Aimsharp.BuffStacks("Selfless Healer", "player", true) >= 4)
             {
                 PartyDict.Clear();
                 PartyDict.Add("player", Aimsharp.Health("player"));
 
                 var partysize = Aimsharp.GroupSize();
-                for (int i = 1; i < partysize; i++)
+                if (partysize <= 5)
                 {
-                    var partyunit = ("party" + i);
-                    if (Aimsharp.Health(partyunit) > 0 && Aimsharp.Range(partyunit) <= 40)
+                    for (int i = 1; i < partysize; i++)
                     {
-                        PartyDict.Add(partyunit, Aimsharp.Health(partyunit));
+                        var partyunit = ("party" + i);
+                        if (Aimsharp.Health(partyunit) > 0 && Aimsharp.Range(partyunit) <= 40)
+                        {
+                            PartyDict.Add(partyunit, Aimsharp.Health(partyunit));
+                        }
                     }
                 }
 
@@ -845,18 +850,21 @@ namespace AimsharpWow.Modules
             #endregion
 
             #region Word of Glory
-            if (Aimsharp.IsCustomCodeOn("WordofGlory") && UnitBelowThreshold(GetSlider("Auto Word of Glory @ HP%")) && Aimsharp.CanCast("Word of Glory", "player", false, true) && Aimsharp.GroupSize() <= 5)
+            if (Aimsharp.IsCustomCodeOn("WordofGlory") && UnitBelowThreshold(GetSlider("Auto Word of Glory @ HP%")) && Aimsharp.CanCast("Word of Glory", "player", false, true))
             {
                 PartyDict.Clear();
                 PartyDict.Add("player", Aimsharp.Health("player"));
 
                 var partysize = Aimsharp.GroupSize();
-                for (int i = 1; i < partysize; i++)
+                if (partysize <= 5)
                 {
-                    var partyunit = ("party" + i);
-                    if (Aimsharp.Health(partyunit) > 0 && Aimsharp.Range(partyunit) <= 40)
+                    for (int i = 1; i < partysize; i++)
                     {
-                        PartyDict.Add(partyunit, Aimsharp.Health(partyunit));
+                        var partyunit = ("party" + i);
+                        if (Aimsharp.Health(partyunit) > 0 && Aimsharp.Range(partyunit) <= 40)
+                        {
+                            PartyDict.Add(partyunit, Aimsharp.Health(partyunit));
+                        }
                     }
                 }
 
@@ -887,18 +895,21 @@ namespace AimsharpWow.Modules
             #endregion
 
             #region Lay on Hands
-            if (UnitBelowThreshold(GetSlider("Auto Lay on Hands @ HP%")) && Aimsharp.CanCast("Lay on Hands", "player", false, true) && Aimsharp.GroupSize() <= 5)
+            if (UnitBelowThreshold(GetSlider("Auto Lay on Hands @ HP%")) && Aimsharp.CanCast("Lay on Hands", "player", false, true))
             {
                 PartyDict.Clear();
                 PartyDict.Add("player", Aimsharp.Health("player"));
 
                 var partysize = Aimsharp.GroupSize();
-                for (int i = 1; i < partysize; i++)
+                if (partysize <= 5)
                 {
-                    var partyunit = ("party" + i);
-                    if (Aimsharp.Health(partyunit) > 0 && Aimsharp.Range(partyunit) <= 40)
+                    for (int i = 1; i < partysize; i++)
                     {
-                        PartyDict.Add(partyunit, Aimsharp.Health(partyunit));
+                        var partyunit = ("party" + i);
+                        if (Aimsharp.Health(partyunit) > 0 && Aimsharp.Range(partyunit) <= 40)
+                        {
+                            PartyDict.Add(partyunit, Aimsharp.Health(partyunit));
+                        }
                     }
                 }
 
@@ -1567,7 +1578,7 @@ namespace AimsharpWow.Modules
                         {
                             Aimsharp.PrintMessage("Casting Divine Toll - " + SpellID1, Color.Purple);
                         }
-                        Aimsharp.Cast("Divine Toll");
+                        Aimsharp.Cast("DivineToll");
                         return true;
                     }
 
