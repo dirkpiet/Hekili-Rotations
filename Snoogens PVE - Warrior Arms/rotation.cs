@@ -203,6 +203,9 @@ namespace AimsharpWow.Modules
             //CancelAura
             Macros.Add("CancelBladestorm", "/cancelaura Bladestorm");
 
+            //AutoAttack
+            Macros.Add("StartAttack", "/startattack");
+
         }
 
         private void InitializeSpells()
@@ -250,6 +253,8 @@ namespace AimsharpWow.Modules
             CustomFunctions.Add("IsTargeting", "if SpellIsTargeting()\r\n then return 1\r\n end\r\n return 0");
 
             CustomFunctions.Add("IsRMBDown", "local MBD = 0 local isDown = IsMouseButtonDown(\"RightButton\") if isDown == true then MBD = 1 end return MBD");
+
+            CustomFunctions.Add("AutoAttack", "local attacking = 0 if IsCurrentSpell(6603) == true then attacking = 1 else attacking = 0 end return attacking");
         }
         #endregion
 
@@ -752,6 +757,12 @@ namespace AimsharpWow.Modules
 
             if (Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat)
             {
+                if (Aimsharp.CustomFunction("AutoAttack") == 0 && Aimsharp.Range("target") <= 5)
+                {
+                    Aimsharp.Cast("StartAttack");
+                    return true;
+                }
+
                 if (Wait <= 200)
                 {
                     #region Trinkets
