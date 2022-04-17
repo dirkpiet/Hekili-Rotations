@@ -312,7 +312,7 @@ namespace AimsharpWow.Modules
 
         List<int> TorghastList = new List<int> { 1618 - 1641, 1645, 1705, 1712, 1716, 1720, 1721, 1736, 1749, 1751 - 1754, 1756 - 1812, 1833 - 1911, 1913, 1914, 1920, 1921, 1962 - 1969, 1974 - 1988, 2010 - 2012, 2019 };
 
-        List<int> SpecialUnitList = new List<int> { 176581, 176920, 178008, 168326, 168969, 175861, };
+        List<int> SpecialUnitList = new List<int> { 176581, 176920, 178008, 168326, 168969, 175861, 179733, 171887 };
         #endregion
 
         #region Misc Checks
@@ -661,6 +661,9 @@ namespace AimsharpWow.Modules
                 "end " +
             "end " +
             "return UnitTargeted");
+
+            CustomFunctions.Add("HekiliOptions", "local loading, finished = IsAddOnLoaded(\"Hekili\") \r\nif loading == true and finished == true then if not Hekili.currentSpecOpts.throttleRefresh then Hekili.currentSpecOpts.throttleRefresh = true end if Hekili.currentSpecOpts.combatRefresh ~= 0.05 then Hekili.currentSpecOpts.combatRefresh = 0.05 end if Hekili.currentSpecOpts.regularRefresh ~= 0.05 then Hekili.currentSpecOpts.regularRefresh = 0.05 end if not Hekili.currentSpecOpts.enhancedRecheck then Hekili.currentSpecOpts.enhancedRecheck = true end end return 1");
+            CustomFunctions.Add("HekiliKeybinds", "local loading, finished = IsAddOnLoaded(\"Hekili\") \r\nif loading == true and finished == true then if Hekili.DB.profile.toggles.cooldowns.key == \"ALT-SHIFT-R\" then Hekili.DB.profile.toggles.cooldowns.key = nil end if Hekili.DB.profile.toggles.defensives.key == \"ALT-SHIFT-T\" then Hekili.DB.profile.toggles.defensives.key = nil end if Hekili.DB.profile.toggles.essences.key == \"ALT-SHIFT-G\" then Hekili.DB.profile.toggles.essences.key = nil end if Hekili.DB.profile.toggles.interrupts.key == \"ALT-SHIFT-I\" then Hekili.DB.profile.toggles.interrupts.key = nil end if Hekili.DB.profile.toggles.mode.key == \"ALT-SHIFT-N\" then Hekili.DB.profile.toggles.mode.key = nil end if Hekili.DB.profile.toggles.pause.key == \"ALT-SHIFT-P\" then Hekili.DB.profile.toggles.pause.key = nil end if Hekili.DB.profile.toggles.snapshot.key == \"ALT-SHIFT-[\" then Hekili.DB.profile.toggles.snapshot.key = nil end  end return 1");
         }
         #endregion
 
@@ -869,36 +872,43 @@ namespace AimsharpWow.Modules
             #region Pause Checks
             if (Aimsharp.CastingID("player") > 0 || Aimsharp.IsChanneling("player"))
             {
+                Aimsharp.PrintMessage("Casting");
                 return false;
             }
 
             if (Aimsharp.CustomFunction("IsTargeting") == 1)
             {
+                Aimsharp.PrintMessage("Targeting");
                 return false;
             }
 
             if (Aimsharp.IsCustomCodeOn("FreezingTrap") && Aimsharp.SpellCooldown("Freezing Trap") - Aimsharp.GCD() <= 0 && Aimsharp.CustomFunction("IsRMBDown") == 1)
             {
+                Aimsharp.PrintMessage("Freeze");
                 return false;
             }
 
             if (Aimsharp.IsCustomCodeOn("TarTrap") && Aimsharp.SpellCooldown("Tar Trap") - Aimsharp.GCD() <= 0 && Aimsharp.CustomFunction("IsRMBDown") == 1)
             {
+                Aimsharp.PrintMessage("Tar");
                 return false;
             }
 
             if (Aimsharp.IsCustomCodeOn("WildSpirits") && Aimsharp.SpellCooldown("Wild Spirits") - Aimsharp.GCD() <= 0 && Aimsharp.CustomFunction("IsRMBDown") == 1)
             {
+                Aimsharp.PrintMessage("Wild");
                 return false;
             }
 
             if (Aimsharp.IsCustomCodeOn("ResonatingArrow") && Aimsharp.SpellCooldown("Resonating Arrow") - Aimsharp.GCD() <= 0 && Aimsharp.CustomFunction("IsRMBDown") == 1)
             {
+                Aimsharp.PrintMessage("Reso");
                 return false;
             }
 
             if (Aimsharp.IsCustomCodeOn("BindingShot") && Aimsharp.SpellCooldown("Binding Shot") - Aimsharp.GCD() <= 0 && Aimsharp.CustomFunction("IsRMBDown") == 1)
             {
+                Aimsharp.PrintMessage("Bind");
                 return false;
             }
             #endregion
@@ -1268,7 +1278,7 @@ namespace AimsharpWow.Modules
             }
             #endregion
 
-            if (Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat && Wait <= 200 && !ResonatingArrow && !WildSpirits && !Aimsharp.IsCustomCodeOn("FreezingTrap") && !Aimsharp.IsCustomCodeOn("TarTrap"))
+            if (Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat && !ResonatingArrow && !WildSpirits && !Aimsharp.IsCustomCodeOn("FreezingTrap") && !Aimsharp.IsCustomCodeOn("TarTrap"))
             {
                 //Tranquilizing Shot Mouseover
                 if (CanCastTranquilizingShot("mouseover"))

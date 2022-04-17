@@ -16,7 +16,7 @@ namespace AimsharpWow.Modules
         #region Lists
         //Lists
         private List<string> m_IngameCommandsList = new List<string> { "FreezingTrap", "TarTrap", "Turtle", "Intimidation", "NoInterrupts", "NoCycle", "WildSpirits", "ResonatingArrow", "BindingShot", "Flare", "FlareCursor", "TarTrapCursor", "VolleyCursor", };
-        private List<string> m_DebuffsList = new List<string> {  };
+        private List<string> m_DebuffsList = new List<string> { "Hunter's Mark", };
         private List<string> m_BuffsList = new List<string> { "Mend Pet", "Flayer's Mark", "Double Tap", "Lock and Load", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
         private List<string> m_ItemsList = new List<string> { "Phial of Serenity", "Healthstone" };
@@ -103,7 +103,7 @@ namespace AimsharpWow.Modules
 
         List<int> TorghastList = new List<int> { 1618 - 1641, 1645, 1705, 1712, 1716, 1720, 1721, 1736, 1749, 1751 - 1754, 1756 - 1812, 1833 - 1911, 1913, 1914, 1920, 1921, 1962 - 1969, 1974 - 1988, 2010 - 2012, 2019 };
 
-        List<int> SpecialUnitList = new List<int> { 176581, 176920, 178008, 168326, 168969, 175861, };
+        List<int> SpecialUnitList = new List<int> { 176581, 176920, 178008, 168326, 168969, 175861, 179733, 171887 };
         #endregion
 
         #region Misc Checks
@@ -473,6 +473,8 @@ namespace AimsharpWow.Modules
             "end " +
             "return UnitTargeted");
 
+            CustomFunctions.Add("HekiliOptions", "local loading, finished = IsAddOnLoaded(\"Hekili\") \r\nif loading == true and finished == true then if not Hekili.currentSpecOpts.throttleRefresh then Hekili.currentSpecOpts.throttleRefresh = true end if Hekili.currentSpecOpts.combatRefresh ~= 0.05 then Hekili.currentSpecOpts.combatRefresh = 0.05 end if Hekili.currentSpecOpts.regularRefresh ~= 0.05 then Hekili.currentSpecOpts.regularRefresh = 0.05 end if not Hekili.currentSpecOpts.enhancedRecheck then Hekili.currentSpecOpts.enhancedRecheck = true end end return 1");
+            CustomFunctions.Add("HekiliKeybinds", "local loading, finished = IsAddOnLoaded(\"Hekili\") \r\nif loading == true and finished == true then if Hekili.DB.profile.toggles.cooldowns.key == \"ALT-SHIFT-R\" then Hekili.DB.profile.toggles.cooldowns.key = nil end if Hekili.DB.profile.toggles.defensives.key == \"ALT-SHIFT-T\" then Hekili.DB.profile.toggles.defensives.key = nil end if Hekili.DB.profile.toggles.essences.key == \"ALT-SHIFT-G\" then Hekili.DB.profile.toggles.essences.key = nil end if Hekili.DB.profile.toggles.interrupts.key == \"ALT-SHIFT-I\" then Hekili.DB.profile.toggles.interrupts.key = nil end if Hekili.DB.profile.toggles.mode.key == \"ALT-SHIFT-N\" then Hekili.DB.profile.toggles.mode.key = nil end if Hekili.DB.profile.toggles.pause.key == \"ALT-SHIFT-P\" then Hekili.DB.profile.toggles.pause.key = nil end if Hekili.DB.profile.toggles.snapshot.key == \"ALT-SHIFT-[\" then Hekili.DB.profile.toggles.snapshot.key = nil end  end return 1");
         }
         #endregion
 
