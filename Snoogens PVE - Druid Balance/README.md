@@ -1,4 +1,5 @@
-# Snoogens PVE - Druid Balance
+# Snoogens PVE - Druid Balance  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/FErmWwA.png)   
 

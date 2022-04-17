@@ -1,4 +1,5 @@
-# Snoogens PVE - Rogue Assassination
+# Snoogens PVE - Rogue Assassination  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/cBNyR3Y.png)   
 

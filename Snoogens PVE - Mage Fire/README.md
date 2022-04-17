@@ -1,4 +1,5 @@
-# Snoogens PVE - Mage Fire
+# Snoogens PVE - Mage Fire  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/RUbKtIW.png)   
 

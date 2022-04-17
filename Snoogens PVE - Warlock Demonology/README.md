@@ -1,4 +1,5 @@
 # Snoogens PVE - Warlock Demonology  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/Dguhmc5.png)   
 

@@ -1,4 +1,5 @@
 # Snoogens PVE - Death Knight Frost   
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/s36M4mc.png)   
 

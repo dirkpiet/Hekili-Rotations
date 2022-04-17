@@ -1,4 +1,5 @@
-# Snoogens PVE - Hunter Survival
+# Snoogens PVE - Hunter Survival  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/H4Rmeg2.png)   
 

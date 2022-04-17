@@ -1,4 +1,5 @@
 # Snoogens PVE - Warlock Destruction  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/HKOyzYD.png)   
 

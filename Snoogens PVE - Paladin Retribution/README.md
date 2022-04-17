@@ -1,4 +1,5 @@
-# Snoogens PVE - Paladin Retribution
+# Snoogens PVE - Paladin Retribution  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/l1lkILK.png)   
 

@@ -1,4 +1,5 @@
-# Snoogens PVE - Hunter Beast Mastery
+# Snoogens PVE - Hunter Beast Mastery  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/Q7VbeZT.png)   
 

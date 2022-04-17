@@ -1,4 +1,5 @@
-# Snoogens PVE - Rogue Subtlety
+# Snoogens PVE - Rogue Subtlety  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/A4LIAQ1.png)   
 

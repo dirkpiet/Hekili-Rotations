@@ -1,4 +1,5 @@
-# Snoogens PVE - Warrior Fury
+# Snoogens PVE - Warrior Fury  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/T4O3dr9.png)   
 

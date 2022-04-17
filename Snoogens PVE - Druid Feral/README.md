@@ -1,4 +1,5 @@
-# Snoogens PVE - Druid Feral
+# Snoogens PVE - Druid Feral  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/QZAsXnO.png)   
 

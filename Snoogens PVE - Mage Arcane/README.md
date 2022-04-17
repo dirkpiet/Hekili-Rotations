@@ -1,4 +1,5 @@
-# Snoogens PVE - Mage Arcane
+# Snoogens PVE - Mage Arcane  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/QvG7jFx.png)   
 
