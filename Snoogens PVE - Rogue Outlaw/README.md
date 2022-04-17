@@ -1,4 +1,5 @@
-# Snoogens PVE - Rogue Outlaw
+# Snoogens PVE - Rogue Outlaw  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/nx6sVil.png)   
 

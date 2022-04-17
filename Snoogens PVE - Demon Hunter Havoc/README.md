@@ -1,4 +1,5 @@
-# Snoogens PVE - Demon Hunter Havoc
+# Snoogens PVE - Demon Hunter Havoc  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 Uncheck `Recommend Movement` if you want to manage Vengeful Retreat and Fel Rush yourself or if your talents don't require these abilities.  
 ![](https://i.imgur.com/T59wEDG.png)   

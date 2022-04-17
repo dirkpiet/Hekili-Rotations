@@ -1,4 +1,5 @@
-# Snoogens PVE - Shaman Elemental
+# Snoogens PVE - Shaman Elemental  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/tq32VRH.png)   
 

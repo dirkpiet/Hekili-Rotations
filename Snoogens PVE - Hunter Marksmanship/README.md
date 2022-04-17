@@ -1,4 +1,5 @@
-# Snoogens PVE - Hunter Marksmanship
+# Snoogens PVE - Hunter Marksmanship  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/ysAuyDR.png)   
 

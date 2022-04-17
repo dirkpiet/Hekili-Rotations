@@ -1,4 +1,5 @@
-# Snoogens PVE - Priest Shadow
+# Snoogens PVE - Priest Shadow  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/4jOlNYy.png)   
 

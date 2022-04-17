@@ -1,4 +1,5 @@
-# Snoogens PVE - Warrior Arms
+# Snoogens PVE - Warrior Arms  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/wPPCltn.png)   
 

@@ -1,4 +1,5 @@
-# Snoogens PVE - Mage Frost
+# Snoogens PVE - Mage Frost  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/hd5dO1s.png)   
 

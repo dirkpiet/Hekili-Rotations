@@ -1,4 +1,5 @@
-# Snoogens PVE - Shaman Enhancement
+# Snoogens PVE - Shaman Enhancement  
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/ALg7GFr.png)   
 

@@ -1,4 +1,5 @@
-# Snoogens PVE - Warlock Affliction  
+# Snoogens PVE - Warlock Affliction    
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/t29OI90.png)   
 

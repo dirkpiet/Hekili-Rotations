@@ -522,8 +522,8 @@ namespace AimsharpWow.Modules
 
             Aimsharp.PrintMessage("Snoogens PVE - Hunter Marksmanship", Color.Yellow);
             Aimsharp.PrintMessage("This rotation requires the Hekili Addon", Color.Red);
-            Aimsharp.PrintMessage("Hekili > Toggles > Unbind everything", Color.Brown);
-            Aimsharp.PrintMessage("Hekili > Toggles > Bind \"Cooldowns\" & \"Display Mode\"", Color.Brown);
+            Aimsharp.PrintMessage("https://github.com/Snoogens101/Rotations/wiki/Setup-Guide", Color.Brown);
+            
             Aimsharp.PrintMessage("-----", Color.Black);
             Aimsharp.PrintMessage("Pet Summon is Manual", Color.Green);
             Aimsharp.PrintMessage("-----", Color.Black);

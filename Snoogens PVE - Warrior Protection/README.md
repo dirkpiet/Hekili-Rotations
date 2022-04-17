@@ -1,4 +1,5 @@
-# Snoogens PVE - Warrior Protection  
+# Snoogens PVE - Warrior Protection    
+https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
 ## Recommended Core Settings  
 ![](https://i.imgur.com/Y7A3l6u.png)   
 

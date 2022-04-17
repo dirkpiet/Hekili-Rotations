@@ -397,8 +397,8 @@ namespace AimsharpWow.Modules
 
             Aimsharp.PrintMessage("Snoogens PVE - Priest Shadow", Color.Yellow);
             Aimsharp.PrintMessage("This rotation requires the Hekili Addon", Color.Red);
-            Aimsharp.PrintMessage("Hekili > Toggles > Unbind everything", Color.Brown);
-            Aimsharp.PrintMessage("Hekili > Toggles > Bind \"Cooldowns\" & \"Display Mode\"", Color.Brown);
+            Aimsharp.PrintMessage("https://github.com/Snoogens101/Rotations/wiki/Setup-Guide", Color.Brown);
+            
             Aimsharp.PrintMessage("-----", Color.Black);
             Aimsharp.PrintMessage("- General -", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoInterrupts - Disables Interrupts", Color.Yellow);
