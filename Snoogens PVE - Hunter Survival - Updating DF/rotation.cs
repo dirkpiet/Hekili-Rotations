@@ -7,7 +7,7 @@ using AimsharpWow.API;
 
 namespace AimsharpWow.Modules
 {
-    public class SnoogensPVEHunterSurvival : Rotation
+    public class DirkpietPVEHunterSurvival : Rotation
     {
         #region Variables
         string FiveLetters;
@@ -52,29 +52,33 @@ namespace AimsharpWow.Modules
 
         List<int> InstanceIDList = new List<int>
         {
-            2291,
-            2287,
-            2290,
-            2289,
-            2284,
-            2285,
-            2286,
-            2293,
-            1663,
-            1664,
-            1665,
-            1666,
-            1667,
-            1668,
-            1669,
-            1674,
+            // https://wowpedia.fandom.com/wiki/InstanceID
+            // -- Shadowlands --
+            2291, // De Other Side
+            2287, // Halls of Atonement
+            2290, // Mists of Tirna Scithe
+            2289, // Plaguefall
+            2284, // Sanguine Depths
+            2285, // Spires of Ascension
+            2286, // The Necrotic Wake
+            2293, // Theater of Pain
+            
+            // -- Legion --
+            1663, // Dungeon Blockout
+            1664, // ??
+            1665, // ??
+            1666, // The Assault on Broken Shore
+            1667, // ??
+            1668, // Legion Ship - Horizontal
+            1669, // Argus
+            1674, // ??
             1675,
-            1676,
-            1677,
-            1678,
-            1679,
-            1680,
-            1683,
+            1676, // Tomb of Sargeras
+            1677, // Cathedral of Eternal Night
+            1678, // AB Phase 1
+            1679, // AB Phase 2
+            1680, // AB Phase 3
+            1683, // Artifact - Gnomeregan
             1684,
             1685,
             1686,
