@@ -1,5 +1,5 @@
-# Dirkpiet PVE Rotations - [Updating the Snoogens Rotations]
-## In progress for Pre-Patch
+# Dirkpiet PVE Rotations - [Updating Snoogens Rotations]
+## --- In progress for Dragon Flight Pre-Patch ---
 ### [Hunter: Survival](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Hunter%20Survival)
 ## [Download Guide](https://github.com/Snoogens101/Rotations/wiki/Download-Guide)  
 ## [General Setup Guide](https://github.com/Snoogens101/Rotations/wiki/Setup-Guide)  
