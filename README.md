@@ -7,5 +7,7 @@ These rotations were initially made by Snoogens, I am just trying to update them
 ### [Hunter: Survival](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Hunter%20Survival)
 **IN-PROGRESS** - 100% SimC Accurate Rotation with advanced CanCast Logic
 ## Ranged
-
+### [Hunter: Beast Mastery]
+**v0.1 - released** ~~- 100% SimC Accurate Rotation with advanced CanCast Logic~~
 ## Tanks
+**v0.1 - in-progress** ~~- 100% SimC Accurate Rotation with advanced CanCast Logic~~
