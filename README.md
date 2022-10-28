@@ -1,5 +1,8 @@
 # Dirkpiet PVE Rotations - [Updating Snoogens Rotations]
-These rotations were initially made by Snoogens, I am just trying to update them for Dragon Flight.
+These rotations were initially made by Snoogens, so most credits go to him! 
+
+My plan is to update them for Dragon Flight.
+
 ## --- In progress for Dragon Flight Pre-Patch ---
 ## [Download Guide](https://github.com/dirkpiet/Hekili-Rotations/wiki/Setup-Guide)  
 ## [General Setup Guide](https://github.com/dirkpiet/Hekili-Rotations/wiki/General-Guide)    
