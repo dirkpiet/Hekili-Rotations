@@ -957,7 +957,6 @@ namespace AimsharpWow.Modules
 
                     if (SpellID1 == 26297 && Aimsharp.CanCast("Berserking", "player", false, true))
                     {
-                        Aimsharp.PrintMessage("Casting Berserking - " + SpellID1, Color.Yellow);
                         if (Debug)
                         {
                             Aimsharp.PrintMessage("Casting Berserking - " + SpellID1, Color.Purple);
