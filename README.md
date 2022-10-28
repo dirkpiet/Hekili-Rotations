@@ -4,10 +4,10 @@ These rotations were initially made by Snoogens, I am just trying to update them
 ## [Download Guide](https://github.com/dirkpiet/Hekili-Rotations/wiki/Setup-Guide)  
 ## [General Setup Guide](https://github.com/dirkpiet/Hekili-Rotations/wiki/General-Guide)    
 ## Melee  
-### [Hunter: Survival](https://github.com/Snoogens101/Rotations/tree/production/Snoogens%20PVE%20-%20Hunter%20Survival)
 **IN-PROGRESS** - 100% SimC Accurate Rotation with advanced CanCast Logic
 ## Ranged
-### [Hunter: Beast Mastery]
+### Hunter: Beast Mastery
 **v0.1 - released** ~~- 100% SimC Accurate Rotation with advanced CanCast Logic~~
 ## Tanks
+### Death Knight: Blood
 **v0.1 - in-progress** ~~- 100% SimC Accurate Rotation with advanced CanCast Logic~~
