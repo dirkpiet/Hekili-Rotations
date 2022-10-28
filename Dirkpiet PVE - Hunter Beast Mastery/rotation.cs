@@ -710,10 +710,10 @@ namespace AimsharpWow.Modules
             Aimsharp.QuickDelay = 150;
             Aimsharp.SlowDelay = 350;
 
-            Aimsharp.PrintMessage("Dirkpiet PVE - Hunter Beast Mastery", Color.Blue);
+            Aimsharp.PrintMessage("Dirks PVE - Hunter Beast Mastery", Color.Blue);
             Aimsharp.PrintMessage("Version: 0.1 - Prepatch DF", Color.Yellow);
             Aimsharp.PrintMessage("This rotation requires the Hekili Addon", Color.Red);
-            Aimsharp.PrintMessage("https://github.com/Snoogens101/Rotations/wiki/Setup-Guide", Color.Brown);
+            Aimsharp.PrintMessage("https://github.com/dirkpiet/Hekili-Rotations/wiki/General-Guide", Color.Brown);
             
             Aimsharp.PrintMessage("-----", Color.Black);
             Aimsharp.PrintMessage("Pet Summon is Manual", Color.Green);
