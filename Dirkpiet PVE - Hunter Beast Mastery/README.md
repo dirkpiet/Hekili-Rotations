@@ -1,5 +1,6 @@
-# Snoogens PVE - Hunter Beast Mastery  
-https://github.com/Snoogens101/Rotations/wiki/Setup-Guide  
+# Dirkpiet PVE - Hunter Beast Mastery  
+https://github.com/dirkpiet/Hekili-Rotations/wiki/General-Guide
+
 ## Recommended Core Settings  
 ![](https://i.imgur.com/Q7VbeZT.png)   
 

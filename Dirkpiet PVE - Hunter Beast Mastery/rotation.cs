@@ -7,7 +7,7 @@ using AimsharpWow.API;
 
 namespace AimsharpWow.Modules
 {
-    public class SnoogensPVEHunterBeastMastery : Rotation
+    public class DirkpietPVEHunterBeastMastery : Rotation
     {
         #region Variables
         string FiveLetters;
@@ -671,7 +671,7 @@ namespace AimsharpWow.Modules
         {
             Settings.Add(new Setting("First 5 Letters of the Addon:", "xxxxx"));
             Settings.Add(new Setting("Race:", m_RaceList, "dwarf"));
-            Settings.Add(new Setting("Ingame World Latency:", 1, 200, 50));
+            Settings.Add(new Setting("Ingame World Latency:", 1, 200, 25));
             Settings.Add(new Setting(" "));
             Settings.Add(new Setting("Use Trinkets on CD, dont wait for Hekili:", false));
             Settings.Add(new Setting("Auto Healthstone @ HP%", 0, 100, 25));
@@ -710,7 +710,8 @@ namespace AimsharpWow.Modules
             Aimsharp.QuickDelay = 150;
             Aimsharp.SlowDelay = 350;
 
-            Aimsharp.PrintMessage("Snoogens PVE - Hunter Beast Mastery", Color.Yellow);
+            Aimsharp.PrintMessage("Dirkpiet PVE - Hunter Beast Mastery", Color.Blue);
+            Aimsharp.PrintMessage("Version: 0.1 - Prepatch DF", Color.Yellow);
             Aimsharp.PrintMessage("This rotation requires the Hekili Addon", Color.Red);
             Aimsharp.PrintMessage("https://github.com/Snoogens101/Rotations/wiki/Setup-Guide", Color.Brown);
             
@@ -846,8 +847,13 @@ namespace AimsharpWow.Modules
             int CastingRemaining = Aimsharp.CastingRemaining("target");
             int CastingElapsed = Aimsharp.CastingElapsed("target");
             bool IsChanneling = Aimsharp.IsChanneling("target");
-            int KickValue = GetSlider("Kick at milliseconds remaining");
-            int KickChannelsAfter = GetSlider("Kick channels after milliseconds");
+            
+            // Creates a random kick value between 275 and 500
+            Random rd = new Random();
+            int KickValue = rd.Next(275,500);
+            int KickChannelsAfter = rd.Next(275,500);
+            // int KickValue = GetSlider("Kick at milliseconds remaining");
+            // int KickChannelsAfter = GetSlider("Kick channels after milliseconds");
 
             bool Enemy = Aimsharp.TargetIsEnemy();
             int EnemiesInMelee = Aimsharp.EnemiesInMelee();
