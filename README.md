@@ -13,4 +13,4 @@ My plan is to update them for Dragon Flight.
 **v0.1 - released** ~~- 100% SimC Accurate Rotation with advanced CanCast Logic~~
 ## TANKS
 ### Death Knight: Blood
-**v0.1 - in-progress** ~~- 100% SimC Accurate Rotation with advanced CanCast Logic~~
+**v0.1 - released** ~~- 100% SimC Accurate Rotation with advanced CanCast Logic~~
