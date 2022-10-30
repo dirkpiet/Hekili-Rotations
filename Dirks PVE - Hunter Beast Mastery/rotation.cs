@@ -551,6 +551,9 @@ namespace AimsharpWow.Modules
             Macros.Add("TopTrinket", "/use 13");
             Macros.Add("BotTrinket", "/use 14");
 
+            //Racial Vulpera
+            Macros.Add("BagOfTricks", "/use Bag of Tricks");
+
             //Healthstone
             Macros.Add("Healthstone", "/use Healthstone");
 
@@ -711,7 +714,7 @@ namespace AimsharpWow.Modules
             Aimsharp.SlowDelay = 350;
 
             Aimsharp.PrintMessage("Dirks PVE - Hunter Beast Mastery", Color.Blue);
-            Aimsharp.PrintMessage("Version: 0.1 - Prepatch DF", Color.Yellow);
+            Aimsharp.PrintMessage("Version: 0.2 - Prepatch DF", Color.Yellow);
             Aimsharp.PrintMessage("This rotation requires the Hekili Addon", Color.Red);
             Aimsharp.PrintMessage("https://github.com/dirkpiet/Hekili-Rotations/wiki/General-Guide", Color.Brown);
             
@@ -1462,7 +1465,8 @@ namespace AimsharpWow.Modules
                         {
                             Aimsharp.PrintMessage("Casting Bag of Tricks - " + SpellID1, Color.Purple);
                         }
-                        Aimsharp.Cast("Bag of Tricks");
+                        //Aimsharp.Cast("Bag of Tricks");
+                        Aimsharp.Cast("BagOfTricks");
                         return true;
                     }
 
