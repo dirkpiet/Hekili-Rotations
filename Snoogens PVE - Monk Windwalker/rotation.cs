@@ -29,7 +29,7 @@ namespace AimsharpWow.Modules
             "Spear Hand Strike",
 
             //General Monk
-            "Paralysis", "Spinning Crane Kick", "Vivify", "Fortifying Brew", "Tiger Palm", "Chi Torpedo", "Dampen Harm",
+            "Paralysis", "Spinning Crane Kick", "Vivify", "Fortifying Brew", "Tiger Palm", "Strike of the Windlord", "Chi Torpedo", "Dampen Harm",
             "Roll", "Leg Sweep", "Blackout Kick", "Touch of Death", "Transcendence", "Transcendence: Transfer", "Rushing Jade Wind", "Ring of Peace",
             "Expel Harm", "Crackling Jade Lightning", "Detox", "Provoke", "Chi Wave", "Chi Burst", "Tiger's Lust",
             "Fist of the White Tiger", "Rising Sun Kick", "Touch of Karma", "Invoke Xuen, the White Tiger", "Storm, Earth, and Fire",
@@ -152,6 +152,14 @@ namespace AimsharpWow.Modules
         private bool CanCastTigerPalm(string unit)
         {
             if (Aimsharp.CanCast("Tiger Palm", unit, true, true) || (Aimsharp.SpellCooldown("Tiger Palm") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) <= 5 && Aimsharp.Power("player") >= 50 && TargetAlive()))
+                return true;
+
+            return false;
+        }
+
+        private bool CanCastStrikeOfTheWindlord(string unit)
+        {
+            if (Aimsharp.CanCast("Strike of the Windlord", unit, true, true) || (Aimsharp.SpellCooldown("Strike of the Windlord") - Aimsharp.GCD() <= 0 && (Aimsharp.GCD() > 0 && Aimsharp.GCD() < Aimsharp.CustomFunction("GetSpellQueueWindow") || Aimsharp.GCD() == 0) && Aimsharp.Range(unit) <= 5 && Aimsharp.Power("player") >= 50 && TargetAlive()))
                 return true;
 
             return false;
@@ -787,6 +795,16 @@ namespace AimsharpWow.Modules
                     if (Debug)
                     {
                         Aimsharp.PrintMessage("Casting Tiger Palm (Target) - " + SpellID1, Color.Purple);
+                    }
+                    return true;
+                }
+
+                if (SpellID1 == 392983 && CanCastStrikeOfTheWindlord("target"))
+                {
+                    Aimsharp.Cast("Strike of the Windlord");
+                    if (Debug)
+                    {
+                        Aimsharp.PrintMessage("Casting Strike of the Windlord (Target) - " + SpellID1, Color.Purple);
                     }
                     return true;
                 }
@@ -1712,6 +1730,16 @@ namespace AimsharpWow.Modules
                         if (Debug)
                         {
                             Aimsharp.PrintMessage("Casting Tiger Palm (Target) - " + SpellID1, Color.Purple);
+                        }
+                        return true;
+                    }
+
+                    if (SpellID1 == 392983 && CanCastStrikeOfTheWindlord("target"))
+                    {
+                        Aimsharp.Cast("Strike of the Windlord");
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Strike of the Windlord (Target) - " + SpellID1, Color.Purple);
                         }
                         return true;
                     }
