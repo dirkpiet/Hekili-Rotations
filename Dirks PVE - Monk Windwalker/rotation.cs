@@ -15,7 +15,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "RingofPeace", "Paralysis", "LegSweep", "Vivify", "FlyingSerpentKick", "Transcendence", "Transfer", "NoDetox", "BonedustBrew", "NoInterrupts", "NoCycle", };
+        private List<string> m_IngameCommandsList = new List<string> { "RingofPeace", "Paralysis", "LegSweep", "Vivify", "FlyingSerpentKick", "Transcendence", "Transfer", "NoDetox", "BonedustBrew", "NoInterrupts", "NoCycle", "TouchOfDeath" };
         private List<string> m_DebuffsList = new List<string> { "Paralysis", "Phantasmal Parasite", "Dark Lance", "Lost Confidence", "Mark of the Crane", "Blackout Kick!", };
         private List<string> m_BuffsList = new List<string> { "Weapons of Order", "Storm, Earth, and Fire", "Whirling Dragon Punch", "Serenity", "Dance of Chi-Ji", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
@@ -465,6 +465,9 @@ namespace AimsharpWow.Modules
             //Leg Sweep
             Macros.Add("LegSweepOff", "/" + FiveLetters + " LegSweep");
 
+            //Touch of Death
+            Macros.Add("TouchOfDeathOff", "/" + FiveLetters + " TouchOfDeath");
+
             //Flying Serpent Kick
             Macros.Add("FlyingSerpentKickOff", "/" + FiveLetters + " FlyingSerpentKick");
 
@@ -712,6 +715,11 @@ namespace AimsharpWow.Modules
 
         public override bool CombatTick()
         {
+
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            
+
             #region Declarations
             int SpellID1 = Aimsharp.CustomFunction("HekiliID1");
             int Wait = Aimsharp.CustomFunction("HekiliWait");
@@ -727,8 +735,13 @@ namespace AimsharpWow.Modules
             int CastingRemaining = Aimsharp.CastingRemaining("target");
             int CastingElapsed = Aimsharp.CastingElapsed("target");
             bool IsChanneling = Aimsharp.IsChanneling("target");
-            int KickValue = GetSlider("Kick at milliseconds remaining");
-            int KickChannelsAfter = GetSlider("Kick channels after milliseconds");
+
+            Random rd = new Random();
+            int KickValue = rd.Next(275,500);
+            int KickChannelsAfter = rd.Next(275,500);
+
+            // int KickValue = GetSlider("Kick at milliseconds remaining");
+            // int KickChannelsAfter = GetSlider("Kick channels after milliseconds");
 
             bool Enemy = Aimsharp.TargetIsEnemy();
             int EnemiesInMelee = Aimsharp.EnemiesInMelee();
@@ -740,6 +753,7 @@ namespace AimsharpWow.Modules
             int DiseasePoisonCheck = Aimsharp.CustomFunction("DiseasePoisonCheck");
             int MarkDebuffMO = Aimsharp.CustomFunction("MarkDebuffCheck");
             //bool MOMark = GetCheckBox("Spread Mark with Mouseover:") == true;
+
             #endregion
 
             #region SpellQueueWindow
@@ -978,10 +992,11 @@ namespace AimsharpWow.Modules
             #endregion
 
             #region Queues
+
             //Queues
             bool FlyingSerpentKick = Aimsharp.IsCustomCodeOn("FlyingSerpentKick");
             if ((Aimsharp.SpellCooldown("Flying Serpent Kick") > 2000 || Aimsharp.LastCast() == "Flying Serpent Kick") && FlyingSerpentKick)
-            {
+            { 
                 if (Debug)
                 {
                     Aimsharp.PrintMessage("Turning Off Flying Serpent Kick queue toggle", Color.Purple);
@@ -1158,6 +1173,18 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
+            bool TouchOfDeath = Aimsharp.IsCustomCodeOn("TouchOfDeath");
+            //Queue Touch Of Death
+            if (TouchOfDeath && Aimsharp.SpellCooldown("Touch of Death") - Aimsharp.GCD() > 2000)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Touch Of Death queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("TouchOfDeathOff");
+                return true;
+            }
+
             if (LegSweep && CanCastLegSweep("player"))
             {
                 if (Debug)
@@ -1185,7 +1212,11 @@ namespace AimsharpWow.Modules
             bool NoDetox = Aimsharp.IsCustomCodeOn("NoDetox");
             if (!NoDetox && DiseasePoisonCheck > 0 && Aimsharp.GroupSize() <= 5 && Aimsharp.LastCast() != "Detox")
             {
+                Random rand = new Random();
+                int DtoxT = rand.Next(200,350);
+
                 PartyDict.Clear();
+                
                 PartyDict.Add("player", Aimsharp.Health("player"));
 
                 var partysize = Aimsharp.GroupSize();
@@ -1204,11 +1235,12 @@ namespace AimsharpWow.Modules
                 foreach (var unit in PartyDict.OrderBy(unit => unit.Value))
                 {
                     Enum.TryParse(unit.Key, out target);
-                    if (CanCastDetox(unit.Key) && (unit.Key == "player" || Aimsharp.Range(unit.Key) <= 40) && isUnitCleansable(target, states))
+                    if (CanCastDetox(unit.Key) && (unit.Key == "player" || Aimsharp.Range(unit.Key) <= 40) && isUnitCleansable(target, states)  && stopwatch.ElapsedMilliseconds > 1200)
                     {
                         if (!UnitFocus(unit.Key))
                         {
                             Aimsharp.Cast("FOC_" + unit.Key, true);
+                            System.Threading.Thread.Sleep(DtoxT);
                             return true;
                         }
                         else
@@ -1220,6 +1252,7 @@ namespace AimsharpWow.Modules
                                 {
                                     Aimsharp.PrintMessage("Detox @ " + unit.Key + " - " + unit.Value, Color.Purple);
                                 }
+                                System.Threading.Thread.Sleep(DtoxT);
                                 return true;
                             }
                         }
@@ -2042,6 +2075,18 @@ namespace AimsharpWow.Modules
                     Aimsharp.PrintMessage("Turning Off Leg Sweep queue toggle", Color.Purple);
                 }
                 Aimsharp.Cast("LegSweepOff");
+                return true;
+            }
+
+            bool TouchOfDeath = Aimsharp.IsCustomCodeOn("TouchOfDeath");
+            //Queue Leg Sweep
+            if (LegSweep && Aimsharp.SpellCooldown("Touch of Death") - Aimsharp.GCD() > 2000)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Touch of Death queue toggle", Color.Purple);
+                }
+                Aimsharp.Cast("TouchOfDeath");
                 return true;
             }
 
