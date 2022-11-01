@@ -7,7 +7,7 @@ using AimsharpWow.API;
 
 namespace AimsharpWow.Modules
 {
-    public class SnoogensPVEDruidBalance : Rotation
+    public class DirksPVEDruidBalance : Rotation
     {
         #region Variables
         string FiveLetters;
@@ -69,6 +69,7 @@ namespace AimsharpWow.Modules
             "Incarnation: Chosen of Elune", //102560
             "Stellar Flare", //202347
             "Fury of Elune", //202770
+            "Wild Mushroom", //88747
             "New Moon", //274281
             "Half Moon", //202768, 274282
             "Full Moon", //274283
@@ -234,6 +235,7 @@ namespace AimsharpWow.Modules
 
             Macros.Add("ForceofNatureP", "/cast [@player] Force of Nature");
             Macros.Add("ForceofNatureC", "/cast [@cursor] Force of Nature");
+            Macros.Add("CelestialAlignmentC", "/cast [@cursor] Celestial Alignment");
             Macros.Add("UrsolsVortexP", "/cast [@player] Ursol's Vortex");
             Macros.Add("UrsolsVortexC", "/cast [@cursor] Ursol's Vortex");
 
@@ -360,6 +362,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Auto Barkskin @ HP%", 0, 100, 40));
             Settings.Add(new Setting("Ursol's Vortex Cast:", m_CastingList, "Manual"));
             Settings.Add(new Setting("Force of Nature Cast:", m_CastingList, "Manual"));
+            Settings.Add(new Setting("Celestial Alignment Cast:", m_CastingList, "Manual"));
             Settings.Add(new Setting("Misc"));
             Settings.Add(new Setting("Debug:", false));
 
@@ -378,7 +381,8 @@ namespace AimsharpWow.Modules
             Aimsharp.QuickDelay = 150;
             Aimsharp.SlowDelay = 350;
 
-            Aimsharp.PrintMessage("Snoogens PVE - Druid Balance", Color.Yellow);
+            Aimsharp.PrintMessage("Dirks PVE - Druid Balance", Color.Yellow);
+            Aimsharp.PrintMessage("Version: 0.1", Color.Black);
             Aimsharp.PrintMessage("This rotation requires the Hekili Addon", Color.Red);
             Aimsharp.PrintMessage("Hekili > Toggles > Unbind everything", Color.Brown);
             Aimsharp.PrintMessage("Hekili > Toggles > Bind \"Cooldowns\" & \"Display Mode\"", Color.Brown);
@@ -939,6 +943,10 @@ namespace AimsharpWow.Modules
             #region Remove Corruption
             if (!NoDecurse && CursePoisonCheck > 0 && Aimsharp.GroupSize() <= 5 && Aimsharp.LastCast() != "Remove Corruption")
             {
+
+                Random rdCurse = new Random();
+                int DecurseValue = rdCurse.Next(200,300);                
+                
                 PartyDict.Clear();
                 PartyDict.Add("player", Aimsharp.Health("player"));
 
@@ -962,6 +970,7 @@ namespace AimsharpWow.Modules
                     {
                         if (!UnitFocus(unit.Key))
                         {
+                            System.Threading.Thread.Sleep(DecurseValue);
                             Aimsharp.Cast("FOC_" + unit.Key, true);
                             return true;
                         }
@@ -969,6 +978,7 @@ namespace AimsharpWow.Modules
                         {
                             if (UnitFocus(unit.Key))
                             {
+                                System.Threading.Thread.Sleep(DecurseValue);
                                 Aimsharp.Cast("RC_FOC");
                                 if (Debug)
                                 {
@@ -1252,8 +1262,8 @@ namespace AimsharpWow.Modules
                     #endregion
 
                     #region Covenants
-                    ///Covenants
-                    if (SpellID1 == 323764 && Aimsharp.CanCast("Convoke the Spirits", "player", false, true))
+                    ///Covenants 323764
+                    if (SpellID1 == 391528 && Aimsharp.CanCast("Convoke the Spirits", "player", false, true))
                     {
                         if (Debug)
                         {
@@ -1316,16 +1326,8 @@ namespace AimsharpWow.Modules
                         Aimsharp.Cast("Solar Beam", true);
                         return true;
                     }
-
-                    if (SpellID1 == 194223 && Aimsharp.CanCast("Celestial Alignment", "player", false, true))
-                    {
-                        if (Debug)
-                        {
-                            Aimsharp.PrintMessage("Casting Celestial Alignment - " + SpellID1, Color.Purple);
-                        }
-                        Aimsharp.Cast("Celestial Alignment", true);
-                        return true;
-                    }
+                    
+                    
 
                     if (SpellID1 == 102560 && Aimsharp.CanCast("Incarnation: Chosen of Elune", "player", false, true))
                     {
@@ -1347,6 +1349,16 @@ namespace AimsharpWow.Modules
                             Aimsharp.PrintMessage("Casting Moonfire - " + SpellID1, Color.Purple);
                         }
                         Aimsharp.Cast("Moonfire");
+                        return true;
+                    }
+
+                    if (SpellID1 == 383410 && Aimsharp.CanCast("Celestial Alignment", "player", false, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Celestial Alignment - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("CelestialAlignmentC");
                         return true;
                     }
 
@@ -1414,7 +1426,7 @@ namespace AimsharpWow.Modules
                     #endregion
 
                     #region Balance - Target GCD
-                    if ((SpellID1 == 202768 || SpellID1 == 274282) && Aimsharp.CanCast("Half Moon", "target", true, true))
+                    if ((SpellID1 == 274282 || SpellID1 == 274282) && Aimsharp.CanCast("Half Moon", "target", true, true))
                     {
                         if (Debug)
                         {
@@ -1481,6 +1493,16 @@ namespace AimsharpWow.Modules
                             Aimsharp.PrintMessage("Casting Fury of Elune - " + SpellID1, Color.Purple);
                         }
                         Aimsharp.Cast("Fury of Elune");
+                        return true;
+                    }
+
+                    if (SpellID1 == 88747 && Aimsharp.CanCast("Wild Mushroom", "target", true, true))
+                    {
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Wild Mushroom - " + SpellID1, Color.Purple);
+                        }
+                        Aimsharp.Cast("Wild Mushroom");
                         return true;
                     }
 
