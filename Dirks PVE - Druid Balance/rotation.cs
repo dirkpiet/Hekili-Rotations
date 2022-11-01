@@ -15,7 +15,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "NoDecurse", "NoCycle", "DoorofShadows", "SolarBeam", "MightyBash", "MassEntanglement", "ForceofNature", "UrsolsVortex", "Typhoon", "Rebirth", "Innervate", "Hibernate", "Cyclone", "EntanglingRoots", "Regrowth",};
+        private List<string> m_IngameCommandsList = new List<string> { "NoDecurse", "NoCycle", "DoorofShadows", "SolarBeam", "MightyBash", "MassEntanglement", "ForceofNature", "UrsolsVortex", "Typhoon", "Rebirth", "Innervate", "Hibernate", "Cyclone", "EntanglingRoots", "Regrowth", "AutoCR"};
         private List<string> m_DebuffsList = new List<string> { };
         private List<string> m_BuffsList = new List<string> { "Bear Form", "Cat Form", "Mount Form", "Travel Form", "Treant Form",};
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
@@ -250,6 +250,13 @@ namespace AimsharpWow.Modules
             Macros.Add("TyphoonOff", "/" + FiveLetters + " Typhoon");
             Macros.Add("ForceofNatureOff", "/" + FiveLetters + " ForceofNature");
             Macros.Add("UrsolsVortexOff", "/" + FiveLetters + " UrsolsVortex");
+            Macros.Add("AutoCROff", "/" + FiveLetters + " AutoCR");
+
+            //Auto CR
+            Macros.Add("Rebirth_1","/cast [@party1] Rebirth");
+		    Macros.Add("Rebirth_2","/cast [@party2] Rebirth");
+		    Macros.Add("Rebirth_3","/cast [@party3] Rebirth");
+		    Macros.Add("Rebirth_4","/cast [@party4] Rebirth");
         }
 
         private void InitializeSpells()
@@ -391,6 +398,7 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("/xxxxx NoCycle - Disables Target Cycle", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoDecurse - Disables Decurse", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx MightyBash - Casts Mighty Bash @ Target next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx AutoCR - Casts Rebirth on dead target, will focus on tank and healer first", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx MassEntanglement - Casts Mass Entanglement @ Target next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx SolarBeam - Casts Solar Beam @ Target next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx ForceofNature - Casts Force of Nature @ next GCD", Color.Yellow);
@@ -519,6 +527,10 @@ namespace AimsharpWow.Modules
 
             bool MOSoothe = GetCheckBox("Soothe Mouseover:") == true;
             bool TargetSoothe = GetCheckBox("Soothe Target:") == true;
+
+            bool PartyMemberDead = false;
+            bool PartyMemberHealerDead = false;
+            bool PartyMemberTankDead = false;
 
             bool Debug = GetCheckBox("Debug:") == true;
             bool UseTrinketsCD = GetCheckBox("Use Trinkets on CD, dont wait for Hekili:") == true;
@@ -1685,6 +1697,42 @@ namespace AimsharpWow.Modules
             {
                 Aimsharp.Cast("RebirthMO");
                 return true;
+            }
+
+            // Check if rebirth is on CD and determine who died
+            bool AutoCR = Aimsharp.IsCustomCodeOn("AutoCR");
+            if(AutoCR && Aimsharp.SpellCooldown("Rebirth") <= 1400){
+                for (int i = 1; i < Aimsharp.GroupSize(); i++)
+                {
+                    if(Aimsharp.Health("party" + i) == 0 && Aimsharp.GetSpec("party" + i) == "TANK")
+                    {
+                        Aimsharp.Cast("Rebirth_" + i);
+                        Aimsharp.Cast("AutoCROff");
+                        return true;
+                    }
+                }
+
+                for (int i = 1; i < Aimsharp.GroupSize(); i++)
+                {
+                    if(Aimsharp.Health("party" + i) == 0 && Aimsharp.GetSpec("party" + i) == "HEALER")
+                    {
+                        Aimsharp.Cast("Rebirth_" + i);
+                        Aimsharp.Cast("AutoCROff");
+                        return true;
+                    } 
+                }
+
+                for (int i = 1; i < Aimsharp.GroupSize(); i++)
+                {
+                    if(Aimsharp.Health("party" + i) == 0)
+                    {
+                        Aimsharp.Cast("Rebirth_" + i);
+                        Aimsharp.Cast("AutoCROff");
+                        return true;
+                    }
+                }
+                Aimsharp.Cast("AutoCROff");
+                return false;
             }
 
             //Queue Hibernate
