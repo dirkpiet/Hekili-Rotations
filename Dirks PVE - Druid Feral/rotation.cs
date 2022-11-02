@@ -13,7 +13,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "MightyBash", "MassEntanglement", "NoDecurse", "Maim", "NoInterrupts", "NoCycle", "Rebirth", };
+        private List<string> m_IngameCommandsList = new List<string> { "MightyBash", "MassEntanglement", "NoDecurse", "Maim", "NoInterrupts", "NoCycle", "Rebirth", "Typhoon", "AutoCR" };
         private List<string> m_DebuffsList = new List<string> { "Rake", };
         private List<string> m_BuffsList = new List<string> { "Predatory Swiftness", "Prowl", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
@@ -30,7 +30,7 @@ namespace AimsharpWow.Modules
             "Rake", "Shred", "Savage Roar", "Ferocious Bite", "Rip", "Tiger's Fury", "Berserk", "Rebirth",
             "Survival Instincts", "Maim", "Renewal", "Mass Entanglement", "Swipe", "Thrash", "Incarnation: King of the Jungle", "Brutal Slash",
             "Feral Frenzy", "Heart of the Wild", "Remove Corruption", "Summon Steward", "Mighty Bash", "Wild Charge", "Tiger Dash", "Prowl",
-            "Cat Form", "Primal Wrath", "Moonkin Form", "Sunfire", "Barkskin", "Regrowth", "Starsurge", "Moonfire", "Fleshcraft", "Soothe",
+            "Cat Form", "Primal Wrath", "Moonkin Form", "Sunfire", "Barkskin", "Regrowth", "Starsurge", "Moonfire", "Fleshcraft", "Soothe", "Typhoon",
 
         };
 
@@ -189,6 +189,14 @@ namespace AimsharpWow.Modules
             Macros.Add("MassEntanglementOff", "/" + FiveLetters + " MassEntanglement");
             Macros.Add("MaimOff", "/" + FiveLetters + " Maim");
             Macros.Add("RebirthOff", "/" + FiveLetters + " Rebirth");
+            Macros.Add("TyphoonOff", "/" + FiveLetters + " Typhoon");
+            Macros.Add("AutoCROff", "/" + FiveLetters + " AutoCR");
+
+            //Auto CR
+            Macros.Add("Rebirth_1","/cast [@party1] Rebirth");
+		    Macros.Add("Rebirth_2","/cast [@party2] Rebirth");
+		    Macros.Add("Rebirth_3","/cast [@party3] Rebirth");
+		    Macros.Add("Rebirth_4","/cast [@party4] Rebirth");
 
         }
 
@@ -312,12 +320,14 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("Hekili > Toggles > Bind \"Cooldowns\" & \"Display Mode\"", Color.Brown);
             Aimsharp.PrintMessage("-----", Color.Black);
             Aimsharp.PrintMessage("- General -", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx Typhoon - Casts Typhoon @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoInterrupts - Disables Interrupts", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoDecurse - Disables Decurse", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx NoCycle - Disables Target Cycle", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx MightyBash - Casts Mighty Bash @ Target on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx MassEntanglement - Casts Mass Entanglement @ Target on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Maim - Casts Maim @ Target on the next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx AutoCR - Will auto Combat Rez", Color.Yellow);
             Aimsharp.PrintMessage("-----", Color.Black);
 
             #region Racial Spells
@@ -434,6 +444,7 @@ namespace AimsharpWow.Modules
             bool NoCycle = Aimsharp.IsCustomCodeOn("NoCycle");
             bool MightyBash = Aimsharp.IsCustomCodeOn("MightyBash");
             bool MassEntanglement = Aimsharp.IsCustomCodeOn("MassEntanglement");
+            bool Typhoon = Aimsharp.IsCustomCodeOn("Typhoon");
 
             bool Debug = GetCheckBox("Debug:") == true;
             bool MOMark = GetCheckBox("Spread Rake with Mouseover:") == true;
@@ -452,6 +463,11 @@ namespace AimsharpWow.Modules
             int EnemiesInMelee = Aimsharp.EnemiesInMelee();
             bool MeleeRange = Aimsharp.Range("target") <= 6;
 
+            bool AutoCR = Aimsharp.IsCustomCodeOn("AutoCR");
+            // Party member dead
+			bool PartyMemberDead = false;
+			bool PartyMemberHealerDead = false;
+
             bool TargetInCombat = Aimsharp.InCombat("target") || SpecialUnitList.Contains(Aimsharp.UnitID("target")) || !InstanceIDList.Contains(Aimsharp.GetMapID());
             #endregion
 
@@ -465,6 +481,57 @@ namespace AimsharpWow.Modules
                 Aimsharp.Cast("SetSpellQueueCvar");
             }
             #endregion
+
+            #region AutoCR
+            // Check if rebirth is on CD and determine who died
+            if(AutoCR && Aimsharp.SpellCooldown("Rebirth") <= 1400){
+                for (int i = 1; i < Aimsharp.GroupSize(); i++)
+                    {
+                        if(Aimsharp.Health("party" + i) == 0){
+                        PartyMemberDead = true;
+                        if(Aimsharp.GetSpec("party" + i) == "HEALER"){
+                            PartyMemberHealerDead = true;
+                        }
+                    }
+                }
+            }
+
+            //Check if there is a party member dead and if so, determine to ress the healer first
+            if (AutoCR && PartyMemberDead && Aimsharp.Power("player") >= 30){
+                if (Aimsharp.Health("party1") == 0 && (!PartyMemberHealerDead || Aimsharp.GetSpec("party1") == "HEALER") && Aimsharp.CanCast("Rebirth", "party1", true)){
+                    Aimsharp.PrintMessage("Tried rebirth 1", Color.Purple);
+                    Aimsharp.Cast("Rebirth_1");
+                    System.Threading.Thread.Sleep(50);
+                    Aimsharp.Cast("AutoCROff");
+                    return true;
+                }
+                if (Aimsharp.Health("party2") == 0 && (!PartyMemberHealerDead || Aimsharp.GetSpec("party2") == "HEALER") && Aimsharp.CanCast("Rebirth","party2", true)){
+                    Aimsharp.PrintMessage("Tried rebirth 2", Color.Purple);
+                    Aimsharp.Cast("Rebirth_2");
+                    System.Threading.Thread.Sleep(50);
+                    Aimsharp.Cast("AutoCROff");
+                    return true;
+                }
+                if (Aimsharp.Health("party3") == 0 && (!PartyMemberHealerDead || Aimsharp.GetSpec("party3") == "HEALER") && Aimsharp.CanCast("Rebirth","party3", true)){
+                    Aimsharp.PrintMessage("Tried rebirth 3", Color.Purple);
+                    Aimsharp.Cast("Rebirth_3");
+                    System.Threading.Thread.Sleep(50);
+                    Aimsharp.Cast("AutoCROff");
+                    return true;
+                }
+                if (Aimsharp.Health("party4") == 0 && (!PartyMemberHealerDead || Aimsharp.GetSpec("party4") == "HEALER") && Aimsharp.CanCast("Rebirth","party4", true) ){
+                    Aimsharp.PrintMessage("Tried rebirth 4", Color.Purple);
+                    Aimsharp.Cast("Rebirth_4");
+                    System.Threading.Thread.Sleep(50);
+                    Aimsharp.Cast("AutoCROff");
+                    return true;
+                }	
+            }else if (AutoCR) {
+                Aimsharp.Cast("AutoCROff");
+            }
+            #endregion
+
+
 
             #region Pause Checks
             if (Aimsharp.CastingID("player") > 0 || Aimsharp.IsChanneling("player"))
@@ -665,6 +732,28 @@ namespace AimsharpWow.Modules
             if (Aimsharp.TargetIsEnemy() && TargetAlive() && TargetInCombat)
             {
                 #region Queues
+                
+                //Queue Typhoon
+                if (Typhoon && Aimsharp.SpellCooldown("Typhoon") - Aimsharp.GCD() > 2000)
+                {
+                    if (Debug)
+                    {
+                        Aimsharp.PrintMessage("Turning Off Typhoon queue toggle", Color.Purple);
+                    }
+                    Aimsharp.Cast("TyphoonOff");
+                    return true;
+                }
+
+                if (Typhoon && Aimsharp.CanCast("Typhoon", "player", false, true))
+                {
+                    if (Debug)
+                    {
+                        Aimsharp.PrintMessage("Casting Typhoon through queue toggle", Color.Purple);
+                    }
+                    Aimsharp.Cast("Typhoon");
+                    return true;
+                }
+                
                 //Queue Mighty Bash
                 if (MightyBash && Aimsharp.SpellCooldown("Mighty Bash") - Aimsharp.GCD() > 2000)
                 {
@@ -1359,9 +1448,15 @@ namespace AimsharpWow.Modules
             int PhialCount = Aimsharp.CustomFunction("PhialCount");
             bool MightyBash = Aimsharp.IsCustomCodeOn("MightyBash");
             bool MassEntanglement = Aimsharp.IsCustomCodeOn("MassEntanglement");
+            bool Typhoon = Aimsharp.IsCustomCodeOn("Typhoon");
 
             bool ProwlOOC = GetCheckBox("Prowl Out of Combat:");
             bool Debug = GetCheckBox("Debug:") == true;
+
+            bool AutoCR = Aimsharp.IsCustomCodeOn("AutoCR");
+            // Party member dead
+			bool PartyMemberDead = false;
+			bool PartyMemberHealerDead = false;
             #endregion
 
             #region SpellQueueWindow
@@ -1372,6 +1467,55 @@ namespace AimsharpWow.Modules
                     Aimsharp.PrintMessage("Setting SQW to: " + (Aimsharp.Latency + 100), Color.Purple);
                 }
                 Aimsharp.Cast("SetSpellQueueCvar");
+            }
+            #endregion
+
+            #region AutoCR
+            // Check if rebirth is on CD and determine who died
+            if(AutoCR && Aimsharp.SpellCooldown("Rebirth") <= 1400){
+                for (int i = 1; i < Aimsharp.GroupSize(); i++)
+                    {
+                        if(Aimsharp.Health("party" + i) == 0){
+                        PartyMemberDead = true;
+                        if(Aimsharp.GetSpec("party" + i) == "HEALER"){
+                            PartyMemberHealerDead = true;
+                        }
+                    }
+                }
+            }
+
+            //Check if there is a party member dead and if so, determine to ress the healer first
+            if (AutoCR && PartyMemberDead && Aimsharp.Power("player") >= 30){
+                if (Aimsharp.Health("party1") == 0 && (!PartyMemberHealerDead || Aimsharp.GetSpec("party1") == "HEALER") && Aimsharp.CanCast("Rebirth", "party1", true)){
+                    Aimsharp.PrintMessage("Tried rebirth 1", Color.Purple);
+                    Aimsharp.Cast("Rebirth_1");
+                    System.Threading.Thread.Sleep(50);
+                    Aimsharp.Cast("AutoCROff");
+                    return true;
+                }
+                if (Aimsharp.Health("party2") == 0 && (!PartyMemberHealerDead || Aimsharp.GetSpec("party2") == "HEALER") && Aimsharp.CanCast("Rebirth","party2", true)){
+                    Aimsharp.PrintMessage("Tried rebirth 2", Color.Purple);
+                    Aimsharp.Cast("Rebirth_2");
+                    System.Threading.Thread.Sleep(50);
+                    Aimsharp.Cast("AutoCROff");
+                    return true;
+                }
+                if (Aimsharp.Health("party3") == 0 && (!PartyMemberHealerDead || Aimsharp.GetSpec("party3") == "HEALER") && Aimsharp.CanCast("Rebirth","party3", true)){
+                    Aimsharp.PrintMessage("Tried rebirth 3", Color.Purple);
+                    Aimsharp.Cast("Rebirth_3");
+                    System.Threading.Thread.Sleep(50);
+                    Aimsharp.Cast("AutoCROff");
+                    return true;
+                }
+                if (Aimsharp.Health("party4") == 0 && (!PartyMemberHealerDead || Aimsharp.GetSpec("party4") == "HEALER") && Aimsharp.CanCast("Rebirth","party4", true) ){
+                    Aimsharp.PrintMessage("Tried rebirth 4", Color.Purple);
+                    Aimsharp.Cast("Rebirth_4");
+                    System.Threading.Thread.Sleep(50);
+                    Aimsharp.Cast("AutoCROff");
+                    return true;
+                }
+            }else if (AutoCR) {
+                Aimsharp.Cast("AutoCROff");
             }
             #endregion
 
@@ -1408,6 +1552,27 @@ namespace AimsharpWow.Modules
                 Aimsharp.Cast("Mighty Bash");
                 return true;
             }
+
+                //Queue Typhoon
+                if (Typhoon && Aimsharp.SpellCooldown("Typhoon") - Aimsharp.GCD() > 2000)
+                {
+                    if (Debug)
+                    {
+                        Aimsharp.PrintMessage("Turning Off Typhoon queue toggle", Color.Purple);
+                    }
+                    Aimsharp.Cast("TyphoonOff");
+                    return true;
+                }
+
+                if (Typhoon && Aimsharp.CanCast("Typhoon", "player", false, true))
+                {
+                    if (Debug)
+                    {
+                        Aimsharp.PrintMessage("Casting Typhoon through queue toggle", Color.Purple);
+                    }
+                    Aimsharp.Cast("Typhoon");
+                    return true;
+                }
 
             //Queue Mass Entanglement
             if (MassEntanglement && Aimsharp.SpellCooldown("Mass Entanglement") - Aimsharp.GCD() > 2000)
