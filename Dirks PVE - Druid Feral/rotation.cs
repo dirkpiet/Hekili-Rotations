@@ -456,8 +456,14 @@ namespace AimsharpWow.Modules
             int CastingRemaining = Aimsharp.CastingRemaining("target");
             int CastingElapsed = Aimsharp.CastingElapsed("target");
             bool IsChanneling = Aimsharp.IsChanneling("target");
-            int KickValue = GetSlider("Kick at milliseconds remaining");
-            int KickChannelsAfter = GetSlider("Kick channels after milliseconds");
+
+            // Creates a random kick value between 275 and 500
+            Random rd = new Random();
+            int KickValue = rd.Next(275,500);
+            int KickChannelsAfter = rd.Next(275,500);
+            
+            // int KickValue = GetSlider("Kick at milliseconds remaining");
+            // int KickChannelsAfter = GetSlider("Kick channels after milliseconds");
 
             bool Enemy = Aimsharp.TargetIsEnemy();
             int EnemiesInMelee = Aimsharp.EnemiesInMelee();
