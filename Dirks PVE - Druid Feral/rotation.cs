@@ -546,7 +546,7 @@ namespace AimsharpWow.Modules
             #endregion
 
             #region Interrupts
-            if (!NoInterrupts && (Aimsharp.UnitID("target") != 168105 || Torghast_InnerFlame.Contains(Aimsharp.CastingID("target"))) && (Aimsharp.UnitID("target") != 157571 || Torghast_InnerFlame.Contains(Aimsharp.CastingID("target"))))
+            if (!NoInterrupts)
             {
                 if (Aimsharp.CanCast("Skull Bash"))
                 {
@@ -1542,6 +1542,8 @@ namespace AimsharpWow.Modules
                 Aimsharp.Cast("MightyBashOff");
                 return true;
             }
+
+            
 
             if (MightyBash && Aimsharp.CanCast("Mighty Bash", "target", true, true))
             {

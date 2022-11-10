@@ -1432,7 +1432,7 @@ namespace AimsharpWow.Modules
                     if (SpellID1 == 7744 && Aimsharp.CanCast("Will of the Forsaken", "player", true, true))
                     {
                         if (Debug)
-                        {x
+                        {
                             Aimsharp.PrintMessage("Casting Will of the Forsaken - " + SpellID1, Color.Purple);
                         }
                         Aimsharp.Cast("Will of the Forsaken");
