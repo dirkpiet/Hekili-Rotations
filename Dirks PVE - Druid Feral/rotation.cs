@@ -13,11 +13,12 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "MightyBash", "MassEntanglement", "NoDecurse", "Maim", "NoInterrupts", "NoCycle", "Rebirth", "Typhoon", "AutoCR" };
+        private List<string> m_IngameCommandsList = new List<string> { "MightyBash", "MassEntanglement", "NoDecurse", "Maim", "NoInterrupts", "NoCycle", "Rebirth", "Typhoon", "AutoCR", "UrsolsVortex" };
         private List<string> m_DebuffsList = new List<string> { "Rake", };
         private List<string> m_BuffsList = new List<string> { "Predatory Swiftness", "Prowl", };
         private List<string> m_BloodlustBuffsList = new List<string> { "Bloodlust", "Heroism", "Time Warp", "Primal Rage", "Drums of Rage" };
         private List<string> m_ItemsList = new List<string> { "Phial of Serenity", "Healthstone" };
+        private List<string> m_CastingList = new List<string> { "Manual", "Cursor", "Player" };
 
         private List<string> m_SpellBook = new List<string> {
             //Covenants
@@ -30,7 +31,7 @@ namespace AimsharpWow.Modules
             "Rake", "Shred", "Savage Roar", "Ferocious Bite", "Rip", "Tiger's Fury", "Berserk", "Rebirth",
             "Survival Instincts", "Maim", "Renewal", "Mass Entanglement", "Swipe", "Thrash", "Incarnation: King of the Jungle", "Brutal Slash",
             "Feral Frenzy", "Heart of the Wild", "Remove Corruption", "Summon Steward", "Mighty Bash", "Wild Charge", "Tiger Dash", "Prowl",
-            "Cat Form", "Primal Wrath", "Moonkin Form", "Sunfire", "Barkskin", "Regrowth", "Starsurge", "Moonfire", "Fleshcraft", "Soothe", "Typhoon",
+            "Cat Form", "Primal Wrath", "Moonkin Form", "Sunfire", "Barkskin", "Regrowth", "Starsurge", "Moonfire", "Fleshcraft", "Soothe", "Typhoon","Ursol's Vortex",
 
         };
 
@@ -183,6 +184,8 @@ namespace AimsharpWow.Modules
             Macros.Add("RakeMO", "/cast [@mouseover] Rake");
             Macros.Add("SootheMO", "/cast [@mouseover] Soothe");
             Macros.Add("RebirthMO", "/cast [@mouseover] Rebirth");
+            Macros.Add("UrsolsVortexP", "/cast [@player] Ursol's Vortex");
+            Macros.Add("UrsolsVortexC", "/cast [@cursor] Ursol's Vortex");
 
             //Queues
             Macros.Add("MightyBashOff", "/" + FiveLetters + " MightyBash");
@@ -191,6 +194,8 @@ namespace AimsharpWow.Modules
             Macros.Add("RebirthOff", "/" + FiveLetters + " Rebirth");
             Macros.Add("TyphoonOff", "/" + FiveLetters + " Typhoon");
             Macros.Add("AutoCROff", "/" + FiveLetters + " AutoCR");
+            Macros.Add("UrsolsVortexOff", "/" + FiveLetters + " UrsolsVortex");
+
 
             //Auto CR
             Macros.Add("Rebirth_1","/cast [@party1] Rebirth");
@@ -286,6 +291,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Kick at milliseconds remaining", 50, 1500, 500));
             Settings.Add(new Setting("Kick channels after milliseconds", 50, 1500, 500));
             Settings.Add(new Setting("General"));
+            Settings.Add(new Setting("Ursol's Vortex Cast:", m_CastingList, "Manual"));
             Settings.Add(new Setting("Auto Start Combat:", true));
             Settings.Add(new Setting("Prowl Out of Combat:", true));
             Settings.Add(new Setting("Spread Rake with Mouseover:", false));
@@ -327,6 +333,7 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("/xxxxx MightyBash - Casts Mighty Bash @ Target on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx MassEntanglement - Casts Mass Entanglement @ Target on the next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx Maim - Casts Maim @ Target on the next GCD", Color.Yellow);
+            Aimsharp.PrintMessage("/xxxxx UrsolsVortex - Casts Ursol's Vortex @ next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/xxxxx AutoCR - Will auto Combat Rez", Color.Yellow);
             Aimsharp.PrintMessage("-----", Color.Black);
 
@@ -549,6 +556,12 @@ namespace AimsharpWow.Modules
             {
                 return false;
             }
+
+            if (Aimsharp.IsCustomCodeOn("UrsolsVortex") && Aimsharp.SpellCooldown("Ursol's Vortex") - Aimsharp.GCD() <= 0 && Aimsharp.CustomFunction("IsRMBDown") == 1)
+            {
+                return false;
+            }
+
             #endregion
 
             #region Interrupts
@@ -758,6 +771,47 @@ namespace AimsharpWow.Modules
                     }
                     Aimsharp.Cast("Typhoon");
                     return true;
+                }
+
+                //Queue Ursol's Vortex
+                string UrsolsVortexCast = GetDropDown("Ursol's Vortex Cast:");
+                bool UrsolsVortex = Aimsharp.IsCustomCodeOn("UrsolsVortex");
+                if (Aimsharp.SpellCooldown("Ursol's Vortex") - Aimsharp.GCD() > 2000 && UrsolsVortex)
+                {
+                    if (Debug)
+                    {
+                        Aimsharp.PrintMessage("Turning Off Ursol's Vortex Queue", Color.Purple);
+                    }
+                    Aimsharp.Cast("UrsolsVortexOff");
+                    return true;
+                }
+
+                if (UrsolsVortex && Aimsharp.CanCast("Ursol's Vortex", "player", false, true))
+                {
+                    switch (UrsolsVortexCast)
+                    {
+                        case "Manual":
+                            if (Debug)
+                            {
+                                Aimsharp.PrintMessage("Casting Ursol's Vortex - " + UrsolsVortexCast + " - Queue", Color.Purple);
+                            }
+                            Aimsharp.Cast("Ursol's Vortex");
+                            return true;
+                        case "Player":
+                            if (Debug)
+                            {
+                                Aimsharp.PrintMessage("Casting Ursol's Vortex - " + UrsolsVortexCast + " - Queue", Color.Purple);
+                            }
+                            Aimsharp.Cast("UrsolsVortexP");
+                            return true;
+                        case "Cursor":
+                            if (Debug)
+                            {
+                                Aimsharp.PrintMessage("Casting Ursol's Vortex - " + UrsolsVortexCast + " - Queue", Color.Purple);
+                            }
+                            Aimsharp.Cast("UrsolsVortexC");
+                            return true;
+                    }
                 }
                 
                 //Queue Mighty Bash
@@ -1538,6 +1592,7 @@ namespace AimsharpWow.Modules
             #endregion
 
             #region Queues
+            
             //Queue Mighty Bash
             if (MightyBash && Aimsharp.SpellCooldown("Mighty Bash") - Aimsharp.GCD() > 2000)
             {
@@ -1549,7 +1604,46 @@ namespace AimsharpWow.Modules
                 return true;
             }
 
-            
+            //Queue Ursol's Vortex
+            string UrsolsVortexCast = GetDropDown("Ursol's Vortex Cast:");
+            bool UrsolsVortex = Aimsharp.IsCustomCodeOn("UrsolsVortex");
+            if (Aimsharp.SpellCooldown("Ursol's Vortex") - Aimsharp.GCD() > 2000 && UrsolsVortex)
+            {
+                if (Debug)
+                {
+                    Aimsharp.PrintMessage("Turning Off Ursol's Vortex Queue", Color.Purple);
+                }
+                Aimsharp.Cast("UrsolsVortexOff");
+                return true;
+            }
+
+            if (UrsolsVortex && Aimsharp.CanCast("Ursol's Vortex", "player", false, true))
+            {
+                switch (UrsolsVortexCast)
+                {
+                    case "Manual":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Ursol's Vortex - " + UrsolsVortexCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("Ursol's Vortex");
+                        return true;
+                    case "Player":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Ursol's Vortex - " + UrsolsVortexCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("UrsolsVortexP");
+                        return true;
+                    case "Cursor":
+                        if (Debug)
+                        {
+                            Aimsharp.PrintMessage("Casting Ursol's Vortex - " + UrsolsVortexCast + " - Queue", Color.Purple);
+                        }
+                        Aimsharp.Cast("UrsolsVortexC");
+                        return true;
+                }
+            }
 
             if (MightyBash && Aimsharp.CanCast("Mighty Bash", "target", true, true))
             {
