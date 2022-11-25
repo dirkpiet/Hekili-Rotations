@@ -1227,6 +1227,24 @@ namespace AimsharpWow.Modules
                 default: return "Will to Survive";
             }
         }
+
+        ///<summary>spell=20707</summary>
+        private static string Soulstone_SpellName(string Language = "English")
+        {
+            switch (Language)
+            {
+                case "English": return "Will to Survive";
+                case "Deutsch": return "Überlebenswille";
+                case "Español": return "Lucha por la supervivencia";
+                case "Français": return "Volonté de survie";
+                case "Italiano": return "Volontà di Sopravvivenza";
+                case "Português Brasileiro": return "Desejo de Sobreviver";
+                case "Русский": return "Воля к жизни";
+                case "한국어": return "삶의 의지";
+                case "简体中文": return "生存意志";
+                default: return "Will to Survive";
+            }
+        }
         #endregion
 
         #region Variables
@@ -1235,7 +1253,7 @@ namespace AimsharpWow.Modules
 
         #region Lists
         //Lists
-        private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "NoDecurse", "NoCycle", "DoorofShadows", "Banish", "Fear", "Shadowfury", "BilescourgeBombers", "HowlofTerror", "MortalCoil", "BilescourgeBombersCursor", };
+        private List<string> m_IngameCommandsList = new List<string> { "NoInterrupts", "NoDecurse", "NoCycle", "DoorofShadows", "Banish", "Fear", "Shadowfury", "BilescourgeBombers", "HowlofTerror", "MortalCoil", "BilescourgeBombersCursor", "AutoCR"};
         private List<string> m_DebuffsList;
         private List<string> m_BuffsList;
         private List<string> m_ItemsList;
@@ -1358,6 +1376,13 @@ namespace AimsharpWow.Modules
             Macros.Add("ShadowfuryP", "/cast [@player] " + Shadowfury_SpellName(Language));
             Macros.Add("BilescourgeBombersC", "/cast [@cursor] " + BilescourgeBombers_SpellName(Language));
             Macros.Add("BilescourgeBombersP", "/cast [@player] " + BilescourgeBombers_SpellName(Language));
+
+            //Auto CR
+            Macros.Add("AutoCROff", "/" + FiveLetters + " AutoCR");
+            Macros.Add("Soulstone_1","/cast [@party1] Soulstone");
+		    Macros.Add("Soulstone_2","/cast [@party2] Soulstone");
+		    Macros.Add("Soulstone_3","/cast [@party3] Soulstone");
+		    Macros.Add("Soulstone_4","/cast [@party4] Soulstone");
         }
 
         private void InitializeSpells()
@@ -1490,6 +1515,7 @@ namespace AimsharpWow.Modules
             Aimsharp.PrintMessage("-----", Color.Black);
             Aimsharp.PrintMessage("- General -", Color.Yellow);
             Aimsharp.PrintMessage("/" + FiveLetters + " NoInterrupts - Disables Interrupts", Color.Yellow);
+            Aimsharp.PrintMessage("/" + FiveLetters + " AutoCR - Automatic Combat Res", Color.Yellow);
             Aimsharp.PrintMessage("/" + FiveLetters + " NoCycle - Disables Target Cycle", Color.Yellow);
             Aimsharp.PrintMessage("/" + FiveLetters + " Fear - Casts Fear @ Mouseover next GCD", Color.Yellow);
             Aimsharp.PrintMessage("/" + FiveLetters + " Banish - Casts Banish @ Mouseover next GCD", Color.Yellow);
@@ -1689,6 +1715,10 @@ namespace AimsharpWow.Modules
             int PlayerHP = Aimsharp.Health("player");
             int PetHP = Aimsharp.Health("pet");
 
+            bool AutoCR = Aimsharp.IsCustomCodeOn("AutoCR");
+			bool PartyMemberDead = false;
+			bool PartyMemberHealerDead = false;
+
             bool TargetInCombat = Aimsharp.InCombat("target") || SpecialUnitList.Contains(Aimsharp.UnitID("target")) || !InstanceIDList.Contains(Aimsharp.GetMapID());
             #endregion
 
@@ -1700,6 +1730,55 @@ namespace AimsharpWow.Modules
                     Aimsharp.PrintMessage("Setting SQW to: " + (Aimsharp.Latency + 100), Color.Purple);
                 }
                 Aimsharp.Cast("SetSpellQueueCvar");
+            }
+            #endregion
+
+            #region AutoCR
+            // Check if Soulstone is on CD and determine who died
+            if(AutoCR && Aimsharp.SpellCooldown("Soulstone") <= 1400){
+                for (int i = 1; i < Aimsharp.GroupSize(); i++)
+                    {
+                        if(Aimsharp.Health("party" + i) == 0){
+                        PartyMemberDead = true;
+                        if(Aimsharp.GetSpec("party" + i) == "HEALER"){
+                            PartyMemberHealerDead = true;
+                        }
+                    }
+                }
+            }
+
+            //Check if there is a party member dead and if so, determine to ress the healer first
+            if (AutoCR && PartyMemberDead){
+                if (Aimsharp.Health("party1") == 0 && (!PartyMemberHealerDead || Aimsharp.GetSpec("party1") == "HEALER") && Aimsharp.CanCast("Soulstone", "party1", true)){
+                    Aimsharp.PrintMessage("Tried Soulstone 1", Color.Purple);
+                    Aimsharp.Cast("Soulstone_1");
+                    System.Threading.Thread.Sleep(50);
+                    Aimsharp.Cast("AutoCROff");
+                    return true;
+                }
+                if (Aimsharp.Health("party2") == 0 && (!PartyMemberHealerDead || Aimsharp.GetSpec("party2") == "HEALER") && Aimsharp.CanCast("Soulstone","party2", true)){
+                    Aimsharp.PrintMessage("Tried rebirth 2", Color.Purple);
+                    Aimsharp.Cast("Soulstone_2");
+                    System.Threading.Thread.Sleep(50);
+                    Aimsharp.Cast("AutoCROff");
+                    return true;
+                }
+                if (Aimsharp.Health("party3") == 0 && (!PartyMemberHealerDead || Aimsharp.GetSpec("party3") == "HEALER") && Aimsharp.CanCast("Soulstone","party3", true)){
+                    Aimsharp.PrintMessage("Tried rebirth 3", Color.Purple);
+                    Aimsharp.Cast("Soulstone_3");
+                    System.Threading.Thread.Sleep(50);
+                    Aimsharp.Cast("AutoCROff");
+                    return true;
+                }
+                if (Aimsharp.Health("party4") == 0 && (!PartyMemberHealerDead || Aimsharp.GetSpec("party4") == "HEALER") && Aimsharp.CanCast("Soulstone","party4", true) ){
+                    Aimsharp.PrintMessage("Tried rebirth 4", Color.Purple);
+                    Aimsharp.Cast("Soulstone_4");
+                    System.Threading.Thread.Sleep(50);
+                    Aimsharp.Cast("AutoCROff");
+                    return true;
+                }	
+            }else if (AutoCR) {
+                Aimsharp.Cast("AutoCROff");
             }
             #endregion
 
@@ -2852,6 +2931,11 @@ namespace AimsharpWow.Modules
             int PhialCount = Aimsharp.CustomFunction("PhialCount");
             bool TargetInCombat = Aimsharp.InCombat("target") || SpecialUnitList.Contains(Aimsharp.UnitID("target")) || !InstanceIDList.Contains(Aimsharp.GetMapID());
             bool Moving = Aimsharp.PlayerIsMoving();
+
+            bool AutoCR = Aimsharp.IsCustomCodeOn("AutoCR");
+            // Party member dead
+			bool PartyMemberDead = false;
+			bool PartyMemberHealerDead = false;
             #endregion
 
             #region SpellQueueWindow
@@ -2862,6 +2946,55 @@ namespace AimsharpWow.Modules
                     Aimsharp.PrintMessage("Setting SQW to: " + (Aimsharp.Latency + 100), Color.Purple);
                 }
                 Aimsharp.Cast("SetSpellQueueCvar");
+            }
+            #endregion
+
+            #region AutoCR
+            // Check if Soulstone is on CD and determine who died
+            if(AutoCR && Aimsharp.SpellCooldown("Soulstone") <= 1400){
+                for (int i = 1; i < Aimsharp.GroupSize(); i++)
+                    {
+                        if(Aimsharp.Health("party" + i) == 0){
+                        PartyMemberDead = true;
+                        if(Aimsharp.GetSpec("party" + i) == "HEALER"){
+                            PartyMemberHealerDead = true;
+                        }
+                    }
+                }
+            }
+
+            //Check if there is a party member dead and if so, determine to ress the healer first
+            if (AutoCR && PartyMemberDead){
+                if (Aimsharp.Health("party1") == 0 && (!PartyMemberHealerDead || Aimsharp.GetSpec("party1") == "HEALER") && Aimsharp.CanCast("Soulstone", "party1", true)){
+                    Aimsharp.PrintMessage("Tried Soulstone 1", Color.Purple);
+                    Aimsharp.Cast("Soulstone_1");
+                    System.Threading.Thread.Sleep(50);
+                    Aimsharp.Cast("AutoCROff");
+                    return true;
+                }
+                if (Aimsharp.Health("party2") == 0 && (!PartyMemberHealerDead || Aimsharp.GetSpec("party2") == "HEALER") && Aimsharp.CanCast("Soulstone","party2", true)){
+                    Aimsharp.PrintMessage("Tried rebirth 2", Color.Purple);
+                    Aimsharp.Cast("Soulstone_2");
+                    System.Threading.Thread.Sleep(50);
+                    Aimsharp.Cast("AutoCROff");
+                    return true;
+                }
+                if (Aimsharp.Health("party3") == 0 && (!PartyMemberHealerDead || Aimsharp.GetSpec("party3") == "HEALER") && Aimsharp.CanCast("Soulstone","party3", true)){
+                    Aimsharp.PrintMessage("Tried rebirth 3", Color.Purple);
+                    Aimsharp.Cast("Soulstone_3");
+                    System.Threading.Thread.Sleep(50);
+                    Aimsharp.Cast("AutoCROff");
+                    return true;
+                }
+                if (Aimsharp.Health("party4") == 0 && (!PartyMemberHealerDead || Aimsharp.GetSpec("party4") == "HEALER") && Aimsharp.CanCast("Soulstone","party4", true) ){
+                    Aimsharp.PrintMessage("Tried rebirth 4", Color.Purple);
+                    Aimsharp.Cast("Soulstone_4");
+                    System.Threading.Thread.Sleep(50);
+                    Aimsharp.Cast("AutoCROff");
+                    return true;
+                }	
+            }else if (AutoCR) {
+                Aimsharp.Cast("AutoCROff");
             }
             #endregion
 
